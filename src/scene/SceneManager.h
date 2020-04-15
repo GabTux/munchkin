@@ -5,6 +5,7 @@
 
 #include "Scene.h"
 #include "SDLResources.h"
+#include "../constants.h"
 
 class SceneManager
 {

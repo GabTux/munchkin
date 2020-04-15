@@ -19,15 +19,22 @@ void SceneManager::switchScene(SceneName inName)
 
 void SceneManager::run()
 {
+	Uint32 startTime, frameTime;
 	while (actualScene)
 	{
+		startTime = SDL_GetTicks();
 		SDL_RenderClear(res.mainRenderer);
 
 		actualScene->handleEvent();
 		if (actualScene) actualScene->update();
 		if (actualScene) actualScene->render();
 
-		SDL_RenderPresent(res.mainRenderer);
+		if (actualScene) SDL_RenderPresent(res.mainRenderer);
+
+		frameTime = SDL_GetTicks() - startTime;
+
+		if (frameTime < constants::minFrameTime)
+			SDL_Delay(constants::minFrameTime-frameTime);
 	}
 }
 

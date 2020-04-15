@@ -7,8 +7,8 @@ res(inRes), sceneManager(inSceneManager)
 
 void Stop::prepare()
 {
-	SDL_DestroyWindow(res.mainWindow);
 	SDL_DestroyRenderer(res.mainRenderer);
+	SDL_DestroyWindow(res.mainWindow);
 
 	TTF_CloseFont(res.menuFont);
 
