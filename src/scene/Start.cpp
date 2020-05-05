@@ -1,5 +1,9 @@
 #include "Start.h"
 
+Start::Start(SDLResources &inRes, SceneManager &inSceneManager) :  res(inRes), sceneManager(inSceneManager)
+{
+}
+
 void Start::prepare()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -63,3 +67,4 @@ void Start::update()
 {
 	sceneManager.switchScene(SceneName::MAIN_MENU);
 }
+

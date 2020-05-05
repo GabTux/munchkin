@@ -7,6 +7,9 @@
 #include "SDLResources.h"
 #include "../constants.h"
 
+/**
+ * Class for scene management.
+ */
 class SceneManager
 {
 	private:
@@ -15,10 +18,34 @@ class SceneManager
 		SDLResources& res;
 
 	public:
+		/**
+		 * Construct a new sceneManager.
+		 * All scenes will be saved in sceneMap.
+		 * @param inRes reference to SDL resources.
+		 */
 		explicit SceneManager(SDLResources& inRes) : res(inRes) {}
-		~SceneManager();
+
+		/**
+		 * Register new scene to map.
+		 * @param inName name of new scene.
+		 * @param inScene reference to new scene.
+		 */
 		void newScene(SceneName inName, Scene* inScene);
+
+		/**
+		 * Switch actual scene.
+		 * @param inName name of desired scene.
+		 */
 		void switchScene(SceneName inName);
+
+		/**
+		 * run mainloop of actual scene.
+		 */
 		void run();
+
+		/**
+		 * Dispose actual scene.
+		 * Set actualScene to nullptr, so the mainloop will end.
+		 */
 		void finish();
 };

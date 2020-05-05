@@ -1,10 +1,5 @@
 #include "SceneManager.h"
 
-SceneManager::~SceneManager()
-{
-	if (actualScene) actualScene->dispose();
-}
-
 void SceneManager::newScene(SceneName inName, Scene *inScene)
 {
 	sceneMap[inName] = std::shared_ptr<Scene>(inScene);

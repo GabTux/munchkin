@@ -1,19 +1,35 @@
 #pragma once
 
 #include <SDL2/SDL.h>
-
-#include "MenuItem.h"
-
-class MenuSelector : public MenuItem
+/**
+ * Object that indicates selected button.
+ */
+class MenuSelector
 {
 	private:
 		SDL_Rect position;
 		SDL_Surface* surface;
 
 public:
+		/**
+		 * Construct new selector.
+		 * @param inPosition Position, where it will be placed.
+		 */
 		MenuSelector(const char * const, SDL_Rect & inPosition);
-		void render(SDL_Renderer* renderer) override;
+
+		/**
+		 * Render selector.
+		 * @param renderer Where to render.
+		 */
+		void render(SDL_Renderer* renderer);
+
+		/**
+		 * Clear object.
+		 */
 		~MenuSelector();
 
+		/**
+		 * It indicates, if selector should be visible.
+		 */
 		bool show;
 };

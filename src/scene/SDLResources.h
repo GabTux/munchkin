@@ -3,7 +3,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
-
+/**
+ * Class for used SDL resources.
+ */
 class SDLResources
 {
 	public:

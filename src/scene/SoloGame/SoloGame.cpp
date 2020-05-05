@@ -1,9 +1,7 @@
 #include "SoloGame.h"
 
-SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) :
-res(inRes), sceneManager(inSceneManager)
+SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : res(inRes), sceneManager(inSceneManager)
 {
-
 }
 
 
@@ -25,4 +23,9 @@ void SoloGame::handleEvent()
 void SoloGame::prepare()
 {
 	gameBackground = std::make_unique<Background>(constants::gameWallpaperPath);
+}
+
+void SoloGame::readCards(const char * const fileName)
+{
+
 }

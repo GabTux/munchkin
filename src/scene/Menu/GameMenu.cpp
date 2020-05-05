@@ -1,14 +1,16 @@
-#include "MainMenu.h"
+#include "GameMenu.h"
 
-MainMenu::MainMenu(SDLResources& inRes, SceneManager& inSceneManager) : Menu(inRes, inSceneManager) {}
+GameMenu::GameMenu(SDLResources &res, SceneManager &sceneManager) : Menu(res, sceneManager)
+{
 
-void MainMenu::prepare()
+}
+
+void GameMenu::prepare()
 {
 	mainBackground = std::make_unique<Background>(constants::menuWallpaperPath);
-	SceneName scenes[] = { SceneName::GAME_MENU, SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::STOP };
-
+	SceneName scenes[] = { SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::MAIN_MENU };
 	SDL_Rect selectorPos = {constants::mainMenuButtonsX - constants::mainMenuSelectorSpace,
-													constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
+												 constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
 	SDL_Rect buttonPos = { constants::mainMenuButtonsX, constants::mainMenuButtonsY[0], 0, 0 };
 	int len = std::size(constants::gameMenuButtonsText);
 
@@ -16,19 +18,19 @@ void MainMenu::prepare()
 	{
 		selectorPos.y = constants::mainMenuButtonsY[i];
 		buttonPos.y = constants::mainMenuButtonsY[i];
-		mapMenuItems[std::make_unique<MenuButton>(constants::mainMenuButtonsText[i], buttonPos, res.menuFont, scenes[i])]
+		mapMenuItems[std::make_unique<MenuButton>(constants::gameMenuButtonsText[i], buttonPos, res.menuFont, scenes[i])]
 						= std::make_unique<MenuSelector>(constants::menuSelectorPath, selectorPos);
 	}
 }
 
-void MainMenu::render()
+void GameMenu::render()
 {
 	mainBackground->render(res.mainRenderer);
 	Menu::render();
 }
 
-void MainMenu::dispose()
+void GameMenu::dispose()
 {
-	Menu::dispose();
+	mapMenuItems.clear();
 	mainBackground.reset();
 }

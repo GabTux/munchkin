@@ -15,9 +15,6 @@ void Stop::prepare()
 	SDL_Quit();
 	TTF_Quit();
 }
-// TODO: remove this angry comment
-// the drivers are FUCKED UP and so it will always leaks memory
-
 
 void Stop::update()
 {

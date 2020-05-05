@@ -1,8 +1,12 @@
 #pragma once
 
+/*
+ * All scene names.
+ */
 enum class SceneName
 {
 		MAIN_MENU,
+		GAME_MENU,
 		SOLO_GAME,
 		START,
 		STOP,
@@ -11,13 +15,28 @@ enum class SceneName
 class Scene
 {
 	public:
+		/**
+		 * Prepare all used content for actual scene.
+		 */
+		virtual void prepare() {}
 
-		virtual void prepare() {};
+		/**
+		 * Handle all used events.
+		 */
+		virtual void handleEvent() {}
 
-		virtual void handleEvent() {};
+		/**
+		 * Update values according to events.
+		 */
+		virtual void update() {}
 
-		virtual void update() {};
+		/**
+		 * Render new content.
+		 */
+		virtual void render() {}
 
-		virtual void render() {};
-
-		virtual void dispose() {}};
+		/**
+		 * Dispose scene. Delete all used content to save memory.
+		 */
+		virtual void dispose() {}
+};

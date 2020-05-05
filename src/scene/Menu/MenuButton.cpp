@@ -9,7 +9,7 @@ text(inText), position(inPosition), font(inFont), targetScene(inTargetScene)
 
 void MenuButton::render(SDL_Renderer* renderer)
 {
-	SDL_Surface *surface = TTF_RenderText_Solid(font, text, color);
+	SDL_Surface *surface = TTF_RenderUTF8_Blended(font, text, color);
 	position.w = surface->w;
 	position.h = surface->h;
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -43,10 +43,4 @@ void MenuButton::handleEvent(SDL_Event& event)
 					break;
 			}
 	}
-}
-
-void MenuButton::update(SceneManager &sceneManager)
-{
-	if (buttonState == ButtonState::RELEASED)
-		sceneManager.switchScene(targetScene);
 }
