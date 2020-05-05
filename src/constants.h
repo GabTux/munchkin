@@ -19,9 +19,9 @@ namespace constants
 
 	/* -------------------- MAIN MENU ---------------- */
 	const int menuButtonTextSize = 70;
-	const int mainMenuButtonsY[] = { 280, 380, 480, 580 };
+	const int mainMenuButtonsY[] = { 280, 380, 480 };
 	const int mainMenuButtonsX = 205;
-	const char *const mainMenuButtonsText[] = { "ZAČÍT HRÁT", "NASTAVENÍ", "O HŘE", "UKONČIT"};
+	const char *const mainMenuButtonsText[] = { "ZAČÍT HRÁT", "O HŘE", "UKONČIT"};
 	const int mainMenuSelectorWidth = 50;
 	const int mainMenuSelectorHeight = 65;
 	const int mainMenuSelectorSpace = 70;
