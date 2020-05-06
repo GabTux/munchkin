@@ -11,14 +11,15 @@
 #include "scene/SoloGame/SoloGame.h"
 #include "scene/Menu/GameMenu.h"
 #include "scene/About.h"
+#include "Exceptions.h"
 
 int main()
 {
+	SDLResources resources;
+	SceneManager sceneManager(resources);
+
 	try
 	{
-		SDLResources resources;
-		SceneManager sceneManager(resources);
-
 		sceneManager.newScene(SceneName::START, new Start(resources, sceneManager));
 		sceneManager.newScene(SceneName::STOP, new Stop(resources, sceneManager));
 		sceneManager.newScene(SceneName::ABOUT, new About(resources, sceneManager));
@@ -30,22 +31,21 @@ int main()
 		sceneManager.run();
 	}
 
-	/* TODO:
-	catch (const std::myException& excpt)
+	catch(const std::runtime_error& excpt)
 	{
-		std::cout << "standard exception: " << excpt.what() << std::endl;
+		std::cerr << "Runtime error: " << excpt.what() << std::endl;
+		sceneManager.switchScene(SceneName::STOP);
 	}
-	*/
-
 	catch (const std::exception& excpt)
 	{
-		std::cout << "standard exception: " << excpt.what() << std::endl;
+		std::cout << "Error occurred: " << excpt.what() << std::endl;
+		sceneManager.switchScene(SceneName::STOP);
 	}
-
 	catch (...)
 	{
-		std::cout << "unhandled exception: ";
+		std::cout << "unhandled exception, possibly memory corruption: ";
 		std::exception_ptr pExcpt = std::current_exception();
 		std::cout << pExcpt.__cxa_exception_type()->name() << std::endl;
+		sceneManager.switchScene(SceneName::STOP);
 	}
 }

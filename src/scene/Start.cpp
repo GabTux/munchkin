@@ -8,51 +8,64 @@ void Start::prepare()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to initialize SDL: %s", SDL_GetError();
+		throw SDLError(message);
 	}
 
 	if (TTF_Init() != 0)
 	{
-		SDL_Log("Unable to initialize TTF: %s", TTF_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to initialize TTF: %s", TTF_GetError();
+		throw SDLError(message);
 	}
 
 	res.mainWindow = SDL_CreateWindow("SuperMunchkin", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, constants::windowWidth, constants::windowHeight, SDL_WINDOW_SHOWN);
 	if (!res.mainWindow)
 	{
-		SDL_Log("Unable to create mainWindow: %s", SDL_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to create mainWindow: %s", SDL_GetError();
+		throw SDLError(message);
 	}
 
 	if (!setIcon())
 	{
-		SDL_Log("Unable to create setIcon: %s", SDL_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to set icon: %s", SDL_GetError();
+		throw SDLError(message);
 	}
 
 	res.mainRenderer = SDL_CreateRenderer(res.mainWindow, -1, SDL_RENDERER_ACCELERATED);
 	if (!res.mainRenderer)
 	{
-		SDL_Log("Unable to create renderer: %s", SDL_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to create renderer: %s", SDL_GetError();
+		throw SDLError(message);
 	}
 
 	res.menuFont = TTF_OpenFont(constants::menuButtonFontPath, constants::menuButtonTextSize);
 	if (!res.menuFont)
 	{
-		SDL_Log("Unable to create loadFont: %s", SDL_GetError());
-		sceneManager.switchScene(SceneName::STOP);
-		return;
+		std::string message;
+		message = "Unable to create loadFont: %s", TTF_GetError();
+		throw TTFError(message);
 	}
 
-	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+	{
+		std::string message;
+		message = "Unable to openAudio: %s", Mix_GetError();
+		throw MixError(message);
+	}
+
 	res.actualMusic = Mix_LoadMUS( constants::menuMusic );
+	if (!res.actualMusic)
+	{
+		std::string message;
+		message = "Unable to load Music: %s", Mix_GetError();
+		throw MixError(message);
+	}
+
 	Mix_PlayMusic( res.actualMusic, -1 );
 }
 

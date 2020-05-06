@@ -16,12 +16,12 @@ class Stop : public Scene
 		 */
 		Stop(SDLResources& inRes, SceneManager& inSceneManager);
 
-		/*
+		/**
 		 * Try to clear all SDL resources.
 		 */
 		void prepare() override;
 
-		/*
+		/**
 		 * Call the end of mainloop.
 		 */
 		void update() override;

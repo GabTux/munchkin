@@ -1,9 +1,12 @@
 #pragma once
 
+#include <string>
+
 #include "Scene.h"
 #include "SDLResources.h"
 #include "SceneManager.h"
 #include "../constants.h"
+#include "../Exceptions.h"
 
 /**
  * Prepare all used content in program. Mostly it initializes SDL.
