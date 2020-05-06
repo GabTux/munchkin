@@ -6,6 +6,7 @@
 #include "../Scene.h"
 #include "../SDLResources.h"
 #include "MenuSelector.h"
+#include "MenuButtonWithSelector.h"
 
 /**
  * Base class for menus.
@@ -15,7 +16,10 @@ class Menu : public Scene
 	protected:
 		SDLResources& res;
 		SceneManager& sceneManager;
-		std::map<std::unique_ptr<MenuButton>, std::unique_ptr<MenuSelector>> mapMenuItems;
+		std::vector<std::unique_ptr<MenuButtonWithSelector>> menuItems;
+		SDL_Color white = {255, 255, 255 };
+		SDL_Color red = { 188, 26, 26 };
+		SDL_Color blue = {41, 57, 201 };
 
 	public:
 		/**

@@ -7,15 +7,16 @@
 class MenuSelector
 {
 	private:
-		SDL_Rect position;
-		SDL_Surface* surface;
+		SDL_Rect selectorPosition;
+		SDL_Surface* selectorSurface;
 
 public:
 		/**
 		 * Construct new selector.
+		 * @param fileName Path to bmp image.
 		 * @param inPosition Position, where it will be placed.
 		 */
-		MenuSelector(const char * const, SDL_Rect & inPosition);
+		MenuSelector(const char * const fileName, SDL_Rect & inPosition);
 
 		/**
 		 * Render selector.

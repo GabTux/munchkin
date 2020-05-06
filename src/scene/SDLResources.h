@@ -12,8 +12,6 @@ class SDLResources
 		SDL_Window* mainWindow = nullptr;
 		SDL_Renderer* mainRenderer = nullptr;
 		TTF_Font* menuFont = nullptr;
-		Mix_Music* menuMusic = nullptr;
-		const int windowWidth = 1200;
-		const int windowHeight = 900;
+		Mix_Music* actualMusic = nullptr;
 };
 

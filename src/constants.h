@@ -7,28 +7,42 @@
 namespace constants
 {
 
+	/* ------------------------------------- WINDOW CONSTANTS ----------------- */
+	const int windowWidth = 1200;
+	const int windowHeight = 900;
+
 	/* ------------------------------------- PATHS ---------------------------- */
 	const char *const menuSelectorPath = "src/images/small_figure.bmp";
 	const char *const menuWallpaperPath = "src/images/munchkin_wallpaper_1200_900.bmp";
-	const char *const configFilePath = "configFile.txt";
-	const char *const gameWallpaperPath = "src/images/wallpaper_game.bmp";
+	const char *const gameWallpaperPath = "src/images/wallpaper_game_1200_900.bmp";
+	const char *const aboutWallpapers[] = { "src/images/figure_treasure.bmp", "src/images/figure_treasure_2.bmp" };
 	const char *const menuButtonFontPath = "src/files/UbuntuMono-B.ttf";
+	const char *const menuMusic = "src/sound/DEAF KEV - Invincible _NCS Release_.mp3";
+	const char *const evilLaughs[] = { "src/sound/Evil_Laugh_1.wav", "src/sound/Evil_Laugh_2.wav", "src/sound/Evil_Laugh_3.wav" };
 	const char *const iconPath = "src/images/icon.bmp";
-
-	/* ------------------------------------ GAME TEXTS ------------------------ */
 
 	/* -------------------- MAIN MENU ---------------- */
 	const int menuButtonTextSize = 70;
 	const int mainMenuButtonsY[] = { 280, 380, 480 };
 	const int mainMenuButtonsX = 205;
-	const char *const mainMenuButtonsText[] = { "ZAČÍT HRÁT", "O HŘE", "UKONČIT"};
+	const char *const mainMenuButtonsText[] = { "START THE GAME", "ABOUT", "QUIT"};
 	const int mainMenuSelectorWidth = 50;
 	const int mainMenuSelectorHeight = 65;
 	const int mainMenuSelectorSpace = 70;
 
 	/* -------------------- GAME MENU ---------------- */
-	const char *const gameMenuButtonsText[] = {"NOVÁ HRA VS PC", "NOVÁ HRA 1v1", "ULOŽENÉ HRY", "ZPĚT"};
+	const int gameMenuButtonsY[] = { 280, 380, 480, 580 };
+	const char *const gameMenuButtonsText[] = {"NEW GAME VS PC", "NEW GAME 1v1", "SAVED GAMES", "BACK"};
 
-	const int fps = 60;
+	/* -------------------- ABOUT ---------------- */
+	const int backButtonX = 1000;
+	const int backButtonY = 820;
+	const char * const backButtonText = "BACK";
+	const char * const aboutText = "Super Munchkin\nVersion: 0.24\nC++ and SDL2\nGabriel Hévr © 2020";
+	//const char * const aboutText = "Munchkin version 0.24";
+	const int aboutTextX = 500;
+	const int aboutTextY = 500;
+
+		const int fps = 60;
 	const int minFrameTime = 1000.0f / fps;
 }

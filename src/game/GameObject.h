@@ -4,7 +4,13 @@
 
 class GameObject
 {
+	protected:
+		SDL_Surface* surface;
+
 	public:
+
+		GameObject(const char * const fileName, SDL_Rect & inPosition, int inMoveX = 0, int inMoveY = 0);
+
 		/**
 		 * Handle user input.
 		 * @param event Reference to catched event.
@@ -20,6 +26,19 @@ class GameObject
 		 * Render object.
 		 * @param renderer Reference to renderer.
 		 */
-		virtual void render(SDL_Renderer* renderer) { }
+		virtual void render(SDL_Renderer* renderer);
+
+
+		~GameObject();
+		/**
+		 * Where to render.
+		 */
+		SDL_Rect position;
+
+		/**
+		 * How fast move.
+		 */
+		 int moveX;
+		 int moveY;
 };
 

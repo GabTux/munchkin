@@ -10,7 +10,7 @@
 #include "scene/Menu/MainMenu.h"
 #include "scene/SoloGame/SoloGame.h"
 #include "scene/Menu/GameMenu.h"
-
+#include "scene/About.h"
 
 int main()
 {
@@ -21,6 +21,7 @@ int main()
 
 		sceneManager.newScene(SceneName::START, new Start(resources, sceneManager));
 		sceneManager.newScene(SceneName::STOP, new Stop(resources, sceneManager));
+		sceneManager.newScene(SceneName::ABOUT, new About(resources, sceneManager));
 		sceneManager.newScene(SceneName::MAIN_MENU, new MainMenu(resources, sceneManager));
 		sceneManager.newScene(SceneName::GAME_MENU, new GameMenu(resources, sceneManager));
 		sceneManager.newScene(SceneName::SOLO_GAME, new SoloGame(resources, sceneManager));

@@ -11,7 +11,11 @@ void Stop::prepare()
 	SDL_DestroyWindow(res.mainWindow);
 
 	TTF_CloseFont(res.menuFont);
+	Mix_HaltMusic();
+	Mix_FreeMusic(res.actualMusic);
+	Mix_CloseAudio();
 
+	Mix_Quit();
 	SDL_Quit();
 	TTF_Quit();
 }

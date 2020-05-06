@@ -5,7 +5,7 @@ MainMenu::MainMenu(SDLResources& inRes, SceneManager& inSceneManager) : Menu(inR
 void MainMenu::prepare()
 {
 	mainBackground = std::make_unique<Background>(constants::menuWallpaperPath);
-	SceneName scenes[] = { SceneName::GAME_MENU, SceneName::SOLO_GAME, SceneName::STOP };
+	SceneName scenes[] = { SceneName::GAME_MENU, SceneName::ABOUT, SceneName::STOP };
 
 	SDL_Rect selectorPos = {constants::mainMenuButtonsX - constants::mainMenuSelectorSpace,
 													constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
@@ -16,8 +16,13 @@ void MainMenu::prepare()
 	{
 		selectorPos.y = constants::mainMenuButtonsY[i];
 		buttonPos.y = constants::mainMenuButtonsY[i];
-		mapMenuItems[std::make_unique<MenuButton>(constants::mainMenuButtonsText[i], buttonPos, res.menuFont, scenes[i])]
-						= std::make_unique<MenuSelector>(constants::menuSelectorPath, selectorPos);
+		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::mainMenuButtonsText[i], buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
+	}
+
+	if (!Mix_PlayingMusic())
+	{
+		res.actualMusic = Mix_LoadMUS(constants::menuMusic);
+		Mix_PlayMusic(res.actualMusic, -1);
 	}
 }
 

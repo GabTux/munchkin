@@ -20,7 +20,7 @@ void Start::prepare()
 		return;
 	}
 
-	res.mainWindow = SDL_CreateWindow("SuperMunchkin", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, res.windowWidth, res.windowHeight, SDL_WINDOW_SHOWN);
+	res.mainWindow = SDL_CreateWindow("SuperMunchkin", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, constants::windowWidth, constants::windowHeight, SDL_WINDOW_SHOWN);
 	if (!res.mainWindow)
 	{
 		SDL_Log("Unable to create mainWindow: %s", SDL_GetError());
@@ -50,6 +50,10 @@ void Start::prepare()
 		sceneManager.switchScene(SceneName::STOP);
 		return;
 	}
+
+	Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048);
+	res.actualMusic = Mix_LoadMUS( constants::menuMusic );
+	Mix_PlayMusic( res.actualMusic, -1 );
 }
 
 bool Start::setIcon()

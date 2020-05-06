@@ -11,15 +11,14 @@ void GameMenu::prepare()
 	SceneName scenes[] = { SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::MAIN_MENU };
 	SDL_Rect selectorPos = {constants::mainMenuButtonsX - constants::mainMenuSelectorSpace,
 												 constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
-	SDL_Rect buttonPos = { constants::mainMenuButtonsX, constants::mainMenuButtonsY[0], 0, 0 };
+	SDL_Rect buttonPos = { constants::mainMenuButtonsX, constants::gameMenuButtonsY[0], 0, 0 };
 	int len = std::size(constants::gameMenuButtonsText);
 
 	for (int i = 0; i < len; i++)
 	{
-		selectorPos.y = constants::mainMenuButtonsY[i];
-		buttonPos.y = constants::mainMenuButtonsY[i];
-		mapMenuItems[std::make_unique<MenuButton>(constants::gameMenuButtonsText[i], buttonPos, res.menuFont, scenes[i])]
-						= std::make_unique<MenuSelector>(constants::menuSelectorPath, selectorPos);
+		selectorPos.y = constants::gameMenuButtonsY[i];
+		buttonPos.y = constants::gameMenuButtonsY[i];
+		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::gameMenuButtonsText[i], buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
 	}
 }
 
@@ -31,6 +30,6 @@ void GameMenu::render()
 
 void GameMenu::dispose()
 {
-	mapMenuItems.clear();
+	menuItems.clear();
 	mainBackground.reset();
 }

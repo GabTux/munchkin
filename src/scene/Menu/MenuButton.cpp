@@ -1,19 +1,17 @@
 #include "MenuButton.h"
 
 MenuButton::MenuButton(const char * const inText, SDL_Rect & inPosition, TTF_Font* inFont, SceneName inTargetScene) :
-text(inText), position(inPosition), font(inFont), targetScene(inTargetScene)
+text(inText), font(inFont), buttonPosition(inPosition), buttonState(ButtonState::NOTHING), color(SDL_Color{255, 255, 255}), targetScene(inTargetScene)
 {
-	color = white;
-	buttonState = ButtonState::NOTHING;
 }
 
 void MenuButton::render(SDL_Renderer* renderer)
 {
 	SDL_Surface *surface = TTF_RenderUTF8_Blended(font, text, color);
-	position.w = surface->w;
-	position.h = surface->h;
+	buttonPosition.w = surface->w;
+	buttonPosition.h = surface->h;
 	SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-	SDL_RenderCopy(renderer, texture, NULL, &position);
+	SDL_RenderCopy(renderer, texture, NULL, &buttonPosition);
 	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(surface);
 }
@@ -25,7 +23,7 @@ void MenuButton::handleEvent(SDL_Event& event)
 		int x, y;
 		SDL_GetMouseState(&x, &y);
 
-		if (x < position.x || x > position.x + position.w || y < position.y || y > position.y + position.h)
+		if (x < buttonPosition.x || x > buttonPosition.x + buttonPosition.w || y < buttonPosition.y || y > buttonPosition.y + buttonPosition.h)
 			buttonState = ButtonState::NOTHING;
 		else
 			switch (event.type)

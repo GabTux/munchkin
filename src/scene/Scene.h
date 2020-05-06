@@ -10,6 +10,7 @@ enum class SceneName
 		SOLO_GAME,
 		START,
 		STOP,
+		ABOUT,
 };
 
 class Scene

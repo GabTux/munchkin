@@ -19,9 +19,10 @@ class MenuButton
 {
 	private:
 		const char * const text;
-		SDL_Rect position;
 		TTF_Font* font;
-		SDL_Color white = {255, 255, 255};
+
+	protected:
+		SDL_Rect buttonPosition;
 
 	public:
 		/**
@@ -31,19 +32,19 @@ class MenuButton
 		 * @param inFont Font which will be used.
 		 * @param inTargetScene Target scene to that will be switched, when button is released.
 		 */
-		MenuButton(const char * const inText, SDL_Rect & inPosition, TTF_Font *inFont, SceneName inTargetScene);
+		MenuButton(const char * const inText, SDL_Rect& inPosition, TTF_Font* inFont, SceneName inTargetScene);
 
 		/**
 		 * Render button.
 		 * @param renderer Reference to renderer, where will be button rendered.
 		 */
-		void render(SDL_Renderer* renderer);
+		virtual void render(SDL_Renderer* renderer);
 
-		/**
+		 /**
 		 * Handle catched event.
 		 * @param event Reference to catched event.
 		 */
-		void handleEvent(SDL_Event& event);
+		virtual void handleEvent(SDL_Event& event);
 
 		/**
 		 * Actual button state.
