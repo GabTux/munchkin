@@ -1,8 +1,12 @@
 #include "Background.h"
 
-Background::Background(const char * const wallpaperPath)
+Background::Background(const char * const wallpaperPath) : surfaceBackground(SDL_LoadBMP(wallpaperPath))
 {
-	surfaceBackground = SDL_LoadBMP(wallpaperPath);
+	if (!surfaceBackground)
+	{
+		std::string message = "Unable to create background: "; message += SDL_GetError();
+		throw SDLError(message);
+	}
 }
 
 Background::~Background()

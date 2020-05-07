@@ -1,6 +1,8 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <string>
+#include "../Exceptions.h"
 
 class GameObject
 {

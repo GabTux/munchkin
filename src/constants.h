@@ -1,9 +1,8 @@
-//
-// Constants that cannot be changed by settings
-//
-
 #pragma once
 
+/**
+ * Constants used across whole program.
+ */
 namespace constants
 {
 
@@ -39,7 +38,6 @@ namespace constants
 	const int backButtonY = 820;
 	const char * const backButtonText = "BACK";
 	const char * const aboutText = "Super Munchkin\nVersion: 0.24\nC++ and SDL2\nGabriel Hévr © 2020";
-	//const char * const aboutText = "Munchkin version 0.24";
 	const int aboutTextX = 500;
 	const int aboutTextY = 500;
 
