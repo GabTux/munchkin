@@ -11,7 +11,6 @@
 #include "scene/SoloGame/SoloGame.h"
 #include "scene/Menu/GameMenu.h"
 #include "scene/About.h"
-#include "Exceptions.h"
 
 int main()
 {
@@ -33,17 +32,17 @@ int main()
 
 	catch(const std::runtime_error& excpt)
 	{
-		std::cerr << "Runtime error: " << excpt.what() << std::endl;
+		std::cerr << "Runtime error, exiting: " << excpt.what() << std::endl;
 		sceneManager.switchScene(SceneName::STOP);
 	}
 	catch (const std::exception& excpt)
 	{
-		std::cout << "Error occurred: " << excpt.what() << std::endl;
+		std::cout << "Fatal error occurred, exiting: " << excpt.what() << std::endl;
 		sceneManager.switchScene(SceneName::STOP);
 	}
 	catch (...)
 	{
-		std::cout << "unhandled exception, possibly memory corruption: ";
+		std::cout << "Unknown exception, possibly memory corruption, exiting: ";
 		std::exception_ptr pExcpt = std::current_exception();
 		std::cout << pExcpt.__cxa_exception_type()->name() << std::endl;
 		sceneManager.switchScene(SceneName::STOP);

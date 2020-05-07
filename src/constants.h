@@ -12,14 +12,14 @@ namespace constants
 	const int windowHeight = 900;
 
 	/* ------------------------------------- PATHS ---------------------------- */
-	const char *const menuSelectorPath = "src/images/small_figure.bmp";
-	const char *const menuWallpaperPath = "src/images/munchkin_wallpaper_1200_900.bmp";
-	const char *const gameWallpaperPath = "src/images/wallpaper_game_1200_900.bmp";
-	const char *const aboutWallpapers[] = { "src/images/figure_treasure.bmp", "src/images/figure_treasure_2.bmp" };
-	const char *const menuButtonFontPath = "src/files/UbuntuMono-B.ttf";
-	const char *const menuMusic = "src/sound/DEAF KEV - Invincible _NCS Release_.mp3";
-	const char *const evilLaughs[] = { "src/sound/Evil_Laugh_1.wav", "src/sound/Evil_Laugh_2.wav", "src/sound/Evil_Laugh_3.wav" };
-	const char *const iconPath = "src/images/icon.bmp";
+	const char *const menuSelectorPath = "images/small_figure.bmp";
+	const char *const menuWallpaperPath = "images/munchkin_wallpaper_1200_900.bmp";
+	const char *const gameWallpaperPath = "images/wallpaper_game_1200_900.bmp";
+	const char *const aboutWallpapers[] = { "images/figure_treasure.bmp", "images/figure_treasure_2.bmp" };
+	const char *const menuButtonFontPath = "files/UbuntuMono-B.ttf";
+	const char *const menuMusic = "sound/DEAF KEV - Invincible _NCS Release_.mp3";
+	const char *const evilLaughs[] = { "sound/Evil_Laugh_1.wav", "sound/Evil_Laugh_2.wav", "sound/Evil_Laugh_3.wav" };
+	const char *const iconPath = "images/icon.bmp";
 
 	/* -------------------- MAIN MENU ---------------- */
 	const int menuButtonTextSize = 70;

@@ -8,65 +8,73 @@ void Start::prepare()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		std::string message;
-		message = "Unable to initialize SDL: %s", SDL_GetError();
+		std::string message = "Unable to initialize SDL: "; message += SDL_GetError();
 		throw SDLError(message);
 	}
 
 	if (TTF_Init() != 0)
 	{
-		std::string message;
-		message = "Unable to initialize TTF: %s", TTF_GetError();
+		std::string message = "Unable to initialize TTF: "; message += TTF_GetError();
 		throw SDLError(message);
 	}
 
 	res.mainWindow = SDL_CreateWindow("SuperMunchkin", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, constants::windowWidth, constants::windowHeight, SDL_WINDOW_SHOWN);
 	if (!res.mainWindow)
 	{
-		std::string message;
-		message = "Unable to create mainWindow: %s", SDL_GetError();
-		throw SDLError(message);
-	}
-
-	if (!setIcon())
-	{
-		std::string message;
-		message = "Unable to set icon: %s", SDL_GetError();
+		std::string message = "Unable to create mainWindow: "; message += SDL_GetError();
 		throw SDLError(message);
 	}
 
 	res.mainRenderer = SDL_CreateRenderer(res.mainWindow, -1, SDL_RENDERER_ACCELERATED);
 	if (!res.mainRenderer)
 	{
-		std::string message;
-		message = "Unable to create renderer: %s", SDL_GetError();
+		std::string message = "Unable to create renderer: "; message += SDL_GetError();
 		throw SDLError(message);
 	}
 
 	res.menuFont = TTF_OpenFont(constants::menuButtonFontPath, constants::menuButtonTextSize);
 	if (!res.menuFont)
 	{
-		std::string message;
-		message = "Unable to create loadFont: %s", TTF_GetError();
+		std::string message = "Unable to create loadFont: "; message += TTF_GetError();
 		throw TTFError(message);
 	}
 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+	try
 	{
-		std::string message;
-		message = "Unable to openAudio: %s", Mix_GetError();
-		throw MixError(message);
+		if (!setIcon())
+		{
+			std::string message = "Unable to set icon: ";
+			message += SDL_GetError();
+			throw SDLError(message);
+		}
+	}
+	catch (const std::exception& excpt)
+	{
+		std::cout << "Error occurred, continuing program: " << excpt.what() << std::endl;
 	}
 
-	res.actualMusic = Mix_LoadMUS( constants::menuMusic );
-	if (!res.actualMusic)
+	try
 	{
-		std::string message;
-		message = "Unable to load Music: %s", Mix_GetError();
-		throw MixError(message);
-	}
+		if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+			{
+				std::string message = "Unable to openAudio: ";
+				message += Mix_GetError();
+				throw MixError(message);
+			}
 
-	Mix_PlayMusic( res.actualMusic, -1 );
+			res.actualMusic = Mix_LoadMUS(constants::menuMusic);
+			if (!res.actualMusic)
+			{
+				std::string message = "Unable to load Music: ";
+				message += Mix_GetError();
+				throw MixError(message);
+			}
+			Mix_PlayMusic( res.actualMusic, -1 );
+	}
+	catch (const std::exception& excpt)
+	{
+		std::cout << "Error occurred, continuing program: " << excpt.what() << std::endl;
+	}
 }
 
 bool Start::setIcon()
