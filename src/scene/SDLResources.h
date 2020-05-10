@@ -4,14 +4,12 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 /**
- * Class for used SDL resources.
+ * Structure for used SDL resources.
  */
-class SDLResources
+struct SDLResources
 {
-	public:
-		SDL_Window* mainWindow = nullptr;
-		SDL_Renderer* mainRenderer = nullptr;
-		TTF_Font* menuFont = nullptr;
-		Mix_Music* actualMusic = nullptr;
+	SDL_Window* mainWindow = nullptr;
+	SDL_Renderer* mainRenderer = nullptr;
+	TTF_Font* menuFont = nullptr;
+	Mix_Music* actualMusic = nullptr;
 };
-

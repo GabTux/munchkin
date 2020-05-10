@@ -1,9 +1,14 @@
 #include "MenuButtonWithSelector.h"
 
-MenuButtonWithSelector::MenuButtonWithSelector(const char *const inText, SDL_Rect &buttonPosition, TTF_Font *inFont,
+MenuButtonWithSelector::MenuButtonWithSelector(const char *const inText, SceneManager& inSceneManager, SDL_Rect &buttonPosition, TTF_Font *inFont,
 																							 SceneName inTargetScene, const char *const fileNameSelector, SDL_Rect &selPosition) :
-MenuButton(inText, buttonPosition, inFont, inTargetScene), MenuSelector(fileNameSelector, selPosition)
+MenuButton(inText, inSceneManager, buttonPosition, inFont, inTargetScene), MenuSelector(fileNameSelector, selPosition)
 {
+}
+
+void MenuButtonWithSelector::update()
+{
+	show = (buttonState == ButtonState::ACTIVE);
 }
 
 void MenuButtonWithSelector::render(SDL_Renderer* renderer)

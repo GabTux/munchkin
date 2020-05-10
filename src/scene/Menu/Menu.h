@@ -14,12 +14,20 @@
 class Menu : public Scene
 {
 	protected:
+		/**
+		 * SDL Resources used in in inherited menus.
+		 */
 		SDLResources& res;
+
+		/**
+		 * Reference to sceneManager, used globally in project.
+		 */
 		SceneManager& sceneManager;
+
+		/**
+		 * Vector of menu items used in all inherited menus.
+		 */
 		std::vector<std::unique_ptr<MenuButtonWithSelector>> menuItems;
-		SDL_Color white = {255, 255, 255 };
-		SDL_Color red = { 188, 26, 26 };
-		SDL_Color blue = {41, 57, 201 };
 
 	public:
 		/**

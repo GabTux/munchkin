@@ -32,10 +32,10 @@ void Start::prepare()
 		throw SDLError(message);
 	}
 
-	res.menuFont = TTF_OpenFont(constants::menuButtonFontPath, constants::menuButtonTextSize);
+	res.menuFont = TTF_OpenFont(constants::genericFontPath, constants::menuButtonTextSize);
 	if (!res.menuFont)
 	{
-		std::string message = "Unable to create loadFont: "; message += TTF_GetError();
+		std::string message = "Unable to load Font: "; message += TTF_GetError();
 		throw TTFError(message);
 	}
 

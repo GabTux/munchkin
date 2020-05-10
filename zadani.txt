@@ -1,4 +1,5 @@
-Naprogramujte engine pro hraní karetního RPG
+Progtest:
+,,Naprogramujte engine pro hraní karetního RPG
 
 Váš engine:
 
@@ -6,7 +7,7 @@ ze souboru nahraje definici karet (jejich typ, atributy, efekty), balíčku (sez
 umožní vytvořit a hrát samotnou karetní hru
 implementuje variantu pro jednoho hráče proti počítači (náhodné tahy nestačí)
 implementuje variantu pro dva hráče (výměna přes potvrzovací okno, aby soupeř neviděl karty, nebo naopak soupeři si celou dobu do karet vidí)
-umožňuje ukládat a načítat rozehrané hry
+umožňuje ukládat a načítat rozehrané hry"
 
 Tato práce implementuje mojí oblíbenou karetní hru Munchkin: https://cs.wikipedia.org/wiki/Munchkin_(karetn%C3%AD_hra)
 Na uvedeném odkazu jsou uvedeny i stručně pravidla, má implementace je pouze pro 2 hráče, protože při vyšším počtu hra trvá přílíš dlouho (osobní zkušenost).

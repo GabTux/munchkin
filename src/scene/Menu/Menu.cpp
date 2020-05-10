@@ -11,42 +11,21 @@ void Menu::handleEvent()
 	{
 		if (event.type == SDL_QUIT)
 			sceneManager.switchScene(SceneName::STOP);
-		for (auto &it: menuItems)
-			it->handleEvent(event);
+		for (unsigned int i = 0; i < menuItems.size(); i++)
+			menuItems[i]->handleEvent(event);
 	}
 }
 
 void Menu::render()
 {
 	for (auto &it: menuItems)
-	{
 		it->render(res.mainRenderer);
-	}
 }
 
 void Menu::update()
 {
 	for (auto &it: menuItems)
-	{
-		switch (it->buttonState)
-		{
-			case ButtonState::NOTHING:
-				it->color = white;
-				it->MenuSelector::show = false;
-				break;
-			case ButtonState::ACTIVE:
-				it->color = red;
-				it->MenuSelector::show = true;
-				break;
-			case ButtonState::PRESSED:
-				it->color = blue;
-				it->MenuSelector::show = true;
-				break;
-			case ButtonState::RELEASED:
-				sceneManager.switchScene(it->targetScene);
-				return;
-		}
-	}
+		it->update();
 }
 
 void Menu::dispose()

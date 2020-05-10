@@ -1,1 +1,18 @@
 #include "Player.h"
+
+Player::Player(std::vector<std::shared_ptr<Card>> &inHandCards, SDL_Rect &inPosition)
+: position(inPosition)
+{
+	SDL_Rect buttonPos = inPosition;
+	buttonPos.x += 5;
+	buttonPos.y += 5;
+	SDL_Rect pilePos = buttonPos;
+	pilePos.x += 500;
+	handCards = std::make_unique<HandCards>(inHandCards, buttonPos, pilePos);
+	handCards->updateValue();
+	buttonPos.y += 70;
+	pilePos.x -= 150;
+	std::vector<std::shared_ptr<Card>> emptyInv;
+	inventory = std::make_unique<Inventory>(emptyInv, buttonPos, pilePos);
+	inventory->updateValue();
+}

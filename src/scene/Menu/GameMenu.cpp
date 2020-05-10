@@ -18,7 +18,7 @@ void GameMenu::prepare()
 	{
 		selectorPos.y = constants::gameMenuButtonsY[i];
 		buttonPos.y = constants::gameMenuButtonsY[i];
-		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::gameMenuButtonsText[i], buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
+		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::gameMenuButtonsText[i], sceneManager, buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
 	}
 }
 

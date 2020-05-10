@@ -14,7 +14,7 @@ void About::prepare()
 	mouthAction = false;
 
 	SDL_Rect buttonPosition = { constants::backButtonX, constants::backButtonY, 0, 0 };
-	backButton = std::make_unique<MenuButton>(constants::backButtonText, buttonPosition, res.menuFont, SceneName::MAIN_MENU);
+	backButton = std::make_unique<MenuButton>(constants::backButtonText, sceneManager, buttonPosition, res.menuFont, SceneName::MAIN_MENU);
 
 	aboutTextPosition.x = constants::aboutTextX;
 	aboutTextPosition.y = constants::aboutTextY;
@@ -65,29 +65,7 @@ void About::update()
 	// handle figures move
 	for (auto& it: figures)
 	{
-		it->position.y += it->moveY;
-		it->position.x += it->moveX;
-		if (it->position.y <= 0 || it->position.y + it->position.h > constants::windowHeight)
-			it->moveY = -it->moveY;
-		if (it->position.x <= 0 || it->position.x + it->position.w > constants::windowWidth)
-			it->moveX = -it->moveX;
-	}
-
-	// handle button
-	switch (backButton->buttonState)
-	{
-		case ButtonState::NOTHING:
-			backButton->color = white;
-			break;
-		case ButtonState::ACTIVE:
-			backButton->color = red;
-			break;
-		case ButtonState::PRESSED:
-			backButton->color = blue;
-			break;
-		case ButtonState::RELEASED:
-			sceneManager.switchScene(backButton->targetScene);
-			return;
+		it->move();
 	}
 }
 

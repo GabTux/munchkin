@@ -10,7 +10,14 @@ class MenuSelector
 		SDL_Rect selectorPosition;
 		SDL_Surface* selectorSurface;
 
-public:
+	protected:
+		/**
+		 * Decides if selector should be visible.
+		 * Used in wrapper that connects selector and button.
+		 */
+		bool show;
+
+	public:
 		/**
 		 * Construct new selector.
 		 * @param fileName Path to bmp image.
@@ -28,9 +35,4 @@ public:
 		 * Clear object.
 		 */
 		~MenuSelector();
-
-		/**
-		 * It indicates, if selector should be visible.
-		 */
-		bool show;
 };

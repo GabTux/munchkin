@@ -27,7 +27,7 @@ class SDLError : public std::exception
 };
 
 /**
- * Class for SDL exceptions.
+ * Class for TTF exceptions.
  * Inherited from std::exception.
  */
 class TTFError : public std::exception
@@ -50,7 +50,7 @@ public:
 };
 
 /**
- * Class for SDL exceptions.
+ * Class for MIX exceptions.
  * Inherited from std::exception.
  */
 class MixError : public std::exception
@@ -64,6 +64,52 @@ class MixError : public std::exception
 		 * @param inMessage Message that describes exception.
 		 */
 		MixError(std::string& inMessage) : message(inMessage) { }
+
+		/**
+		 * Get exception description.
+		 * @return Pointer to message, that describes exception.
+		 */
+		const char * what() const noexcept override { return message.c_str(); }
+};
+
+/**
+ * Class for exception, when handling with files.
+ * Inherited from std::exception.
+ */
+class FileError : public std::exception
+{
+	private:
+		std::string message;
+
+	public:
+		/**
+		 * Constructs new MixError message.
+		 * @param inMessage Message that describes exception.
+		 */
+		FileError(std::string& inMessage) : message(inMessage) { }
+
+		/**
+		 * Get exception description.
+		 * @return Pointer to message, that describes exception.
+		 */
+		const char * what() const noexcept override { return message.c_str(); }
+};
+
+/**
+ * Class for game core exception.
+ * Inherited from std::exception.
+ */
+class GameError : public std::exception
+{
+	private:
+		std::string message;
+
+	public:
+		/**
+		 * Constructs new MixError message.
+		 * @param inMessage Message that describes exception.
+		 */
+		GameError(std::string& inMessage) : message(inMessage) { }
 
 		/**
 		 * Get exception description.

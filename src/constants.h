@@ -15,10 +15,11 @@ namespace constants
 	const char *const menuWallpaperPath = "images/munchkin_wallpaper_1200_900.bmp";
 	const char *const gameWallpaperPath = "images/wallpaper_game_1200_900.bmp";
 	const char *const aboutWallpapers[] = { "images/figure_treasure.bmp", "images/figure_treasure_2.bmp" };
-	const char *const menuButtonFontPath = "files/UbuntuMono-B.ttf";
+	const char *const genericFontPath = "files/UbuntuMono-B.ttf";
 	const char *const menuMusic = "sound/DEAF KEV - Invincible _NCS Release_.mp3";
 	const char *const evilLaughs[] = { "sound/Evil_Laugh_1.wav", "sound/Evil_Laugh_2.wav", "sound/Evil_Laugh_3.wav" };
 	const char *const iconPath = "images/icon.bmp";
+	const char *const cardFile = "files/allCards.txt";
 
 	/* -------------------- MAIN MENU ---------------- */
 	const int menuButtonTextSize = 70;
@@ -33,6 +34,12 @@ namespace constants
 	const int gameMenuButtonsY[] = { 280, 380, 480, 580 };
 	const char *const gameMenuButtonsText[] = {"NEW GAME VS PC", "NEW GAME 1v1", "SAVED GAMES", "BACK"};
 
+	/* -------------------- GAME --------------------- */
+	const int cardWidth = 200;
+	const int cardHeight = 200;
+	const int cardButtonSize = 30;
+
+
 	/* -------------------- ABOUT ---------------- */
 	const int backButtonX = 1000;
 	const int backButtonY = 820;
@@ -41,6 +48,6 @@ namespace constants
 	const int aboutTextX = 500;
 	const int aboutTextY = 500;
 
-		const int fps = 60;
+	const int fps = 60;
 	const int minFrameTime = 1000.0f / fps;
 }

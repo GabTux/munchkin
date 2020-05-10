@@ -1,7 +1,7 @@
 #include "GameObject.h"
 
 GameObject::GameObject(const char * const fileName, SDL_Rect & inPosition, int inMoveX, int inMoveY) :
-surface(SDL_LoadBMP(fileName)), position(inPosition), moveX(inMoveX), moveY(inMoveY)
+moveX(inMoveX), moveY(inMoveY), surface(SDL_LoadBMP(fileName)), position(inPosition)
 {
 	if (!surface)
 	{
@@ -22,4 +22,20 @@ GameObject::~GameObject()
 {
 	SDL_FreeSurface(surface);
 	surface = nullptr;
+}
+
+void GameObject::move()
+{
+	if (position.y <= 0 || position.y + position.h > constants::windowHeight)
+		moveY = -moveY;
+	if (position.x <= 0 || position.x + position.w > constants::windowWidth)
+		moveX = -moveX;
+
+	position.y += moveY;
+	position.x += moveX;
+}
+
+void GameObject::setPosition(SDL_Rect &inPos)
+{
+	position = inPos;
 }

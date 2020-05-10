@@ -16,7 +16,7 @@ void MainMenu::prepare()
 	{
 		selectorPos.y = constants::mainMenuButtonsY[i];
 		buttonPos.y = constants::mainMenuButtonsY[i];
-		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::mainMenuButtonsText[i], buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
+		menuItems.push_back(std::make_unique<MenuButtonWithSelector>(constants::mainMenuButtonsText[i], sceneManager, buttonPos, res.menuFont, scenes[i], constants::menuSelectorPath, selectorPos));
 	}
 
 	if (!Mix_PlayingMusic())
