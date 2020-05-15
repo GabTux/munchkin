@@ -33,6 +33,4 @@ class Player : public GraphicObject
 		void setInvCards(std::vector<std::shared_ptr<Card>>& inHandCards);
 
 		void setDefault() override;
-
-		virtual void play() = 0;
 };
