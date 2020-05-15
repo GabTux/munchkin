@@ -24,7 +24,7 @@ class PileCard : public GraphicObject
 		unsigned int renderIndex;
 		SDL_Rect buttonPos;
 		SDL_Rect pilePos;
-		PileState pileState;
+		PileState pileState = PileState::PACKED;
 		std::unique_ptr<GameButton> switchButton;
 		std::unique_ptr<GameButton> arrowLeft;
 		std::unique_ptr<GameButton> arrowRight;
@@ -108,4 +108,13 @@ class PileCard : public GraphicObject
 		 * Update value shown in button text.
 		 */
 		virtual void updateValue() = 0;
+
+		/**
+		 * Throw away holt cards and set new cards.
+		 * Vector and smart pointers will ensure no memory leaks.
+		 * @param inHandCards New cards.
+		 */
+		void setCards(std::vector<std::shared_ptr<Card>>& inHandCards);
+
+		void setDefault() override;
 };

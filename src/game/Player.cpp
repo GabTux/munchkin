@@ -16,3 +16,19 @@ Player::Player(std::vector<std::shared_ptr<Card>> &inHandCards, SDL_Rect &inPosi
 	inventory = std::make_unique<Inventory>(emptyInv, buttonPos, pilePos);
 	inventory->updateValue();
 }
+
+void Player::setHandCards(std::vector<std::shared_ptr<Card>>& inHandCards)
+{
+	handCards->setCards(inHandCards);
+}
+
+void Player::setInvCards(std::vector<std::shared_ptr<Card>> &inHandCards)
+{
+	inventory->setCards(inHandCards);
+}
+
+void Player::setDefault()
+{
+	handCards->setDefault();
+	inventory->setDefault();
+}

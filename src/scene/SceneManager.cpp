@@ -1,21 +1,26 @@
 #include "SceneManager.h"
 
-void SceneManager::newScene(SceneName inName, Scene *inScene)
+#include <utility>
+
+void SceneManager::newScene(SceneName inName, std::shared_ptr<Scene> inScene)
 {
-	sceneMap[inName] = std::shared_ptr<Scene>(inScene);
+	sceneMap[inName] = std::move(inScene);
 }
 
 void SceneManager::switchScene(SceneName inName)
 {
-	if (actualScene) actualScene->dispose();
+	if (actualScene) actualScene->stopScene();
 	actualScene = sceneMap[inName];
-	actualScene->prepare();
+	if (actualScene->ready())
+		actualScene->restart();
+	else
+		actualScene->makeReady();
 }
 
 void SceneManager::run()
 {
 	Uint32 startTime, frameTime;
-	while (actualScene)
+	while (running && actualScene)
 	{
 		startTime = SDL_GetTicks();
 		SDL_RenderClear(res.mainRenderer);
@@ -31,11 +36,5 @@ void SceneManager::run()
 		if (frameTime < constants::minFrameTime)
 			SDL_Delay(constants::minFrameTime-frameTime);
 	}
-}
-
-void SceneManager::finish()
-{
-	if (actualScene) actualScene->dispose();
-	actualScene = nullptr;
 }
 

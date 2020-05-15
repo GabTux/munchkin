@@ -31,10 +31,14 @@ class SoloGame : public Scene
 		SDLResources& res;
 		SceneManager& sceneManager;
 		std::unique_ptr<CardDeck> treasureCardDeck;
+		std::unique_ptr<CardDeck> treasureCardDeckBack;
 		std::unique_ptr<CardDeck> doorCardDeck;
+		std::unique_ptr<CardDeck> doorCardDeckBack;
 		std::unique_ptr<Player> pl1;
 		std::unique_ptr<Player> pl2;
 		std::unique_ptr<GameButton> pauseButton;
+
+		bool stopped = false;
 
 
 		/**
@@ -48,13 +52,15 @@ class SoloGame : public Scene
 		 * @param cardFile Reference to file stream.
 		 * @param helpText Reference to result vector.
 		 */
-		void readHelp(std::ifstream& cardFile, std::string& helpText);
+		static void readHelp(std::ifstream& cardFile, std::string& helpText);
 
 		/**
 		 * Create small popup window, with buttons.
 		 * @return Pressed button ID.
 		 */
-		int pauseMenu();
+		static int pauseMenu();
+
+		static void getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count);
 
 	public:
 		/**
@@ -87,5 +93,7 @@ class SoloGame : public Scene
 		/**
 		 * Reset players and cards.
 		 */
-		void dispose() override;
+		void restart() override;
+
+		void stopScene() override;
 };

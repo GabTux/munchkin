@@ -7,12 +7,18 @@ Menu::Menu(SDLResources &inRes, SceneManager &inSceneManager) : res(inRes), scen
 void Menu::handleEvent()
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event))
+	while (SDL_PollEvent(&event) && !stopped)
 	{
 		if (event.type == SDL_QUIT)
+		{
 			sceneManager.switchScene(SceneName::STOP);
-		for (unsigned int i = 0; i < menuItems.size(); i++)
-			menuItems[i]->handleEvent(event);
+			return;
+		}
+		for (auto& it: menuItems)
+		{
+			it->handleEvent(event);
+			if (stopped) break;
+		}
 	}
 }
 
@@ -28,7 +34,9 @@ void Menu::update()
 		it->update();
 }
 
-void Menu::dispose()
+void Menu::restart()
 {
-	menuItems.clear();
+	stopped = false;
+	for (auto& it: menuItems)
+		it->setDefault();
 }

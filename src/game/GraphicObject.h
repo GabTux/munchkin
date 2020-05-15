@@ -30,4 +30,6 @@ class GraphicObject
 		 * @return Position.
 		 */
 		[[nodiscard]] virtual SDL_Rect getPosition() = 0;
+
+		virtual void setDefault() { }
 };

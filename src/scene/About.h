@@ -21,8 +21,6 @@ class About : public Scene
 		std::unique_ptr<MenuButton> backButton;
 
 		SDL_Color white = {255, 255, 255 };
-		SDL_Color red = { 188, 26, 26 };
-		SDL_Color blue = {41, 57, 201 };
 
 		Uint32 startSpawnTime;
 		Uint32 delaySpawnTime = randomInt(4000, 8000);
@@ -38,6 +36,8 @@ class About : public Scene
 
 		SDL_Texture* aboutTexture = nullptr;
 		SDL_Rect aboutTextPosition;
+
+		bool stopped = false;
 
 		/**
 		 * Create new figure.
@@ -94,5 +94,12 @@ class About : public Scene
 		/**
 		 * Clear all figures.
 		 */
-		void dispose() override;
+		void restart() override;
+
+		/**
+		 * Stop laugh cycles.
+		 */
+		void stopScene() override;
+
+		~About();
 };

@@ -48,7 +48,7 @@ class GameButton : public GraphicObject
 		/**
 		 * Set button to start state.
 		 */
-		void reset();
+		void setDefault() override;
 
 		/**
 		 * Change text on button.

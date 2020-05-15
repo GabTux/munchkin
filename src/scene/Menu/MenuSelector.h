@@ -1,10 +1,12 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include "../../game/GraphicObject.h"
+
 /**
  * Object that indicates selected button.
  */
-class MenuSelector
+class MenuSelector : virtual public GraphicObject
 {
 	private:
 		SDL_Rect selectorPosition;
@@ -15,7 +17,7 @@ class MenuSelector
 		 * Decides if selector should be visible.
 		 * Used in wrapper that connects selector and button.
 		 */
-		bool show;
+		bool showSelector;
 
 	public:
 		/**
@@ -29,10 +31,15 @@ class MenuSelector
 		 * Render selector.
 		 * @param renderer Where to render.
 		 */
-		void render(SDL_Renderer* renderer);
+		void render(SDL_Renderer* renderer) override;
 
+		void show(bool inShow) { showSelector=inShow; }
+
+		[[nodiscard]] SDL_Rect getPosition() override { return selectorPosition; }
 		/**
 		 * Clear object.
 		 */
 		~MenuSelector();
+
+		void setDefault() override;
 };

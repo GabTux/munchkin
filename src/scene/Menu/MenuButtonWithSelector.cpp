@@ -8,11 +8,17 @@ MenuButton(inText, inSceneManager, buttonPosition, inFont, inTargetScene), MenuS
 
 void MenuButtonWithSelector::update()
 {
-	show = (buttonState == ButtonState::ACTIVE);
+	showSelector = (buttonState == ButtonState::ACTIVE);
 }
 
 void MenuButtonWithSelector::render(SDL_Renderer* renderer)
 {
 	MenuButton::render(renderer);
 	MenuSelector::render(renderer);
+}
+
+void MenuButtonWithSelector::setDefault()
+{
+	MenuButton::setDefault();
+	MenuSelector::setDefault();
 }

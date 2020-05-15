@@ -16,6 +16,7 @@ class SceneManager
 		std::shared_ptr<Scene> actualScene;
 		std::unordered_map<SceneName, std::shared_ptr<Scene>> sceneMap;
 		SDLResources& res;
+		bool running = true;
 
 	public:
 		/**
@@ -30,7 +31,7 @@ class SceneManager
 		 * @param inName name of new scene.
 		 * @param inScene reference to new scene.
 		 */
-		void newScene(SceneName inName, Scene* inScene);
+		void newScene(SceneName inName, std::shared_ptr<Scene> inScene);
 
 		/**
 		 * Switch actual scene.
@@ -43,9 +44,5 @@ class SceneManager
 		 */
 		void run();
 
-		/**
-		 * Dispose actual scene.
-		 * Set actualScene to nullptr, so the mainloop will end.
-		 */
-		void finish();
+		void stopGame() { running = false; };
 };

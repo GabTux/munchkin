@@ -68,7 +68,7 @@ void GameButton::handleEvent(SDL_Event &event)
 	}
 }
 
-void GameButton::reset()
+void GameButton::setDefault()
 {
 	color = white;
 	buttonState = ButtonState::NOTHING;

@@ -19,12 +19,12 @@ int main()
 
 	try
 	{
-		sceneManager.newScene(SceneName::START, new Start(resources, sceneManager));
-		sceneManager.newScene(SceneName::STOP, new Stop(resources, sceneManager));
-		sceneManager.newScene(SceneName::ABOUT, new About(resources, sceneManager));
-		sceneManager.newScene(SceneName::MAIN_MENU, new MainMenu(resources, sceneManager));
-		sceneManager.newScene(SceneName::GAME_MENU, new GameMenu(resources, sceneManager));
-		sceneManager.newScene(SceneName::SOLO_GAME, new SoloGame(resources, sceneManager));
+		sceneManager.newScene(SceneName::START, std::make_shared<Start>(resources, sceneManager));
+		sceneManager.newScene(SceneName::STOP, std::make_shared<Stop>(resources, sceneManager));
+		sceneManager.newScene(SceneName::ABOUT, std::make_shared<About>(resources, sceneManager));
+		sceneManager.newScene(SceneName::MAIN_MENU, std::make_shared<MainMenu>(resources, sceneManager));
+		sceneManager.newScene(SceneName::GAME_MENU, std::make_shared<GameMenu>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SOLO_GAME, std::make_shared<SoloGame>(resources, sceneManager));
 
 		sceneManager.switchScene(SceneName::START);
 		sceneManager.run();

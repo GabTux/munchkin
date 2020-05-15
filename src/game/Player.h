@@ -27,4 +27,10 @@ class Player : public GraphicObject
 		 * @param inPosition Where will be player renderer.
 		 */
 		Player(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition);
+
+		void setHandCards(std::vector<std::shared_ptr<Card>>& inHandCards);
+
+		void setInvCards(std::vector<std::shared_ptr<Card>>& inHandCards);
+
+		void setDefault() override;
 };

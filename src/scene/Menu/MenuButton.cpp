@@ -60,3 +60,9 @@ void MenuButton::handleEvent(SDL_Event& event)
 			}
 	}
 }
+
+void MenuButton::setDefault()
+{
+	buttonState = ButtonState::NOTHING;
+	color = white;
+}

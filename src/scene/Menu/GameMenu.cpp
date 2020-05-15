@@ -27,9 +27,3 @@ void GameMenu::render()
 	mainBackground->render(res.mainRenderer);
 	Menu::render();
 }
-
-void GameMenu::dispose()
-{
-	menuItems.clear();
-	mainBackground.reset();
-}

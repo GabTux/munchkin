@@ -3,7 +3,7 @@
 PileCard::PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
 				SDL_Rect& inButtonPos, SDL_Rect& inPilePos) :
 textPacked(std::move(inTextPacked)), textUnpacked(std::move(inTextUnpacked)), buttonPos(inButtonPos),
-pilePos(inPilePos), pileState(PileState::PACKED), cards(inCards)
+pilePos(inPilePos), cards(inCards)
 {
 	TTF_Font* font = TTF_OpenFont(constants::genericFontPath, constants::menuButtonTextSize);
 	if (!font)
@@ -47,7 +47,7 @@ void PileCard::update()
 			pileState = PileState::UNPACKED;
 			switchButton->setText(textUnpacked);
 		}
-		switchButton->reset();
+		switchButton->setDefault();
 	}
 	if (pileState == PileState::UNPACKED)
 		updateUnpacked();
@@ -104,14 +104,30 @@ void PileCard::updateUnpacked()
 	if (arrowRight->getState() == ButtonState::RELEASED)
 	{
 		renderIndex++;
-		arrowRight->reset();
+		arrowRight->setDefault();
 	}
 	if (arrowLeft->getState() == ButtonState::RELEASED)
 	{
 		renderIndex--;
-		arrowLeft->reset();
+		arrowLeft->setDefault();
 	}
 
 	for (unsigned int i = renderIndex; i-renderIndex < showCards && i < cards.size(); i++)
 		cards[i]->update();
+}
+
+void PileCard::setCards(std::vector<std::shared_ptr<Card>>& inHandCards)
+{
+	cards = inHandCards;
+}
+
+void PileCard::setDefault()
+{
+	updateValue();
+	switchButton->setText(textPacked+" "+std::to_string(value));
+	switchButton->setDefault();
+	pileState = PileState::PACKED;
+	arrowLeft->setDefault();
+	arrowRight->setDefault();
+	renderIndex = 0;
 }

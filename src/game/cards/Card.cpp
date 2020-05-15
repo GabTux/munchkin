@@ -24,7 +24,7 @@ void Card::update()
 			std::string message = "Unable to pop up message box: "; message += SDL_GetError();
 			throw SDLError(message);
 		}
-		helpButton->reset();
+		helpButton->setDefault();
 	}
 	GameObject::update();
 }

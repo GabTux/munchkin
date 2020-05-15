@@ -23,6 +23,7 @@ void About::prepare()
 	aboutTextPosition.h = surface->h;
 	aboutTexture = SDL_CreateTextureFromSurface(res.mainRenderer, surface);
 	SDL_FreeSurface(surface);
+	Mix_Volume(-1, MIX_MAX_VOLUME/6);
 
 	for (int i = 0; i < 20; i++)
 		spawnFigure();
@@ -33,10 +34,13 @@ void About::prepare()
 void About::handleEvent()
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event))
+	while (SDL_PollEvent(&event) && !stopped)
 	{
 		if (event.type == SDL_QUIT)
+		{
 			sceneManager.switchScene(SceneName::STOP);
+			return;
+		}
 		backButton->handleEvent(event);
 	}
 }
@@ -50,6 +54,7 @@ void About::update()
 		delayBackTime = randomInt(2000, 5000);
 		mouthStart = SDL_GetTicks();
 		startBackTime = SDL_GetTicks();
+		if (sLaugh) Mix_FreeChunk(sLaugh);
 		sLaugh = Mix_LoadWAV(constants::evilLaughs[randomInt(0, std::size(constants::evilLaughs)-1)]);
 		Mix_PlayChannel(-1, sLaugh, 0);
 	}
@@ -76,13 +81,6 @@ void About::render()
 		it->render(res.mainRenderer);
 	backButton->render(res.mainRenderer);
 	SDL_RenderCopy(res.mainRenderer, aboutTexture, NULL, &aboutTextPosition);
-}
-
-void About::dispose()
-{
-	Mix_FreeChunk(sLaugh);
-	SDL_DestroyTexture(aboutTexture);
-	figures.clear();
 }
 
 
@@ -152,4 +150,28 @@ void About::renderBackgrounds()
 
 	else
 		mainBackground->render(res.mainRenderer);
+}
+
+About::~About()
+{
+	Mix_FreeChunk(sLaugh);
+	SDL_DestroyTexture(aboutTexture);
+}
+
+
+void About::restart()
+{
+	mouthCycles = 0;
+	mouthOpen = true;
+	mouthAction = false;
+	backButton->setDefault();
+	mouthStart = startBackTime = startSpawnTime = SDL_GetTicks();
+	stopped = false;
+}
+
+void About::stopScene()
+{
+	if (sLaugh) Mix_FreeChunk(sLaugh);
+	sLaugh = nullptr;
+	stopped = true;
 }

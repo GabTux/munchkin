@@ -22,5 +22,5 @@ void Stop::prepare()
 
 void Stop::update()
 {
-	sceneManager.finish();
+	sceneManager.stopGame();
 }

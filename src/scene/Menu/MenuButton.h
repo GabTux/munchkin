@@ -7,6 +7,7 @@
 #include "../../constants.h"
 #include "../SceneManager.h"
 #include "../../Exceptions.h"
+#include "../../game/GraphicObject.h"
 
 enum class ButtonState
 {
@@ -16,7 +17,7 @@ enum class ButtonState
 	RELEASED,
 };
 
-class MenuButton
+class MenuButton : virtual public GraphicObject
 {
 	private:
 		const char * const text;
@@ -51,12 +52,18 @@ class MenuButton
 		 * Render button.
 		 * @param renderer Reference to renderer, where will be button rendered.
 		 */
-		virtual void render(SDL_Renderer* renderer);
+		void render(SDL_Renderer* renderer) override;
 
 		 /**
 		 * Handle caught event.
 	   * Typically it switches buttonState according to event.
 		 * @param event Reference to caught event.
 		 */
-		virtual void handleEvent(SDL_Event& event);
+		void handleEvent(SDL_Event& event) override;
+
+		void update() override { }
+
+		[[nodiscard]] SDL_Rect getPosition() override { return buttonPosition; }
+
+		void setDefault() override;
 };

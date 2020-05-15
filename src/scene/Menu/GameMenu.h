@@ -26,9 +26,4 @@ class GameMenu : public Menu
 		 * Render background and all items.
 		 */
 		void render() override;
-
-		/**
-		 * Clear background and all items.
-		 */
-		void dispose() override;
 };

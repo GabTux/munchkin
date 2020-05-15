@@ -9,6 +9,8 @@ void SoloGame::prepare()
 	doorCardDeck = std::make_unique<CardDeck>();
 	treasureCardDeck = std::make_unique<CardDeck>();
 	readCards(constants::cardFile);
+	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
+	treasureCardDeckBack = std::make_unique<CardDeck>(*treasureCardDeck);
 	gameBackground = std::make_unique<Background>(constants::gameWallpaperPath);
 	SDL_Rect pos = {5, 5, 0, 0};
 	std::vector<std::shared_ptr<Card>> randomCards;
@@ -33,7 +35,7 @@ void SoloGame::prepare()
 void SoloGame::handleEvent()
 {
 	SDL_Event event;
-	while (SDL_PollEvent(&event))
+	while (SDL_PollEvent(&event) && !stopped)
 	{
 		if (event.type == SDL_QUIT)
 		{
@@ -247,11 +249,33 @@ void SoloGame::readCards(const char * const fileName)
 	}
 }
 
-void SoloGame::dispose()
+void SoloGame::restart()
 {
-	pl1.reset();
-	pl2.reset();
-	treasureCardDeck.reset();
-	doorCardDeck.reset();
+	pl1->setDefault();
+	pl2->setDefault();
+	doorCardDeck = std::make_unique<CardDeck>(*doorCardDeckBack);
+	treasureCardDeck = std::make_unique<CardDeck>(*treasureCardDeckBack);
+	std::vector<std::shared_ptr<Card>> randomCards;
+	getRandomCards(doorCardDeck, randomCards, 4);
+	getRandomCards(treasureCardDeck, randomCards, 4);
+	pl1->setHandCards(randomCards);
+	randomCards.clear();
+	getRandomCards(doorCardDeck, randomCards, 4);
+	getRandomCards(treasureCardDeck, randomCards, 4);
+	pl2->setHandCards(randomCards);
+
+	pauseButton->setDefault();
+	stopped = false;
+}
+
+void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count)
+{
+	for (int i = 0; i < count; i++)
+		outCards.push_back(inCards->getCard());
+}
+
+void SoloGame::stopScene()
+{
+	stopped = true;
 }
 

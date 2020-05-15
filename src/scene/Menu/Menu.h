@@ -13,6 +13,9 @@
  */
 class Menu : public Scene
 {
+	private:
+		bool stopped = false;
+
 	protected:
 		/**
 		 * SDL Resources used in in inherited menus.
@@ -53,7 +56,12 @@ class Menu : public Scene
 		void update() override;
 
 		/**
-		 * Clears all items.
+		 * Reset all items.
 		 */
-		void dispose() override;
+		void restart() override;
+
+		/**
+		 * Stop handling events for buttons.
+		 */
+		void stopScene() override { stopped = true; }
 };

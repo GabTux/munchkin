@@ -31,9 +31,3 @@ void MainMenu::render()
 	mainBackground->render(res.mainRenderer);
 	Menu::render();
 }
-
-void MainMenu::dispose()
-{
-	Menu::dispose();
-	mainBackground.reset();
-}
