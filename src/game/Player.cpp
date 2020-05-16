@@ -20,6 +20,7 @@ Player::Player(std::vector<std::shared_ptr<Card>> &inHandCards, SDL_Rect &inPosi
 void Player::setHandCards(std::vector<std::shared_ptr<Card>>& inHandCards)
 {
 	handCards->setCards(inHandCards);
+	handCards->updateValue();
 }
 
 void Player::setInvCards(std::vector<std::shared_ptr<Card>> &inHandCards)
@@ -31,4 +32,10 @@ void Player::setDefault()
 {
 	handCards->setDefault();
 	inventory->setDefault();
+}
+
+void Player::gotCard(std::shared_ptr<Card> inCard)
+{
+	handCards->addCard(inCard);
+	handCards->updateValue();
 }

@@ -39,6 +39,15 @@ namespace constants
 	const int cardHeight = 200;
 	const int cardButtonSize = 30;
 
+	const int playersX = 5;
+	const int upPlayerY = 5;
+	const int downPlayerY = 600;
+	const char *const actionButtonTexts[] = { "KICK DOOR!", "END FIGHT", "END TURN", "OK" };
+	const int pauseButtonX = 10;
+	const int pauseButtonY = 350;
+	const int actionButtonX = 310;
+	const int actCardX = 800;
+	const int actCardY = 300;
 
 	/* -------------------- ABOUT ---------------- */
 	const int backButtonX = 1000;

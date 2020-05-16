@@ -25,4 +25,6 @@ class CurseCard : public Card
 		 * @return Count of lost levels.
 		 */
 		[[nodiscard]] int getValue() const override { return loseLevel; };
+
+		bool isCurse() override { return true; }
 };

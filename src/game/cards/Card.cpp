@@ -10,29 +10,33 @@ GameObject(fileName, inPos), helpText(inHelpText)
 
 void Card::handleEvent(SDL_Event &event)
 {
-	playButton->handleEvent(event);
-	helpButton->handleEvent(event);
+	if (buttonsEnabled)
+	{
+		playButton->handleEvent(event);
+		helpButton->handleEvent(event);
+	}
 	GameObject::handleEvent(event);
 }
 
 void Card::update()
 {
-	if (helpButton->getState() == ButtonState::RELEASED)
+	if (buttonsEnabled)
 	{
-		if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Help",helpText.c_str(), NULL) != 0)
+		if (helpButton->getState() == ButtonState::RELEASED)
 		{
-			std::string message = "Unable to pop up message box: "; message += SDL_GetError();
-			throw SDLError(message);
+			showHelp();
 		}
-		helpButton->setDefault();
 	}
 	GameObject::update();
 }
 
 void Card::render(SDL_Renderer *renderer)
 {
-	playButton->render(renderer);
-	helpButton->render(renderer);
+	if (buttonsEnabled)
+	{
+		playButton->render(renderer);
+		helpButton->render(renderer);
+	}
 	GameObject::render(renderer);
 }
 
@@ -43,4 +47,14 @@ void Card::setPosition(SDL_Rect &inPos)
 	playButton->setPosition(playPos);
 	SDL_Rect helpPos = {playButton->getPosition().x+playButton->getPosition().w+40, position.y+position.h+5, 0, 0};
 	helpButton->setPosition(helpPos);
+}
+
+void Card::showHelp()
+{
+	if (SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,"Help",helpText.c_str(), NULL) != 0)
+	{
+		std::string message = "Unable to pop up message box: "; message += SDL_GetError();
+		throw SDLError(message);
+	}
+	helpButton->setDefault();
 }

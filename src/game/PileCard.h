@@ -117,4 +117,6 @@ class PileCard : public GraphicObject
 		void setCards(std::vector<std::shared_ptr<Card>>& inHandCards);
 
 		void setDefault() override;
+
+		void addCard(std::shared_ptr<Card> inCard);
 };

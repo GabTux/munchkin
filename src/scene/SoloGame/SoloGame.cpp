@@ -1,5 +1,7 @@
 #include "SoloGame.h"
 
+#include <iostream>
+
 SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : res(inRes), sceneManager(inSceneManager)
 {
 }
@@ -12,24 +14,18 @@ void SoloGame::prepare()
 	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
 	treasureCardDeckBack = std::make_unique<CardDeck>(*treasureCardDeck);
 	gameBackground = std::make_unique<Background>(constants::gameWallpaperPath);
-	SDL_Rect pos = {5, 5, 0, 0};
+	SDL_Rect pos = {constants::playersX, constants::upPlayerY, 0, 0};
+
 	std::vector<std::shared_ptr<Card>> randomCards;
-	for (int i = 0; i < 4; i++)
-	{
-		randomCards.push_back(doorCardDeck->getCard());
-		randomCards.push_back(treasureCardDeck->getCard());
-	}
-	pl1 = std::make_unique<Human>(randomCards, pos);
-	randomCards.clear();
-	for (int i = 0; i < 4; i++)
-	{
-		randomCards.push_back(doorCardDeck->getCard());
-		randomCards.push_back(treasureCardDeck->getCard());
-	}
-	pos.y = 600;
-	pl2 = std::make_unique<Human>(randomCards, pos);
-	SDL_Rect pausePos = {10, 350, 0, 0};
-	pauseButton = std::make_unique<GameButton>("PAUSE", pausePos, res.menuFont);
+	players.push_back(std::make_shared<Human>(randomCards, pos));
+	pos.y = constants::downPlayerY;
+	players.push_back(std::make_shared<Human>(randomCards, pos));
+	setRandomPlayerCards();
+
+	SDL_Rect buttonPos = {constants::pauseButtonX, constants::pauseButtonY, 0, 0};
+	pauseButton = std::make_unique<GameButton>("PAUSE", buttonPos, res.menuFont);
+	buttonPos.x = constants::actionButtonX;
+	actionButton = std::make_unique<GameButton>(constants::actionButtonTexts[0], buttonPos, res.menuFont);
 }
 
 void SoloGame::handleEvent()
@@ -58,16 +54,15 @@ void SoloGame::handleEvent()
 				}
 			}
 		}
-		pl1->handleEvent(event);
-		pl2->handleEvent(event);
+		players[actPlayerInx]->handleEvent(event);
 		pauseButton->handleEvent(event);
+		actionButton->handleEvent(event);
 	}
 }
 
 void SoloGame::update()
 {
-	pl1->update();
-	pl2->update();
+	players[actPlayerInx]->update();
 	if (pauseButton->getState() == ButtonState::RELEASED)
 	{
 		int choice = pauseMenu();
@@ -81,14 +76,44 @@ void SoloGame::update()
 			//TODO
 		}
 	}
+
+	if (actPlayCard)
+	{
+		handleActPlayCard();
+	}
+
+	if (actionButton->getState() == ButtonState::RELEASED)
+	{
+		switch (actStateInx)
+		{
+			case 0:
+				kickDoor();
+				break;
+			case 1:
+				//end fight
+				actStateInx++;
+				break;
+			case 2:
+				//end turn
+				//some checks if player can end turn
+				//pack pile if unpacked
+				switchPlayer();
+				actStateInx = 0;
+				actionButton->setText(constants::actionButtonTexts[actStateInx]);
+				break;
+		}
+		actionButton->setDefault();
+	}
 }
 
 void SoloGame::render()
 {
 	gameBackground->render(res.mainRenderer);
-	pl1->render(res.mainRenderer);
-	pl2->render(res.mainRenderer);
+	for (auto& it: players)
+		it->render(res.mainRenderer);
 	pauseButton->render(res.mainRenderer);
+	actionButton->render(res.mainRenderer);
+	if (actPlayCard) actPlayCard->render(res.mainRenderer);
 }
 
 void SoloGame::readHelp(std::ifstream& cardFile, std::string& helpText)
@@ -251,21 +276,21 @@ void SoloGame::readCards(const char * const fileName)
 
 void SoloGame::restart()
 {
-	pl1->setDefault();
-	pl2->setDefault();
+	for (auto& it: players)
+		it->setDefault();
 	doorCardDeck = std::make_unique<CardDeck>(*doorCardDeckBack);
 	treasureCardDeck = std::make_unique<CardDeck>(*treasureCardDeckBack);
 	std::vector<std::shared_ptr<Card>> randomCards;
-	getRandomCards(doorCardDeck, randomCards, 4);
-	getRandomCards(treasureCardDeck, randomCards, 4);
-	pl1->setHandCards(randomCards);
-	randomCards.clear();
-	getRandomCards(doorCardDeck, randomCards, 4);
-	getRandomCards(treasureCardDeck, randomCards, 4);
-	pl2->setHandCards(randomCards);
+
+	setRandomPlayerCards();
 
 	pauseButton->setDefault();
+	actionButton->setText(constants::actionButtonTexts[0]);
+	actionButton->setDefault();
 	stopped = false;
+	actPlayerInx = 0;
+	actStateInx = 0;
+	actPlayCard = nullptr;
 }
 
 void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count)
@@ -279,3 +304,66 @@ void SoloGame::stopScene()
 	stopped = true;
 }
 
+void SoloGame::kickDoor()
+{
+	actPlayCard = doorCardDeck->getCard();
+	SDL_Rect actCardPos = {constants::actCardX, constants::actCardY, 0, 0};
+	actPlayCard->setPosition(actCardPos);
+	actPlayCard->changeButtons(false);
+}
+
+void SoloGame::handleActPlayCard()
+{
+	switch (actStateInx)
+	{
+		case 0:
+			handleKicked();
+			break;
+	}
+}
+
+void SoloGame::handleKicked()
+{
+	actPlayCard->showHelp();
+	if (actPlayCard->isMonster())
+	{
+		//TODO:
+		//FIGHT
+		actStateInx++;
+		// tmp fix
+		actPlayCard = nullptr;
+	}
+	else if (actPlayCard->isCurse())
+	{
+		//TODO:
+		//THAT CURSE ON PLAYER
+		actStateInx += 2;
+		actPlayCard = nullptr;
+	}
+	else
+	{
+		actPlayCard->changeButtons(true);
+		players[actPlayerInx]->gotCard(actPlayCard);
+		actPlayCard = nullptr;
+		actStateInx += 2;
+	}
+	actionButton->setText(constants::actionButtonTexts[actStateInx]);
+}
+
+void SoloGame::setRandomPlayerCards()
+{
+	std::vector<std::shared_ptr<Card>> randomCards;
+
+	for (auto& it: players)
+	{
+		randomCards.clear();
+		getRandomCards(doorCardDeck, randomCards, 4);
+		getRandomCards(treasureCardDeck, randomCards, 4);
+		it->setHandCards(randomCards);
+	}
+}
+
+void SoloGame::switchPlayer()
+{
+	actPlayerInx = (actPlayerInx >= 1) ? 0 : 1;
+}

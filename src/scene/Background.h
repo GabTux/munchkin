@@ -3,11 +3,12 @@
 #include <SDL2/SDL.h>
 #include <string>
 #include "../Exceptions.h"
+#include "../game/GraphicObject.h"
 
 /**
  * Class for managing background.
  */
-class Background
+class Background : public GraphicObject
 {
 	private:
 		SDL_Surface* surfaceBackground;
@@ -24,13 +25,17 @@ class Background
 		 */
 		~Background();
 
+		void handleEvent(SDL_Event& event) override { }
+
 		/**
 		 * Update graphic resources.
 		 */
-		void update();
+		void update() override;
 
 		/**
 		 * Render background.
 		 */
-		void render(SDL_Renderer*);
+		void render(SDL_Renderer*) override;
+
+		SDL_Rect getPosition() override { return {0, 0, 1200,900}; }
 };

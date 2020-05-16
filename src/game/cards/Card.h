@@ -5,6 +5,8 @@
 #include "../GameObject.h"
 #include "../GameButton.h"
 
+class Player;
+
 /**
  * Class card.
  */
@@ -55,4 +57,16 @@ class Card : public GameObject
 		 * @return For each type, return specific value.
 		 */
 		[[nodiscard]] virtual int getValue() const = 0;
+
+		void showHelp();
+
+		virtual bool isMonster() { return false; }
+
+		virtual bool isCurse() { return false; }
+
+		virtual void play() { }
+
+		virtual void play(std::shared_ptr<Player> affPlayer) { }
+
+		void changeButtons(bool enable) { buttonsEnabled = enable; }
 };

@@ -33,4 +33,6 @@ class MonsterCard : public Card
 		 * @return Monster level.
 		 */
 		[[nodiscard]] int getValue() const override { return level; };
+
+		bool isMonster() override { return true; }
 };

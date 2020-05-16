@@ -21,12 +21,21 @@
 #include "../../game/cards/LevelUpCard.h"
 #include "../../game/cards/BoostCard.h"
 
+enum class GameState
+{
+		KICK_DOORS,
+		FIGHT,
+		END_TURN,
+};
+
 /**
  * Scene for game.
  */
 class SoloGame : public Scene
 {
 	private:
+		GameState gameStateArr[3] = { GameState::KICK_DOORS, GameState::FIGHT, GameState::END_TURN };
+		int actStateInx = 0;
 		std::unique_ptr<Background> gameBackground;
 		SDLResources& res;
 		SceneManager& sceneManager;
@@ -34,9 +43,12 @@ class SoloGame : public Scene
 		std::unique_ptr<CardDeck> treasureCardDeckBack;
 		std::unique_ptr<CardDeck> doorCardDeck;
 		std::unique_ptr<CardDeck> doorCardDeckBack;
-		std::unique_ptr<Player> pl1;
-		std::unique_ptr<Player> pl2;
+		std::vector<std::shared_ptr<Player>> players;
+		int actPlayerInx = 0;
 		std::unique_ptr<GameButton> pauseButton;
+		std::unique_ptr<GameButton> actionButton;
+
+		std::shared_ptr<Card> actPlayCard = nullptr;
 
 		bool stopped = false;
 
@@ -96,4 +108,14 @@ class SoloGame : public Scene
 		void restart() override;
 
 		void stopScene() override;
+
+		void kickDoor();
+
+		void handleActPlayCard();
+
+		void handleKicked();
+
+		void setRandomPlayerCards();
+
+		void switchPlayer();
 };

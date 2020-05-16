@@ -37,5 +37,6 @@ void GameObject::move()
 
 void GameObject::setPosition(SDL_Rect &inPos)
 {
-	position = inPos;
+	position.x = inPos.x;
+	position.y = inPos.y;
 }

@@ -73,9 +73,7 @@ void PileCard::renderUnpacked(SDL_Renderer *renderer)
 	if (renderIndex > 0) arrowLeft->render(renderer);
 	if (cards.size() > renderIndex + showCards) arrowRight->render(renderer);
 
-	SDL_Rect newCardPos = cards[0]->getPosition();
-	newCardPos.x = pilePos.x;
-	newCardPos.y = pilePos.y;
+	SDL_Rect newCardPos = {pilePos.x, pilePos.y, 0, 0 };
 
 	cards[renderIndex]->setPosition(newCardPos);
 	cards[renderIndex]->render(renderer);
@@ -119,6 +117,9 @@ void PileCard::updateUnpacked()
 void PileCard::setCards(std::vector<std::shared_ptr<Card>>& inHandCards)
 {
 	cards = inHandCards;
+	updateValue();
+	if (pileState == PileState::PACKED)
+		switchButton->setText(textPacked+" "+std::to_string(value));
 }
 
 void PileCard::setDefault()
@@ -130,4 +131,12 @@ void PileCard::setDefault()
 	arrowLeft->setDefault();
 	arrowRight->setDefault();
 	renderIndex = 0;
+}
+
+void PileCard::addCard(std::shared_ptr<Card> inCard)
+{
+	cards.push_back(inCard);
+	updateValue();
+	if (pileState == PileState::PACKED)
+		switchButton->setText(textPacked+" "+std::to_string(value));
 }
