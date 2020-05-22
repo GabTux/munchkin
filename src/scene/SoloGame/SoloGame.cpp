@@ -1,7 +1,5 @@
 #include "SoloGame.h"
 
-#include <iostream>
-
 SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : res(inRes), sceneManager(inSceneManager)
 {
 }
@@ -17,15 +15,19 @@ void SoloGame::prepare()
 	SDL_Rect pos = {constants::playersX, constants::upPlayerY, 0, 0};
 
 	std::vector<std::shared_ptr<Card>> randomCards;
-	players.push_back(std::make_shared<Human>(randomCards, pos));
+	players.push_back(std::make_shared<Human>(randomCards, pos, res));
 	pos.y = constants::downPlayerY;
-	players.push_back(std::make_shared<Human>(randomCards, pos));
+	players.push_back(std::make_shared<Human>(randomCards, pos, res));
+	players[0]->setOpp(players[1]);
+	players[1]->setOpp(players[0]);
 	setRandomPlayerCards();
 
 	SDL_Rect buttonPos = {constants::pauseButtonX, constants::pauseButtonY, 0, 0};
 	pauseButton = std::make_unique<GameButton>("PAUSE", buttonPos, res.menuFont);
 	buttonPos.x = constants::actionButtonX;
 	actionButton = std::make_unique<GameButton>(constants::actionButtonTexts[0], buttonPos, res.menuFont);
+	monsterLevelInd = std::make_unique<Text>("POWER ", SDL_Rect({constants::monsterIndicatorX, constants::monsterIndicatorY}),
+					res.gameFont, SDL_Color({255, 255, 255}), res.mainRenderer);
 }
 
 void SoloGame::handleEvent()
@@ -57,12 +59,13 @@ void SoloGame::handleEvent()
 		players[actPlayerInx]->handleEvent(event);
 		pauseButton->handleEvent(event);
 		actionButton->handleEvent(event);
+		if (actPlayCard) actPlayCard->handleEvent(event);
 	}
 }
 
 void SoloGame::update()
 {
-	players[actPlayerInx]->update();
+	players[actPlayerInx]->update(actPlayCard, gameStateArr[actStateInx]);
 	if (pauseButton->getState() == ButtonState::RELEASED)
 	{
 		int choice = pauseMenu();
@@ -79,7 +82,11 @@ void SoloGame::update()
 
 	if (actPlayCard)
 	{
-		handleActPlayCard();
+		actPlayCard->update();
+		if (gameStateArr[actStateInx] == GameState::FIGHT)
+			monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
+		if (gameStateArr[actStateInx] == GameState::KICK_DOORS)
+			handleKicked();
 	}
 
 	if (actionButton->getState() == ButtonState::RELEASED)
@@ -91,15 +98,21 @@ void SoloGame::update()
 				break;
 			case 1:
 				//end fight
-				actStateInx++;
+				handleFight();
 				break;
 			case 2:
 				//end turn
 				//some checks if player can end turn
 				//pack pile if unpacked
-				switchPlayer();
-				actStateInx = 0;
-				actionButton->setText(constants::actionButtonTexts[actStateInx]);
+				std::string cantEndTurnText = "Can't end turn: ";
+				if (players[actPlayerInx]->endTurn(cantEndTurnText))
+				{
+					switchPlayer();
+					actStateInx = 0;
+					actionButton->setText(constants::actionButtonTexts[actStateInx]);
+				}
+				else
+					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Can't end turn!", cantEndTurnText.c_str(), res.mainWindow);
 				break;
 		}
 		actionButton->setDefault();
@@ -114,6 +127,7 @@ void SoloGame::render()
 	pauseButton->render(res.mainRenderer);
 	actionButton->render(res.mainRenderer);
 	if (actPlayCard) actPlayCard->render(res.mainRenderer);
+	if (gameStateArr[actStateInx] == GameState::FIGHT) monsterLevelInd->render(res.mainRenderer);
 }
 
 void SoloGame::readHelp(std::ifstream& cardFile, std::string& helpText)
@@ -139,25 +153,7 @@ int SoloGame::pauseMenu()
 					{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "SAVE" },
 					{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 2, "BACK TO MENU" },
 	};
-	const SDL_MessageBoxColorScheme colorScheme = {
-					{
-					{ 186, 112, 0 },
-					{   255, 255, 255 },
-					{ 255, 255, 0 },
-					{   41, 57, 201 },
-					{ 255, 0, 255 }
-					}
-	};
-	const SDL_MessageBoxData messageboxdata = {SDL_MESSAGEBOX_INFORMATION,NULL,"Pause menu",
-					"Game paused.",SDL_arraysize(buttons), buttons, &colorScheme };
-	int buttonID;
-	if (SDL_ShowMessageBox(&messageboxdata, &buttonID) < 0)
-	{
-		std::string message = "Unable to pop up message box"; message += SDL_GetError();
-		throw SDLError(message);
-	}
-
-	return buttonID;
+	return dialogWin(buttons, SDL_arraysize(buttons), "Pause game.", "Game paused.");
 }
 
 void SoloGame::readCards(const char * const fileName)
@@ -177,23 +173,14 @@ void SoloGame::readCards(const char * const fileName)
 	SDL_Rect defPos = {0, 0, constants::cardWidth, constants::cardHeight};
 	while (cardFile >> cardPath >> cardCount >> cardType)
 	{
-		if (cardType == "race")
-		{
-			readHelp(cardFile, helpText);
-			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<RaceCard>(cardPath.c_str(), defPos, helpText);
-				doorCardDeck->addCard(tmpPtr);
-			}
-		}
-		else if (cardType == "curse")
+		if (cardType == "curse")
 		{
 			int loseLevel;
 			cardFile >> loseLevel;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<CurseCard>(cardPath.c_str(), defPos, helpText, loseLevel);
+				std::shared_ptr<Card> tmpPtr = std::make_shared<CurseCard>(cardPath.c_str(), defPos, helpText, loseLevel, res.gameFont);
 				doorCardDeck->addCard(tmpPtr);
 			}
 		}
@@ -204,23 +191,25 @@ void SoloGame::readCards(const char * const fileName)
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<MonsterBoostCard>(cardPath.c_str(), defPos, helpText, boostNum);
+				std::shared_ptr<Card> tmpPtr = std::make_shared<MonsterBoostCard>(cardPath.c_str(), defPos, helpText, boostNum, res.gameFont);
 				doorCardDeck->addCard(tmpPtr);
 			}
 		}
 		else if (cardType == "monster")
 		{
-			int monsterLevel, badStuffVal;
+			int monsterLevel, badStuffVal, treasures, giveLevels;
 			std::string badStuff;
 			cardFile >> monsterLevel;
 			cardFile >> badStuff;
 			cardFile >> badStuffVal;
+			cardFile >> treasures;
+			cardFile >> giveLevels;
 			BadStuffType badStuffType = (badStuff == "level") ? BadStuffType::LEVEL : BadStuffType::CARDS;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
 				std::shared_ptr<Card> tmpPtr = std::make_shared<MonsterCard>(cardPath.c_str(), defPos, helpText, badStuffType,
-				                                                             badStuffVal, monsterLevel);
+				                                                             badStuffVal, monsterLevel, treasures, giveLevels, res.gameFont);
 				doorCardDeck->addCard(tmpPtr);
 			}
 		}
@@ -233,19 +222,7 @@ void SoloGame::readCards(const char * const fileName)
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<ItemCard>(cardPath.c_str(), defPos, helpText, combatBonus);
-				treasureCardDeck->addCard(tmpPtr);
-			}
-		}
-		else if (cardType == "oneUseItem")
-		{
-			int combatBonus;
-			cardFile >> combatBonus;
-			readHelp(cardFile, helpText);
-			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<OneUseItemCard>(cardPath.c_str(), defPos, helpText,
-				                                                                combatBonus);
+				std::shared_ptr<Card> tmpPtr = std::make_shared<ItemCard>(cardPath.c_str(), defPos, helpText, combatBonus, res.gameFont);
 				treasureCardDeck->addCard(tmpPtr);
 			}
 		}
@@ -256,8 +233,8 @@ void SoloGame::readCards(const char * const fileName)
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<LevelUpCard>(cardPath.c_str(), defPos, helpText, level);
-				doorCardDeck->addCard(tmpPtr);
+				std::shared_ptr<Card> tmpPtr = std::make_shared<LevelUpCard>(cardPath.c_str(), defPos, helpText, level, res.gameFont);
+				treasureCardDeck->addCard(tmpPtr);
 			}
 		}
 		else if (cardType == "boost")
@@ -267,8 +244,8 @@ void SoloGame::readCards(const char * const fileName)
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
 			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<BoostCard>(cardPath.c_str(), defPos, helpText, boost);
-				doorCardDeck->addCard(tmpPtr);
+				std::shared_ptr<Card> tmpPtr = std::make_shared<BoostCard>(cardPath.c_str(), defPos, helpText, boost, res.gameFont);
+				treasureCardDeck->addCard(tmpPtr);
 			}
 		}
 	}
@@ -278,6 +255,8 @@ void SoloGame::restart()
 {
 	for (auto& it: players)
 		it->setDefault();
+	doorCardDeckBack->setDefault();
+	treasureCardDeckBack->setDefault();
 	doorCardDeck = std::make_unique<CardDeck>(*doorCardDeckBack);
 	treasureCardDeck = std::make_unique<CardDeck>(*treasureCardDeckBack);
 	std::vector<std::shared_ptr<Card>> randomCards;
@@ -296,7 +275,13 @@ void SoloGame::restart()
 void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count)
 {
 	for (int i = 0; i < count; i++)
-		outCards.push_back(inCards->getCard());
+	{
+		auto randCard = inCards->getCard();
+		if (randCard->isMonster())
+			i--;
+		else
+			outCards.push_back(randCard);
+	}
 }
 
 void SoloGame::stopScene()
@@ -309,17 +294,7 @@ void SoloGame::kickDoor()
 	actPlayCard = doorCardDeck->getCard();
 	SDL_Rect actCardPos = {constants::actCardX, constants::actCardY, 0, 0};
 	actPlayCard->setPosition(actCardPos);
-	actPlayCard->changeButtons(false);
-}
-
-void SoloGame::handleActPlayCard()
-{
-	switch (actStateInx)
-	{
-		case 0:
-			handleKicked();
-			break;
-	}
+	actPlayCard->changeButtons(false, true);
 }
 
 void SoloGame::handleKicked()
@@ -327,22 +302,20 @@ void SoloGame::handleKicked()
 	actPlayCard->showHelp();
 	if (actPlayCard->isMonster())
 	{
-		//TODO:
 		//FIGHT
+		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
 		actStateInx++;
-		// tmp fix
-		actPlayCard = nullptr;
 	}
 	else if (actPlayCard->isCurse())
 	{
-		//TODO:
-		//THAT CURSE ON PLAYER
+		std::string retMessage;
+		actPlayCard->play(players[actPlayerInx], actPlayCard, gameStateArr[actStateInx], retMessage);
 		actStateInx += 2;
 		actPlayCard = nullptr;
 	}
 	else
 	{
-		actPlayCard->changeButtons(true);
+		actPlayCard->changeButtons(true, true);
 		players[actPlayerInx]->gotCard(actPlayCard);
 		actPlayCard = nullptr;
 		actStateInx += 2;
@@ -366,4 +339,79 @@ void SoloGame::setRandomPlayerCards()
 void SoloGame::switchPlayer()
 {
 	actPlayerInx = (actPlayerInx >= 1) ? 0 : 1;
+}
+
+void SoloGame::handleFight()
+{
+	if (players[actPlayerInx]->getCombatPower() > actPlayCard->combatPower())
+	{
+		std::string defeatMonsterMess = "You defeated that monster. You will get "+std::to_string(actPlayCard->getTreasures())+" treasures"
+																		" and "+std::to_string(actPlayCard->getLevels())+" levels.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Defeated monster", defeatMonsterMess.c_str(), res.mainWindow);
+		players[actPlayerInx]->resetBoost();
+		players[actPlayerInx]->changeLevel(actPlayCard->getLevels());
+		for (int i = 0; i < actPlayCard->getTreasures(); i++)
+			players[actPlayerInx]->gotCard(treasureCardDeck->getCard());
+		actStateInx++;
+		actPlayCard = nullptr;
+		actionButton->setText(constants::actionButtonTexts[actStateInx]);
+	}
+	else
+	{
+		//monster is not defeated
+		std::string loseMonsterMess = "You will loose against this monster.\nYou will have to roll a dice: "
+																"youRolled > 5 - means you successfully ran away, otherwise that monster caught you and the bad thing will happen.";
+		const SDL_MessageBoxButtonData buttons[] = {
+						{ /* .flags, .buttonid, .text */        0, 0, "BACK" },
+						{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "RUN AWAY" },
+		};
+		if (dialogWin(buttons, SDL_arraysize(buttons), "Run away", loseMonsterMess.c_str()) == 1)
+		{
+			runAway();
+		}
+	}
+}
+
+int SoloGame::dialogWin(const SDL_MessageBoxButtonData buttons[], int size, const char* title, const char* message)
+{
+	const SDL_MessageBoxColorScheme colorScheme = {
+					{
+									{ 186, 112, 0 },
+									{   255, 255, 255 },
+									{ 255, 255, 0 },
+									{   41, 57, 201 },
+									{ 255, 0, 255 }
+					}
+	};
+	const SDL_MessageBoxData messageBoxData = {SDL_MESSAGEBOX_INFORMATION,nullptr,title,
+	                                           message, size, buttons, &colorScheme };
+	int buttonID;
+	if (SDL_ShowMessageBox(&messageBoxData, &buttonID) < 0)
+	{
+		std::string erMessage = "Unable to pop up message box"; erMessage += SDL_GetError();
+		throw SDLError(erMessage);
+	}
+
+	return buttonID;
+}
+
+void SoloGame::runAway()
+{
+	// TODO: graphic
+	if (randomInt(1, 6) > 4)
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", "You successfully ran away from that monster.",
+		                         res.mainWindow);
+	}
+	else
+	{
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", "Monster caught you and bad thing will happen.",
+		                         res.mainWindow);
+		std::string dummy;
+		actPlayCard->play(players[actPlayerInx], actPlayCard, gameStateArr[actStateInx], dummy);
+	}
+	players[actPlayerInx]->resetBoost();
+	actStateInx++;
+	actPlayCard = nullptr;
+	actionButton->setText(constants::actionButtonTexts[actStateInx]);
 }

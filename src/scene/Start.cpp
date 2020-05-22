@@ -39,6 +39,13 @@ void Start::prepare()
 		throw TTFError(message);
 	}
 
+	res.gameFont = TTF_OpenFont(constants::genericFontPath, constants::cardButtonSize);
+	if (!res.gameFont)
+	{
+		std::string message = "Unable to load Font: "; message += TTF_GetError();
+		throw TTFError(message);
+	}
+
 	try
 	{
 		if (!setIcon())

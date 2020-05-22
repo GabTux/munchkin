@@ -1,42 +1,35 @@
 #include "Card.h"
 
-Card::Card(const char * const fileName, SDL_Rect & inPos, std::string& inHelpText) :
+Card::Card(const char * const fileName, SDL_Rect & inPos, std::string& inHelpText, TTF_Font* inFont) :
 GameObject(fileName, inPos), helpText(inHelpText)
 {
-	TTF_Font* font = TTF_OpenFont(constants::genericFontPath, constants::cardButtonSize);
-	playButton = std::make_unique<GameButton>("Play", position, font);
-	helpButton = std::make_unique<GameButton>("Help", position, font);
+	playButton = std::make_unique<GameButton>("Play", position, inFont);
+	helpButton = std::make_unique<GameButton>("Help", position, inFont);
 }
 
 void Card::handleEvent(SDL_Event &event)
 {
-	if (buttonsEnabled)
-	{
-		playButton->handleEvent(event);
-		helpButton->handleEvent(event);
-	}
+	if (playEnabled) playButton->handleEvent(event);
+	if (helpEnabled) helpButton->handleEvent(event);
 	GameObject::handleEvent(event);
 }
 
 void Card::update()
 {
-	if (buttonsEnabled)
+	if (helpEnabled && helpButton->getState() == ButtonState::RELEASED)
+		showHelp();
+	else if (playEnabled && playButton->getState() == ButtonState::RELEASED)
 	{
-		if (helpButton->getState() == ButtonState::RELEASED)
-		{
-			showHelp();
-		}
+		cardState = CardState::PLAYED;
+		playButton->setDefault();
 	}
 	GameObject::update();
 }
 
 void Card::render(SDL_Renderer *renderer)
 {
-	if (buttonsEnabled)
-	{
-		playButton->render(renderer);
-		helpButton->render(renderer);
-	}
+	if (playEnabled) playButton->render(renderer);
+	if (helpEnabled) helpButton->render(renderer);
 	GameObject::render(renderer);
 }
 
@@ -57,4 +50,16 @@ void Card::showHelp()
 		throw SDLError(message);
 	}
 	helpButton->setDefault();
+}
+
+void Card::setDefault()
+{
+	cardState = CardState::NOTHING;
+	GraphicObject::setDefault();
+}
+
+void Card::changeButtons(bool enablePlay, bool enableHelp)
+{
+	playEnabled = enablePlay;
+	helpEnabled = enableHelp;
 }

@@ -44,10 +44,17 @@ namespace constants
 	const int downPlayerY = 600;
 	const char *const actionButtonTexts[] = { "KICK DOOR!", "END FIGHT", "END TURN", "OK" };
 	const int pauseButtonX = 10;
-	const int pauseButtonY = 350;
+	const int pauseButtonY = 400;
 	const int actionButtonX = 310;
 	const int actCardX = 800;
 	const int actCardY = 300;
+	const int levelIndY = 150;
+	const int powerIndY = 225;
+	const int monsterIndicatorX = 800;
+	const int monsterIndicatorY = 250;
+
+	// GAME RULES
+	const int maxHandCards = 50;
 
 	/* -------------------- ABOUT ---------------- */
 	const int backButtonX = 1000;

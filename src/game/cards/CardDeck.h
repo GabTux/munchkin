@@ -34,4 +34,6 @@ class CardDeck
 		 * @return random card.
 		 */
 		std::shared_ptr<Card> getCard();
+
+		void setDefault();
 };

@@ -12,7 +12,7 @@ class Inventory : public PileCard
 		 * @param buttonPos Position of button.
 		 * @param pilePos Position of pile.
 		 */
-		Inventory(std::vector<std::shared_ptr<Card>> &inCards, SDL_Rect& buttonPos, SDL_Rect& pilePos);
+		Inventory(std::vector<std::shared_ptr<Card>> &inCards, SDL_Rect& buttonPos, SDL_Rect& pilePos, TTF_Font* inFont);
 
 		/**
 		 * Count all combat bonuses from items.

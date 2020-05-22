@@ -1,57 +1,10 @@
-images/cards/000.bmp 5 race
-""
-images/cards/001.bmp 5 race
-"Backstabbing
---------------
-You can discard card and backstab another player (olny once per combat) during combat.
-His power drops by -2.
-
-Theft
--------
-Discard card to try to steal a small item carried by another player.
-Role a dice: 4 or more success, otherwise you get whacked and loose 1 level."
-images/cards/002.bmp 5 race
-"Resurrection
----------------
-Instead of drawing cards face-up, the Player may instead take some or all from the top of the appropriate discard pile.
-The Player must then discard one card from their hand for each card drawn.
-
-Turning
----------
-The Player may discard up to 3 cards in combat against an Undead Monster.
-Each discard gives the Player a +3 combat bonus."
-images/cards/003.bmp 5 race
-"Flight Spell
---------------
-You may discard up to 3 cards, after rolling the dice, during run away;
-Each gives you a +1 bonus to flee.
-
-Charm Spell
---------------
-You may discard your whole hand to (minimum 3 cards) to charm a single monster instead of fighting it.
-Discard the monster and take its treasure, but don't gain level."
-images/cards/004.bmp 5 race
-"An Orc who is hit by curse, can always choose to ignore the curse and loose level.
-This can not be done, if Orc is at level 1.
-
-When an Orc fighting alone defeats monster by more than 10, he goes up an extra level.
-"
-images/cards/005.bmp 5 race
-"Dwarf can carry any number of big items.
-
-Dwarf can have six cards in his hands."
-images/cards/006.bmp 5 race
-"You may discard up to three cards in combat.
-Each gives you +1 to combat power.
-
-You win ties in combat.
-"
 images/cards/007.bmp 5 curse 1
-"Target player will lose 1 level."
+"Target player will lose 1 level.
+If you play it from hand, target is opponent. Otherwise it is you."
 images/cards/008.bmp 5 monsterBoost 5
 "Play anytime during any fight. Monster will get +5 to combat power.
 "
-images/cards/009.bmp 5 monster 3 cards 2
+images/cards/009.bmp 10 monster 3 cards 2 2 1
 "Powerful Bacillus
 -------------------
 Level 3
@@ -60,7 +13,7 @@ Bad Stuff
 ----------
 Because of sneezing, you will lose 2 cards.
 "
-images/cards/010.bmp 5 item 3 big
+images/cards/010.bmp 3 item 3 big
 "Chainsaw of Bloody Dismemberment
 ----------------------------------
 +3 in combat.
@@ -74,7 +27,7 @@ images/cards/011.bmp 5 levelup 1
 Play this card and get ++level.
 You can not get the last level with this card.
 "
-images/cards/012.bmp 5 item 4 small
+images/cards/012.bmp 3 item 4 small
 "Cloak
 -----------------------
 +4 in combat.
@@ -82,7 +35,7 @@ Its on you, so there's no need to hold it in hands.
 Its small.
 Price is 600 gold.
 "
-images/cards/013.bmp 5 oneUseItem 2
+images/cards/013.bmp 3 boost 2
 "Play this card during any fight. Chosen side will get bonus +2.
 Price is 100 gold.
 "

@@ -29,7 +29,7 @@ class GraphicObject
 		 * Get position of object.
 		 * @return Position.
 		 */
-		[[nodiscard]] virtual SDL_Rect getPosition() = 0;
+		[[nodiscard]] virtual SDL_Rect getPosition() { return {0, 0, 0, 0}; };
 
 		virtual void setDefault() { }
 };

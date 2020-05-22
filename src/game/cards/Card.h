@@ -4,8 +4,23 @@
 
 #include "../GameObject.h"
 #include "../GameButton.h"
+#include "../../scene/SoloGame/GameState.h"
 
 class Player;
+class MonsterCard;
+
+enum class BadStuffType
+{
+		LEVEL,
+		CARDS,
+};
+
+enum class CardState
+{
+		NOTHING,
+		PLAYED,
+		MOVED,
+};
 
 /**
  * Class card.
@@ -16,7 +31,11 @@ class Card : public GameObject
 		std::string helpText;
 		std::unique_ptr<GameButton> playButton;
 		std::unique_ptr<GameButton> helpButton;
-		bool buttonsEnabled;
+		bool playEnabled = true;
+		bool helpEnabled = true;
+
+	protected:
+		CardState cardState = CardState::NOTHING;
 
 	public:
 		/**
@@ -25,7 +44,7 @@ class Card : public GameObject
 		 * @param inPos Starting position.
 		 * @param inHelpText Help text, that will be shown, if button triggered.
 		 */
-		Card(const char * const fileName, SDL_Rect & inPos, std::string& inHelpText);
+		Card(const char * const fileName, SDL_Rect & inPos, std::string& inHelpText, TTF_Font* inFont);
 
 		/**
 		 * React to caught events.
@@ -37,7 +56,6 @@ class Card : public GameObject
 		/**
 		 * Update according to user input.
 		 * If help button is pressed, show help.
-		 * TODO: If play button pressed -> play.
 		 */
 		void update() override;
 
@@ -64,9 +82,23 @@ class Card : public GameObject
 
 		virtual bool isCurse() { return false; }
 
-		virtual void play() { }
+		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) { return true; }
 
-		virtual void play(std::shared_ptr<Player> affPlayer) { }
+		virtual void throwAway() { }
 
-		void changeButtons(bool enable) { buttonsEnabled = enable; }
+		virtual void play(std::shared_ptr<Card>& affMonster) { }
+
+		virtual int getTreasures() { return 0; }
+
+		void changeButtons(bool enablePlay, bool enableHelp);
+
+		virtual int getLevels() { return 0; }
+
+		virtual void boostLevel(int boostNum) { }
+
+		CardState getState() { return cardState; }
+
+		void setDefault() override;
+
+		virtual int combatPower() { return 0; }
 };

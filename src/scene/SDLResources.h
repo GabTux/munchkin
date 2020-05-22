@@ -11,5 +11,6 @@ struct SDLResources
 	SDL_Window* mainWindow = nullptr;
 	SDL_Renderer* mainRenderer = nullptr;
 	TTF_Font* menuFont = nullptr;
+	TTF_Font* gameFont = nullptr;
 	Mix_Music* actualMusic = nullptr;
 };

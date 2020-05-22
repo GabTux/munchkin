@@ -9,6 +9,7 @@
 #include "../game/GameObject.h"
 #include "Menu/MenuButton.h"
 #include "../constants.h"
+#include "../functions.h"
 
 class About : public Scene
 {
@@ -53,14 +54,6 @@ class About : public Scene
 		 * Render background to ensure background animation.
 		 */
 		void renderBackgrounds();
-
-		/**
-		 * Generates random int in interval <a, b>.
-		 * @param a Lower bound.
-		 * @param b Upper bound.
-		 * @return random int.
-		 */
-		static int randomInt(int a, int b);
 
 	public:
 		/**

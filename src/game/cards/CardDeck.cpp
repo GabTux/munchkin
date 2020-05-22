@@ -22,3 +22,12 @@ int CardDeck::randomInt(int a, int b)
 	std::uniform_int_distribution<> randomIntGen(a, b);
 	return randomIntGen(gen);
 }
+
+void CardDeck::setDefault()
+{
+	for (auto& it: cards)
+	{
+		it->throwAway();
+		it->setDefault();
+	}
+}

@@ -3,6 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <iostream>
 
 #include "../Scene.h"
 #include "../Background.h"
@@ -11,22 +12,13 @@
 #include "../../constants.h"
 #include "../../game/cards/Card.h"
 #include "../../game/Human.h"
-#include "../../game/cards/RaceCard.h"
 #include "../../Exceptions.h"
 #include "../../game/cards/CardDeck.h"
 #include "../../game/cards/CurseCard.h"
 #include "../../game/cards/MonsterBoostCard.h"
 #include "../../game/cards/MonsterCard.h"
-#include "../../game/cards/OneUseItemCard.h"
 #include "../../game/cards/LevelUpCard.h"
 #include "../../game/cards/BoostCard.h"
-
-enum class GameState
-{
-		KICK_DOORS,
-		FIGHT,
-		END_TURN,
-};
 
 /**
  * Scene for game.
@@ -47,6 +39,7 @@ class SoloGame : public Scene
 		int actPlayerInx = 0;
 		std::unique_ptr<GameButton> pauseButton;
 		std::unique_ptr<GameButton> actionButton;
+		std::unique_ptr<Text> monsterLevelInd;
 
 		std::shared_ptr<Card> actPlayCard = nullptr;
 
@@ -66,6 +59,9 @@ class SoloGame : public Scene
 		 */
 		static void readHelp(std::ifstream& cardFile, std::string& helpText);
 
+
+		static int dialogWin(const SDL_MessageBoxButtonData buttons[], int size, const char* title, const char* message);
+
 		/**
 		 * Create small popup window, with buttons.
 		 * @return Pressed button ID.
@@ -73,6 +69,10 @@ class SoloGame : public Scene
 		static int pauseMenu();
 
 		static void getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count);
+
+		void handleFight();
+
+		void runAway();
 
 	public:
 		/**
@@ -110,8 +110,6 @@ class SoloGame : public Scene
 		void stopScene() override;
 
 		void kickDoor();
-
-		void handleActPlayCard();
 
 		void handleKicked();
 

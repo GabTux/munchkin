@@ -5,6 +5,8 @@
 
 #include "cards/Card.h"
 #include "GameButton.h"
+#include "../functions.h"
+#include "../scene/SoloGame/GameState.h"
 
 enum class PileState
 {
@@ -30,6 +32,10 @@ class PileCard : public GraphicObject
 		std::unique_ptr<GameButton> arrowRight;
 		unsigned int showCards = 3;
 		bool firstRun = true;
+		std::shared_ptr<Player> owner;
+		std::shared_ptr<Player> opponent;
+		std::shared_ptr<Card> actCard;
+		GameState actState = GameState::KICK_DOORS;
 
 		/**
 		 * Render unpacked pile of cards. Show 3 cards.
@@ -49,6 +55,10 @@ class PileCard : public GraphicObject
 		 * @param event Caught event.
 		 */
 		void handleEventUnpacked(SDL_Event& event);
+
+		static int cantPlayDialog(std::string& inMessage);
+
+		void handlePlayedCard(unsigned int cardInx);
 
 	protected:
 		/**
@@ -73,13 +83,16 @@ class PileCard : public GraphicObject
 		 * @param inPilePos Position of unpacked pile.
 		 */
 		PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
-						SDL_Rect& inButtonPos, SDL_Rect& inPilePos);
+						SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont);
 
 		/**
 		 * Handle user input.
 		 * @param event Reference to caught event.
 		 */
 		void handleEvent(SDL_Event & event) override;
+
+
+		void update(std::shared_ptr<Card>& inActCard, GameState inActState);
 
 		/**
 		 * Update parameters, according to events.
@@ -118,5 +131,13 @@ class PileCard : public GraphicObject
 
 		void setDefault() override;
 
-		void addCard(std::shared_ptr<Card> inCard);
+		void addCard(const std::shared_ptr<Card>& inCard);
+
+		void pack();
+
+		int getValue();
+
+		void setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent);
+
+		std::shared_ptr<Card> getRandomCard();
 };

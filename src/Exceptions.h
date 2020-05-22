@@ -17,7 +17,7 @@ class SDLError : public std::exception
 		 * Constructs new SDLError instance.
 		 * @param inMessage Message that describes exception.
 		 */
-		SDLError(std::string& inMessage) : message(inMessage) { }
+		SDLError(std::string& inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.
@@ -40,7 +40,7 @@ public:
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.
 		 */
-		TTFError(std::string& inMessage) : message(inMessage) { }
+		TTFError(std::string& inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.
@@ -63,7 +63,7 @@ class MixError : public std::exception
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.
 		 */
-		MixError(std::string& inMessage) : message(inMessage) { }
+		MixError(std::string& inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.
@@ -86,7 +86,7 @@ class FileError : public std::exception
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.
 		 */
-		FileError(std::string& inMessage) : message(inMessage) { }
+		FileError(std::string& inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.
@@ -109,7 +109,7 @@ class GameError : public std::exception
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.
 		 */
-		GameError(std::string& inMessage) : message(inMessage) { }
+		GameError(std::string& inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.

@@ -1,24 +1,20 @@
 #include "PileCard.h"
 
+#include <utility>
+#include "Player.h"
+
 PileCard::PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
-				SDL_Rect& inButtonPos, SDL_Rect& inPilePos) :
+				SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont) :
 textPacked(std::move(inTextPacked)), textUnpacked(std::move(inTextUnpacked)), buttonPos(inButtonPos),
 pilePos(inPilePos), cards(inCards)
 {
-	TTF_Font* font = TTF_OpenFont(constants::genericFontPath, constants::menuButtonTextSize);
-	if (!font)
-	{
-		std::string message = "Unable to load Font: "; message += TTF_GetError();
-		throw TTFError(message);
-	}
-
-	switchButton = std::make_unique<GameButton>(textPacked, inButtonPos, font);
+	switchButton = std::make_unique<GameButton>(textPacked, inButtonPos, menuFont);
 
 	SDL_Rect leftPos = {pilePos.x - 50, pilePos.y+constants::cardHeight/3, 0, 0};
 	SDL_Rect rightPos = {pilePos.x + 3 * (constants::cardWidth + (int)showCards) + 10, pilePos.y+constants::cardHeight/3, 0, 0};
 	std::string leftText = "<"; std::string rightText = ">";
-	arrowLeft = std::make_unique<GameButton>(leftText, leftPos, font);
-	arrowRight = std::make_unique<GameButton>(rightText, rightPos, font);
+	arrowLeft = std::make_unique<GameButton>(leftText, leftPos, menuFont);
+	arrowRight = std::make_unique<GameButton>(rightText, rightPos, menuFont);
 
 	// prepare cards
 	renderIndex = 0;
@@ -111,7 +107,19 @@ void PileCard::updateUnpacked()
 	}
 
 	for (unsigned int i = renderIndex; i-renderIndex < showCards && i < cards.size(); i++)
+	{
 		cards[i]->update();
+		if (cards[i]->getState() == CardState::PLAYED)
+		{
+			handlePlayedCard(i);
+		}
+		else if (cards[i]->getState() == CardState::MOVED)
+		{
+			owner->toInvCard(cards[i]);
+			cards.erase(cards.begin()+i);
+			if (renderIndex > 0) renderIndex--;
+		}
+	}
 }
 
 void PileCard::setCards(std::vector<std::shared_ptr<Card>>& inHandCards)
@@ -124,6 +132,8 @@ void PileCard::setCards(std::vector<std::shared_ptr<Card>>& inHandCards)
 
 void PileCard::setDefault()
 {
+	std::vector<std::shared_ptr<Card>> tmpVect;
+	cards = tmpVect;
 	updateValue();
 	switchButton->setText(textPacked+" "+std::to_string(value));
 	switchButton->setDefault();
@@ -133,10 +143,109 @@ void PileCard::setDefault()
 	renderIndex = 0;
 }
 
-void PileCard::addCard(std::shared_ptr<Card> inCard)
+void PileCard::addCard(const std::shared_ptr<Card>& inCard)
 {
 	cards.push_back(inCard);
 	updateValue();
 	if (pileState == PileState::PACKED)
 		switchButton->setText(textPacked+" "+std::to_string(value));
+}
+
+void PileCard::pack()
+{
+	updateValue();
+	switchButton->setText(textPacked+" "+std::to_string(value));
+	pileState = PileState::PACKED;
+}
+
+std::shared_ptr<Card> PileCard::getRandomCard()
+{
+	int randPos = randomInt(0, cards.size()-1);
+	std::shared_ptr<Card> res = cards[randPos];
+	cards.erase(cards.begin()+randPos);
+
+	updateValue();
+	if (pileState == PileState::PACKED)
+		switchButton->setText(textPacked+" "+std::to_string(value));
+
+	return res;
+}
+
+void PileCard::update(std::shared_ptr<Card>& inActCard, GameState inActState)
+{
+	actCard = inActCard;
+	actState = inActState;
+	update();
+}
+
+int PileCard::cantPlayDialog(std::string& inMessage)
+{
+	const SDL_MessageBoxButtonData buttons[] = {
+					{ /* .flags, .buttonid, .text */        0, 0, "THROW AWAY" },
+					{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "BACK" }
+	};
+	const SDL_MessageBoxColorScheme colorScheme = {
+					{
+									{ 186, 112, 0 },
+									{   255, 255, 255 },
+									{ 255, 255, 0 },
+									{   41, 57, 201 },
+									{ 255, 0, 255 }
+					}
+	};
+	const SDL_MessageBoxData messageboxdata = {SDL_MESSAGEBOX_INFORMATION,nullptr,"Can't play",
+	                                           inMessage.c_str(),SDL_arraysize(buttons), buttons, &colorScheme };
+	int buttonID;
+	if (SDL_ShowMessageBox(&messageboxdata, &buttonID) < 0)
+	{
+		std::string message = "Unable to pop up message box"; message += SDL_GetError();
+		throw SDLError(message);
+	}
+
+	return buttonID;
+}
+
+void PileCard::handlePlayedCard(unsigned int cardInx)
+{
+	std::string retMessage;
+	bool resPlay;
+	if (cards[cardInx]->isCurse())
+		resPlay = cards[cardInx]->play(opponent, actCard, actState, retMessage);
+	else
+		resPlay = cards[cardInx]->play(owner, actCard, actState, retMessage);
+	if (!resPlay)
+	{
+		if (cantPlayDialog(retMessage) == 0)
+		{
+			cards[cardInx]->throwAway();
+			cards[cardInx]->setDefault();
+			cards.erase(cards.begin() + cardInx);
+			updateValue();
+			owner->updateIndicators();
+			if (renderIndex > 0) renderIndex--;
+		}
+		else
+			cards[cardInx]->setDefault();
+	}
+	else
+	{
+		if (cards[cardInx]->getState() != CardState::MOVED)
+		{
+			cards[cardInx]->setDefault();
+			cards.erase(cards.begin() + cardInx);
+			if (renderIndex > 0) renderIndex--;
+		}
+	}
+}
+
+int PileCard::getValue()
+{
+	updateValue();
+	return value;
+}
+
+void PileCard::setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent)
+{
+	owner = std::move(inOwner);
+	opponent = std::move(inOpponent);
 }

@@ -1,15 +1,9 @@
 #include "Human.h"
 
-Human::Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition) :
-Player(inHandCards, inPosition)
+Human::Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes) :
+Player(inHandCards, inPosition, inRes)
 {
 
-}
-
-void Human::render(SDL_Renderer *renderer)
-{
-	handCards->render(renderer);
-	inventory->render(renderer);
 }
 
 void Human::handleEvent(SDL_Event &event)
@@ -25,14 +19,16 @@ void Human::handleEvent(SDL_Event &event)
 	}
 }
 
-void Human::update()
-{
-	handCards->update();
-	inventory->update();
-}
-
 Human::~Human()
 {
 	handCards.reset();
 	inventory.reset();
+}
+
+void Human::update(std::shared_ptr<Card>& inActCard, GameState inActState)
+{
+	handCards->update(inActCard, inActState);
+	inventory->update(inActCard, inActState);
+	levelIndicator->update();
+	powerIndicator->update();
 }

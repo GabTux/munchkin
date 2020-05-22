@@ -1,11 +1,6 @@
 #pragma once
 #include "Card.h"
-
-enum class BadStuffType
-{
-		LEVEL,
-		CARDS,
-};
+#include "../Player.h"
 
 /**
  * Type of card - monster.
@@ -16,6 +11,9 @@ class MonsterCard : public Card
 		BadStuffType badStuffType;
 		int badStuffVal;
 		int level;
+		int treasures;
+		int oneTimeBoost = 0;
+		int levelsGive = 1;
 
 	public:
 		/**
@@ -27,7 +25,8 @@ class MonsterCard : public Card
 		 * @param inBadStuffVal How many levels of cards lost.
 		 * @param level Level of monster.
 		 */
-		MonsterCard(const char *const fileName, SDL_Rect &pos, std::string& inHelpText, BadStuffType inBadStuffType, int inBadStuffVal, int level);
+		MonsterCard(const char *const fileName, SDL_Rect &pos, std::string& inHelpText, BadStuffType inBadStuffType, int inBadStuffVal,
+						int level, int inTreasures, int inLevelsGive, TTF_Font* inFont);
 
 		/**
 		 * @return Monster level.
@@ -35,4 +34,16 @@ class MonsterCard : public Card
 		[[nodiscard]] int getValue() const override { return level; };
 
 		bool isMonster() override { return true; }
+
+		void boostLevel(int boostNum) override;
+
+		int getTreasures() override { return treasures; }
+
+		int getLevels() override;
+
+		void setDefault() override;
+
+		int combatPower() override;
+
+		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
 };

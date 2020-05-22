@@ -20,7 +20,7 @@ class Human : public Player
 		 * @param inHandCards Starting cards in hands.
 		 * @param inPosition Position of player.
 		 */
-		Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition);
+		Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes);
 
 		/**
 		 * React to user input.
@@ -31,13 +31,9 @@ class Human : public Player
 		/**
 		 * Update Inventory and cards in hands.
 		 */
-		void update() override;
+		void update() override { };
 
-		/**
-		 * Render cards in hands and inventory.
-		 * @param renderer Where to render.
-		 */
-		void render(SDL_Renderer* renderer) override;
+		void update(std::shared_ptr<Card>& inActCard, GameState inActState) override;
 
 		/**
 		 * Get position of player.
