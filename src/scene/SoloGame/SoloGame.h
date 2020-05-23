@@ -40,6 +40,8 @@ class SoloGame : public Scene
 		std::unique_ptr<GameButton> pauseButton;
 		std::unique_ptr<GameButton> actionButton;
 		std::unique_ptr<Text> monsterLevelInd;
+		std::shared_ptr<CardDeck> doorDeckGarbage;
+		std::shared_ptr<CardDeck> treasureDeckGarbage;
 
 		std::shared_ptr<Card> actPlayCard = nullptr;
 

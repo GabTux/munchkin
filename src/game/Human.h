@@ -20,7 +20,8 @@ class Human : public Player
 		 * @param inHandCards Starting cards in hands.
 		 * @param inPosition Position of player.
 		 */
-		Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes);
+		Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes,
+					std::shared_ptr<CardDeck>& doorDeckGarbage, std::shared_ptr<CardDeck>& treasureDeckGarbage);
 
 		/**
 		 * React to user input.

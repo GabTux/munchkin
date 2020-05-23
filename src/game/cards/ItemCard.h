@@ -31,4 +31,6 @@ class ItemCard : public Card
 		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
 
 		void throwAway() override;
+
+		bool isTreasure() override { return true; }
 };

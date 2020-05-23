@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <game/cards/CardDeck.h>
 
 #include "GraphicObject.h"
 #include "PileCard.h"
@@ -29,6 +30,8 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		std::unique_ptr<Text> levelIndicator;
 		std::unique_ptr<Text> powerIndicator;
 		SDLResources& res;
+		std::shared_ptr<CardDeck> doorDeckGarbage;
+		std::shared_ptr<CardDeck> treasureDeckGarbage;
 
 	public:
 		/**
@@ -36,7 +39,8 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		 * @param inHandCards Vector of cards in hands.
 		 * @param inPosition Where will be player renderer.
 		 */
-		Player(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes);
+		Player(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes,
+						std::shared_ptr<CardDeck>& inDoorDeckGarbage, std::shared_ptr<CardDeck>& inTreasureDeckGarbage);
 
 		void setHandCards(std::vector<std::shared_ptr<Card>>& inHandCards);
 

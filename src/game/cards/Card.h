@@ -82,11 +82,9 @@ class Card : public GameObject
 
 		virtual bool isCurse() { return false; }
 
-		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) { return true; }
+		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) = 0;
 
 		virtual void throwAway() { }
-
-		virtual void play(std::shared_ptr<Card>& affMonster) { }
 
 		virtual int getTreasures() { return 0; }
 
@@ -101,4 +99,6 @@ class Card : public GameObject
 		void setDefault() override;
 
 		virtual int combatPower() { return 0; }
+
+		virtual bool isTreasure() = 0;
 };

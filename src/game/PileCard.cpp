@@ -4,9 +4,9 @@
 #include "Player.h"
 
 PileCard::PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
-				SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont) :
+				SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont,  std::shared_ptr<CardDeck>& inDoorDeckGarbage, std::shared_ptr<CardDeck>& inTreasureDeckGarbage) :
 textPacked(std::move(inTextPacked)), textUnpacked(std::move(inTextUnpacked)), buttonPos(inButtonPos),
-pilePos(inPilePos), cards(inCards)
+pilePos(inPilePos), doorDeckGarbage(inDoorDeckGarbage), treasureDeckGarbage(inTreasureDeckGarbage), cards(inCards)
 {
 	switchButton = std::make_unique<GameButton>(textPacked, inButtonPos, menuFont);
 
@@ -222,6 +222,10 @@ void PileCard::handlePlayedCard(unsigned int cardInx)
 		{
 			cards[cardInx]->throwAway();
 			cards[cardInx]->setDefault();
+			if (cards[cardInx]->isTreasure())
+				treasureDeckGarbage->addCard(cards[cardInx]);
+			else
+				doorDeckGarbage->addCard(cards[cardInx]);
 			cards.erase(cards.begin() + cardInx);
 			updateValue();
 			ownerTmp->updateIndicators();
@@ -235,6 +239,10 @@ void PileCard::handlePlayedCard(unsigned int cardInx)
 		if (cards[cardInx]->getState() != CardState::MOVED)
 		{
 			cards[cardInx]->setDefault();
+			if (cards[cardInx]->isTreasure())
+				treasureDeckGarbage->addCard(cards[cardInx]);
+			else
+				doorDeckGarbage->addCard(cards[cardInx]);
 			cards.erase(cards.begin() + cardInx);
 			if (renderIndex > 0) renderIndex--;
 		}

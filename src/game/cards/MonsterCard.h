@@ -46,4 +46,6 @@ class MonsterCard : public Card
 		int combatPower() override;
 
 		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
+
+		bool isTreasure() override { return false; }
 };

@@ -27,4 +27,6 @@ class MonsterBoostCard : public Card
 		[[nodiscard]] int getValue() const override { return boostNum; };
 
 		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
+
+		bool isTreasure() override { return false; }
 };

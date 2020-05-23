@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <game/cards/CardDeck.h>
 
 #include "cards/Card.h"
 #include "GameButton.h"
@@ -36,6 +37,9 @@ class PileCard : public GraphicObject
 		std::weak_ptr<Player> opponent;
 		std::shared_ptr<Card> actCard;
 		GameState actState = GameState::KICK_DOORS;
+		std::shared_ptr<CardDeck> doorDeckGarbage;
+		std::shared_ptr<CardDeck> treasureDeckGarbage;
+
 
 		/**
 		 * Render unpacked pile of cards. Show 3 cards.
@@ -83,7 +87,7 @@ class PileCard : public GraphicObject
 		 * @param inPilePos Position of unpacked pile.
 		 */
 		PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
-						SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont);
+						SDL_Rect& inButtonPos, SDL_Rect& inPilePos, TTF_Font* menuFont, std::shared_ptr<CardDeck>& inDoorDeckGarbage, std::shared_ptr<CardDeck>& inTreasureDeckGarbage);
 
 		/**
 		 * Handle user input.

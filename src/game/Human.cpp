@@ -1,7 +1,8 @@
 #include "Human.h"
 
-Human::Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes) :
-Player(inHandCards, inPosition, inRes)
+Human::Human(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes,
+						 std::shared_ptr<CardDeck>& doorDeckGarbage, std::shared_ptr<CardDeck>& treasureDeckGarbage) :
+Player(inHandCards, inPosition, inRes, doorDeckGarbage, treasureDeckGarbage)
 {
 
 }

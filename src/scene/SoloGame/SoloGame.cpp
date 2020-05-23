@@ -8,6 +8,9 @@ void SoloGame::prepare()
 {
 	doorCardDeck = std::make_unique<CardDeck>();
 	treasureCardDeck = std::make_unique<CardDeck>();
+	doorDeckGarbage = std::make_shared<CardDeck>();
+	treasureDeckGarbage = std::make_shared<CardDeck>();
+
 	readCards(constants::cardFile);
 	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
 	treasureCardDeckBack = std::make_unique<CardDeck>(*treasureCardDeck);
@@ -15,9 +18,9 @@ void SoloGame::prepare()
 	SDL_Rect pos = {constants::playersX, constants::upPlayerY, 0, 0};
 
 	std::vector<std::shared_ptr<Card>> randomCards;
-	players.push_back(std::make_shared<Human>(randomCards, pos, res));
+	players.push_back(std::make_shared<Human>(randomCards, pos, res, doorDeckGarbage, treasureDeckGarbage));
 	pos.y = constants::downPlayerY;
-	players.push_back(std::make_shared<Human>(randomCards, pos, res));
+	players.push_back(std::make_shared<Human>(randomCards, pos, res, doorDeckGarbage, treasureDeckGarbage));
 	players[0]->setOpp(players[1]);
 	players[1]->setOpp(players[0]);
 	setRandomPlayerCards();
@@ -263,6 +266,7 @@ void SoloGame::restart()
 	stopped = false;
 	actPlayerInx = 0;
 	actStateInx = 0;
+	doorDeckGarbage->addCard(actPlayCard);
 	actPlayCard = nullptr;
 }
 
@@ -308,12 +312,14 @@ void SoloGame::handleKicked()
 		std::string retMessage;
 		actPlayCard->play(players[actPlayerInx], actPlayCard, gameStateArr[actStateInx], retMessage);
 		actStateInx += 3;
+		doorDeckGarbage->addCard(actPlayCard);
 		actPlayCard = nullptr;
 	}
 	else
 	{
 		actPlayCard->changeButtons(true, true);
 		players[actPlayerInx]->gotCard(actPlayCard);
+		doorDeckGarbage->addCard(actPlayCard);
 		actPlayCard = nullptr;
 		actStateInx += 3;
 	}
@@ -350,6 +356,7 @@ void SoloGame::handleFight()
 		for (int i = 0; i < actPlayCard->getTreasures(); i++)
 			players[actPlayerInx]->gotCard(treasureCardDeck->getCard());
 		actStateInx++;
+		doorDeckGarbage->addCard(actPlayCard);
 		actPlayCard = nullptr;
 		actionButton->setText(constants::actionButtonTexts[actStateInx]);
 	}
@@ -410,6 +417,7 @@ void SoloGame::runAway()
 	players[actPlayerInx]->resetBoost();
 	actStateInx++;
 	actPlayCard->setDefault();
+	doorDeckGarbage->addCard(actPlayCard);
 	actPlayCard = nullptr;
 	actionButton->setText(constants::actionButtonTexts[actStateInx]);
 }
