@@ -289,6 +289,8 @@ void SoloGame::kickDoor()
 	SDL_Rect actCardPos = {constants::actCardX, constants::actCardY, 0, 0};
 	actPlayCard->setPosition(actCardPos);
 	actPlayCard->changeButtons(false, true);
+	if (actPlayCard->isMonster())
+		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
 }
 
 void SoloGame::handleKicked()
