@@ -5,7 +5,9 @@
 
 /**
  * Type of card - boost.
- * Can be played during fight - adds bonus to any side.
+ * Can be played during fight.
+ * If it is player owner fight - it boosts its owner. Otherwise it boost monster.
+ * That is determined by actual state of game (AFF_FIGHT-->monster FIGHT-->player).
  */
 class BoostCard : public Card
 {

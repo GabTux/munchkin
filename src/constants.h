@@ -44,7 +44,7 @@ namespace constants
 	const int playersX = 5;
 	const int upPlayerY = 5;
 	const int downPlayerY = 600;
-	const char *const actionButtonTexts[] = { "KICK DOOR!", "END FIGHT", "END TURN", "OK" };
+	const char *const actionButtonTexts[] = { "KICK DOOR!", "OK", "END FIGHT", "END TURN" };
 	const int pauseButtonX = 10;
 	const int pauseButtonY = 400;
 	const int actionButtonX = 310;
@@ -59,6 +59,8 @@ namespace constants
 	// GAME RULES
 	const int maxHandCards = 5;
 	const int winLevel = 5;
+	const int startCardDoor = 4;
+	const int startCardTreasure = 4;
 
 	/* -------------------- ABOUT ---------------- */
 	const int backButtonX = 1000;

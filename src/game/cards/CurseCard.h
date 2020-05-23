@@ -6,6 +6,7 @@
 /**
  * Type of card - curse.
  * Opponent will lose levels/cards.
+ * It can be played ANYTIME.
  */
 class CurseCard : public Card
 {

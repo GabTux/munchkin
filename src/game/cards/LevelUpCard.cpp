@@ -7,7 +7,7 @@ Card(fileName, inPos, inHelpText, inFont), level(inLevel)
 
 bool LevelUpCard::play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc)
 {
-	if (actState == GameState::FIGHT)
+	if (actState == GameState::FIGHT || actState == GameState::AFF_FIGHT)
 	{
 		ruleDesc = "This card can not be played during fight!";
 		return false;

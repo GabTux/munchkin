@@ -96,7 +96,7 @@ void SoloGame::update()
 	if (actPlayCard)
 	{
 		actPlayCard->update();
-		if (gameStateArr[actStateInx] == GameState::FIGHT)
+		if (actPlayCard->isMonster())
 			monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
 		if (gameStateArr[actStateInx] == GameState::KICK_DOORS)
 			handleKicked();
@@ -116,8 +116,12 @@ void SoloGame::render()
 		it->render(res.mainRenderer);
 	pauseButton->render(res.mainRenderer);
 	actionButton->render(res.mainRenderer);
-	if (actPlayCard) actPlayCard->render(res.mainRenderer);
-	if (gameStateArr[actStateInx] == GameState::FIGHT) monsterLevelInd->render(res.mainRenderer);
+
+	if (actPlayCard)
+	{
+		actPlayCard->render(res.mainRenderer);
+		if (actPlayCard->isMonster()) monsterLevelInd->render(res.mainRenderer);
+	}
 }
 
 void SoloGame::readHelp(std::ifstream& cardFile, std::string& helpText)
@@ -292,15 +296,16 @@ void SoloGame::handleKicked()
 	actPlayCard->showHelp();
 	if (actPlayCard->isMonster())
 	{
-		//FIGHT
+		// switch to affect fight
 		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
 		actStateInx++;
+		switchPlayer();
 	}
 	else if (actPlayCard->isCurse())
 	{
 		std::string retMessage;
 		actPlayCard->play(players[actPlayerInx], actPlayCard, gameStateArr[actStateInx], retMessage);
-		actStateInx += 2;
+		actStateInx += 3;
 		actPlayCard = nullptr;
 	}
 	else
@@ -308,7 +313,7 @@ void SoloGame::handleKicked()
 		actPlayCard->changeButtons(true, true);
 		players[actPlayerInx]->gotCard(actPlayCard);
 		actPlayCard = nullptr;
-		actStateInx += 2;
+		actStateInx += 3;
 	}
 	actionButton->setText(constants::actionButtonTexts[actStateInx]);
 }
@@ -320,8 +325,8 @@ void SoloGame::setRandomPlayerCards()
 	for (auto& it: players)
 	{
 		randomCards.clear();
-		getRandomCards(doorCardDeck, randomCards, 4);
-		getRandomCards(treasureCardDeck, randomCards, 4);
+		getRandomCards(doorCardDeck, randomCards, constants::startCardDoor);
+		getRandomCards(treasureCardDeck, randomCards, constants::startCardTreasure);
 		it->setHandCards(randomCards);
 	}
 }
@@ -402,6 +407,7 @@ void SoloGame::runAway()
 	}
 	players[actPlayerInx]->resetBoost();
 	actStateInx++;
+	actPlayCard->setDefault();
 	actPlayCard = nullptr;
 	actionButton->setText(constants::actionButtonTexts[actStateInx]);
 }
@@ -413,11 +419,19 @@ void SoloGame::handleActionButtonPress()
 		case 0:
 			kickDoor();
 			break;
+
 		case 1:
+			actStateInx++;
+			actionButton->setText(constants::actionButtonTexts[actStateInx]);
+			switchPlayer();
+			break;
+
+		case 2:
 			//end fight
 			handleFight();
 			break;
-		case 2:
+
+		case 3:
 			//end turn
 			//some checks if player can end turn
 			//pack pile if unpacked

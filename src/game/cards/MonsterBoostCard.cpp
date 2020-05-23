@@ -7,9 +7,9 @@ Card(fileName, pos, inHelpText, inFont), boostNum(inBoostNum)
 
 bool MonsterBoostCard::play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc)
 {
-	if (actState != GameState::FIGHT)
+	if (actState != GameState::AFF_FIGHT && actState != GameState::FIGHT)
 	{
-		ruleDesc += "You can boost monster only during fight.";
+		ruleDesc += "You can boost monster only just before fight (opponents or yours).";
 		return false;
 	}
 	actCard->boostLevel(boostNum);

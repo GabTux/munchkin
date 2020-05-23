@@ -19,7 +19,6 @@ images/cards/010.bmp 3 item 3 big
 +3 in combat.
 Uses both hands.
 Its big.
-Price is 600 gold.
 "
 images/cards/011.bmp 5 levelup 1
 "Draw you creature
@@ -33,9 +32,9 @@ images/cards/012.bmp 3 item 4 small
 +4 in combat.
 Its on you, so there's no need to hold it in hands.
 Its small.
-Price is 600 gold.
 "
 images/cards/013.bmp 3 boost 2
-"Play this card during any fight. Chosen side will get bonus +2.
-Price is 100 gold.
+"Play this card during fight.
+If it is your fight, you will get bonus +2.
+Otherwise the monster will get bonus +2.
 "

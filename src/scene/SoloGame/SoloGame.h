@@ -26,7 +26,7 @@
 class SoloGame : public Scene
 {
 	private:
-		GameState gameStateArr[3] = { GameState::KICK_DOORS, GameState::FIGHT, GameState::END_TURN };
+		GameState gameStateArr[4] = { GameState::KICK_DOORS, GameState::AFF_FIGHT, GameState::FIGHT, GameState::END_TURN };
 		int actStateInx = 0;
 		std::unique_ptr<Background> gameBackground;
 		SDLResources& res;
