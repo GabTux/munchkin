@@ -57,7 +57,8 @@ namespace constants
 	const int volume = MIX_MAX_VOLUME/100;
 
 	// GAME RULES
-	const int maxHandCards = 50;
+	const int maxHandCards = 5;
+	const int winLevel = 5;
 
 	/* -------------------- ABOUT ---------------- */
 	const int backButtonX = 1000;

@@ -52,7 +52,7 @@ void SoloGame::handleEvent()
 				}
 				if (choice == 1)
 				{
-					//TODO
+					//TODO: SAVE GAME
 				}
 			}
 		}
@@ -65,7 +65,19 @@ void SoloGame::handleEvent()
 
 void SoloGame::update()
 {
+	// update player, check for win
+	if (players[actPlayerInx]->getLevel() >= constants::winLevel)
+	{
+		int choice = winMenu();
+		if (choice == 0)
+			sceneManager.switchScene(SceneName::SOLO_GAME);
+		else
+			sceneManager.switchScene(SceneName::MAIN_MENU);
+		return;
+	}
 	players[actPlayerInx]->update(actPlayCard, gameStateArr[actStateInx]);
+
+	//handle pause button press
 	if (pauseButton->getState() == ButtonState::RELEASED)
 	{
 		int choice = pauseMenu();
@@ -76,10 +88,11 @@ void SoloGame::update()
 		}
 		if (choice == 1)
 		{
-			//TODO
+			//TODO: SAVE GAME
 		}
 	}
 
+	// handle actual kicked card
 	if (actPlayCard)
 	{
 		actPlayCard->update();
@@ -89,33 +102,10 @@ void SoloGame::update()
 			handleKicked();
 	}
 
+	// handle action button press
 	if (actionButton->getState() == ButtonState::RELEASED)
 	{
-		switch (actStateInx)
-		{
-			case 0:
-				kickDoor();
-				break;
-			case 1:
-				//end fight
-				handleFight();
-				break;
-			case 2:
-				//end turn
-				//some checks if player can end turn
-				//pack pile if unpacked
-				std::string cantEndTurnText = "Can't end turn: ";
-				if (players[actPlayerInx]->endTurn(cantEndTurnText))
-				{
-					switchPlayer();
-					actStateInx = 0;
-					actionButton->setText(constants::actionButtonTexts[actStateInx]);
-				}
-				else
-					SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Can't end turn!", cantEndTurnText.c_str(), res.mainWindow);
-				break;
-		}
-		actionButton->setDefault();
+		handleActionButtonPress();
 	}
 }
 
@@ -414,4 +404,45 @@ void SoloGame::runAway()
 	actStateInx++;
 	actPlayCard = nullptr;
 	actionButton->setText(constants::actionButtonTexts[actStateInx]);
+}
+
+void SoloGame::handleActionButtonPress()
+{
+	switch (actStateInx)
+	{
+		case 0:
+			kickDoor();
+			break;
+		case 1:
+			//end fight
+			handleFight();
+			break;
+		case 2:
+			//end turn
+			//some checks if player can end turn
+			//pack pile if unpacked
+			std::string cantEndTurnText = "Can't end turn: ";
+			if (players[actPlayerInx]->endTurn(cantEndTurnText))
+			{
+				switchPlayer();
+				actStateInx = 0;
+				actionButton->setText(constants::actionButtonTexts[actStateInx]);
+			}
+			else
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Can't end turn!", cantEndTurnText.c_str(), res.mainWindow);
+			break;
+	}
+	actionButton->setDefault();
+}
+
+int SoloGame::winMenu()
+{
+	std::string winMess;
+	winMess = actPlayerInx ? "Bottom" : "Upper";
+	winMess += " player win!";
+	const SDL_MessageBoxButtonData buttons[] = {
+					{ /* .flags, .buttonid, .text */        0, 0, "RESTART" },
+					{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "BACK TO MENU" },
+	};
+	return dialogWin(buttons, SDL_arraysize(buttons), "End of the game.", winMess.c_str());
 }

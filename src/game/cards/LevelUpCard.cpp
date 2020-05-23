@@ -12,6 +12,13 @@ bool LevelUpCard::play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>
 		ruleDesc = "This card can not be played during fight!";
 		return false;
 	}
+
+	if (affPlayer->getLevel()+1 == constants::winLevel)
+	{
+		ruleDesc = "Last level can be achieved by defeating monster, only.";
+		return false;
+	}
+
 	affPlayer->changeLevel(level);
 	return true;
 }

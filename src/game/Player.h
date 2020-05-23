@@ -70,4 +70,6 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		void resetBoost();
 
 		void updateIndicators();
+
+		int getLevel() { return level; }
 };

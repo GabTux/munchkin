@@ -40,6 +40,7 @@ void Player::setDefault()
 	level = 1;
 	levelIndicator->setDefault();
 	levelIndicator->setText("LEVEL "+std::to_string(level));
+	powerIndicator->setText("POWER "+std::to_string(level+inventory->getValue()+oneTimeBoost));
 }
 
 void Player::gotCard(const std::shared_ptr<Card>& inCard)

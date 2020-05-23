@@ -74,6 +74,10 @@ class SoloGame : public Scene
 
 		void runAway();
 
+		void handleActionButtonPress();
+
+		int winMenu();
+
 	public:
 		/**
 		 * Construct game scene.
