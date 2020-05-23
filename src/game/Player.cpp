@@ -67,7 +67,7 @@ void Player::loseCards(int loseCardsNum)
 		handCards->setDefault();
 	else
 	{
-		for (int i = 0; i < handCards->getValue(); i++)
+		for (int i = 0; i < loseCardsNum; i++)
 			handCards->getRandomCard();
 	}
 }
