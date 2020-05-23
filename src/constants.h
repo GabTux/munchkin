@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL2/SDL_mixer.h>
+
 /**
  * Constants used across whole program.
  */
@@ -52,6 +54,7 @@ namespace constants
 	const int powerIndY = 225;
 	const int monsterIndicatorX = 800;
 	const int monsterIndicatorY = 250;
+	const int volume = MIX_MAX_VOLUME/100;
 
 	// GAME RULES
 	const int maxHandCards = 50;

@@ -23,7 +23,7 @@ void About::prepare()
 	aboutTextPosition.h = surface->h;
 	aboutTexture = SDL_CreateTextureFromSurface(res.mainRenderer, surface);
 	SDL_FreeSurface(surface);
-	Mix_Volume(-1, MIX_MAX_VOLUME/6);
+	Mix_Volume(-1, constants::volume);
 
 	for (int i = 0; i < 20; i++)
 		spawnFigure();

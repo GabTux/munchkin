@@ -77,7 +77,7 @@ void Start::prepare()
 				throw MixError(message);
 			}
 			Mix_PlayMusic( res.actualMusic, -1 );
-			Mix_VolumeMusic(MIX_MAX_VOLUME/4);
+			Mix_VolumeMusic(constants::volume);
 	}
 	catch (const std::exception& excpt)
 	{
