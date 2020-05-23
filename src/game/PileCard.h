@@ -32,8 +32,8 @@ class PileCard : public GraphicObject
 		std::unique_ptr<GameButton> arrowRight;
 		unsigned int showCards = 3;
 		bool firstRun = true;
-		std::shared_ptr<Player> owner;
-		std::shared_ptr<Player> opponent;
+		std::weak_ptr<Player> owner;
+		std::weak_ptr<Player> opponent;
 		std::shared_ptr<Card> actCard;
 		GameState actState = GameState::KICK_DOORS;
 

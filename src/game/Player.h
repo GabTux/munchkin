@@ -29,7 +29,6 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		std::unique_ptr<Text> levelIndicator;
 		std::unique_ptr<Text> powerIndicator;
 		SDLResources& res;
-		std::shared_ptr<Player> opp;
 
 	public:
 		/**
@@ -72,4 +71,6 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		void updateIndicators();
 
 		int getLevel() { return level; }
+
+		virtual ~Player() = default;
 };

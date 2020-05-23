@@ -118,7 +118,6 @@ void Player::resetBoost()
 
 void Player::setOpp(std::shared_ptr<Player> &inOpp)
 {
-	opp = inOpp;
 	handCards->setPlayers(shared_from_this(), inOpp);
 	inventory->setPlayers(shared_from_this(), inOpp);
 }

@@ -115,7 +115,8 @@ void PileCard::updateUnpacked()
 		}
 		else if (cards[i]->getState() == CardState::MOVED)
 		{
-			owner->toInvCard(cards[i]);
+			auto ownerTmp = owner.lock();
+			ownerTmp->toInvCard(cards[i]);
 			cards.erase(cards.begin()+i);
 			if (renderIndex > 0) renderIndex--;
 		}
@@ -209,10 +210,12 @@ void PileCard::handlePlayedCard(unsigned int cardInx)
 {
 	std::string retMessage;
 	bool resPlay;
+	auto opponentTmp = opponent.lock();
+	auto ownerTmp = owner.lock();
 	if (cards[cardInx]->isCurse())
-		resPlay = cards[cardInx]->play(opponent, actCard, actState, retMessage);
+		resPlay = cards[cardInx]->play(opponentTmp, actCard, actState, retMessage);
 	else
-		resPlay = cards[cardInx]->play(owner, actCard, actState, retMessage);
+		resPlay = cards[cardInx]->play(ownerTmp, actCard, actState, retMessage);
 	if (!resPlay)
 	{
 		if (cantPlayDialog(retMessage) == 0)
@@ -221,7 +224,7 @@ void PileCard::handlePlayedCard(unsigned int cardInx)
 			cards[cardInx]->setDefault();
 			cards.erase(cards.begin() + cardInx);
 			updateValue();
-			owner->updateIndicators();
+			ownerTmp->updateIndicators();
 			if (renderIndex > 0) renderIndex--;
 		}
 		else
@@ -246,6 +249,6 @@ int PileCard::getValue()
 
 void PileCard::setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent)
 {
-	owner = std::move(inOwner);
-	opponent = std::move(inOpponent);
+	owner = inOwner;
+	opponent = inOpponent;
 }
