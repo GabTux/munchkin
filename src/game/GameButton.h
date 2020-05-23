@@ -14,7 +14,7 @@ class GameButton : public GraphicObject
 		SDL_Color red = { 188, 26, 26 };
 		SDL_Color blue = {41, 57, 201 };
 		SDL_Color color;
-		ButtonState buttonState;
+		ButtonState buttonState = ButtonState::NOTHING;
 		std::string text;
 		TTF_Font* font;
 		SDL_Rect position;

@@ -12,6 +12,7 @@ showText(std::move(inText)), position(inPos), font(inFont), color(inColor), main
 	position.w = surface->w;
 	position.h = surface->h;
 	textTexture = SDL_CreateTextureFromSurface(mainRenderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 void Text::render(SDL_Renderer *renderer)
@@ -31,4 +32,10 @@ void Text::setText(std::string inText)
 	position.w = surface->w;
 	position.h = surface->h;
 	textTexture = SDL_CreateTextureFromSurface(mainRenderer, surface);
+	SDL_FreeSurface(surface);
+}
+
+Text::~Text()
+{
+	SDL_DestroyTexture(textTexture);
 }

@@ -53,7 +53,7 @@ namespace constants
 	const int levelIndY = 150;
 	const int powerIndY = 225;
 	const int monsterIndicatorX = 800;
-	const int monsterIndicatorY = 250;
+	const int monsterIndicatorY = 270;
 	const int volume = MIX_MAX_VOLUME/100;
 
 	// GAME RULES

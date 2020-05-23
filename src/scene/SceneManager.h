@@ -44,5 +44,5 @@ class SceneManager
 		 */
 		void run();
 
-		void stopGame() { running = false; };
+		void stopGame();
 };

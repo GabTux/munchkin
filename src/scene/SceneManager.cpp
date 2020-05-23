@@ -38,3 +38,9 @@ void SceneManager::run()
 	}
 }
 
+void SceneManager::stopGame()
+{
+	running = false;
+	actualScene = nullptr;
+}
+

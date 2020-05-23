@@ -27,4 +27,6 @@ class Text : public GraphicObject
 		void render(SDL_Renderer* renderer) override;
 
 		void setText(std::string inText);
+
+		~Text();
 };

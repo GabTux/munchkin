@@ -13,6 +13,7 @@ color(SDL_Color{255, 255, 255}), text(std::move(inText)), font(inFont), position
 	}
 	position.w = surface->w;
 	position.h = surface->h;
+	SDL_FreeSurface(surface);
 }
 
 void GameButton::render(SDL_Renderer* renderer)
@@ -31,7 +32,7 @@ void GameButton::render(SDL_Renderer* renderer)
 		std::string message = "Unable to create texture: "; message += SDL_GetError();
 		throw SDLError(message);
 	}
-	SDL_RenderCopy(renderer, texture, NULL, &position);
+	SDL_RenderCopy(renderer, texture, nullptr, &position);
 	SDL_DestroyTexture(texture);
 	SDL_FreeSurface(surface);
 }
@@ -76,7 +77,7 @@ void GameButton::setDefault()
 
 void GameButton::setText(std::string inText)
 {
-	text = inText;
+	text = std::move(inText);
 }
 
 void GameButton::setPosition(SDL_Rect& inPos)
