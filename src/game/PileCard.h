@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <memory>
-#include <game/cards/CardDeck.h>
 
 #include "cards/Card.h"
 #include "GameButton.h"
 #include "../functions.h"
 #include "../scene/SoloGame/GameState.h"
+#include "cards/CardDeck.h"
 
 enum class PileState
 {

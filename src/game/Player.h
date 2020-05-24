@@ -1,13 +1,13 @@
 #pragma once
 
 #include <utility>
-#include <game/cards/CardDeck.h>
 
 #include "GraphicObject.h"
 #include "PileCard.h"
 #include "HandCards.h"
 #include "Inventory.h"
 #include "Text.h"
+#include "cards/CardDeck.h"
 
 /**
  * Base class for players.
