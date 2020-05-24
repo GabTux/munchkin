@@ -58,8 +58,7 @@ bool Player::endTurn(std::string& inString)
 		            " cards but max is " + std::to_string(constants::maxHandCards) + " cards.\nThrow some away! (Card->play->throw).";
 		return false;
 	}
-	handCards->pack();
-	inventory->pack();
+	endTurn();
 	return true;
 }
 
@@ -130,4 +129,15 @@ void Player::updateIndicators()
 {
 	powerIndicator->setText(std::string("POWER ")+std::to_string(level+inventory->getValue()+oneTimeBoost));
 	levelIndicator->setText(std::string("LEVEL ")+std::to_string(level));
+}
+
+void Player::startTurn()
+{
+	handCards->unpack();
+}
+
+void Player::endTurn()
+{
+	handCards->pack();
+	inventory->pack();
 }

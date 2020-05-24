@@ -139,6 +139,8 @@ class PileCard : public GraphicObject
 
 		void pack();
 
+		void unpack();
+
 		int getValue();
 
 		void setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent);

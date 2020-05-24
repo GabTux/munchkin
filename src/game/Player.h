@@ -54,6 +54,10 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 
 		bool endTurn(std::string& inString);
 
+		void endTurn();
+
+		void startTurn();
+
 		void loseCards(int loseCardsNum);
 
 		void update() override { }

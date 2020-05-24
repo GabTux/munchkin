@@ -55,6 +55,7 @@ void Card::showHelp()
 void Card::setDefault()
 {
 	cardState = CardState::NOTHING;
+	changeButtons(true, true);
 	GraphicObject::setDefault();
 }
 

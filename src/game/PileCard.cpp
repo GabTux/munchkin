@@ -161,7 +161,7 @@ void PileCard::pack()
 
 std::shared_ptr<Card> PileCard::getRandomCard()
 {
-	int randPos = randomInt(0, cards.size()-1);
+	int randPos = randomInt(0, (int)cards.size()-1);
 	std::shared_ptr<Card> res = cards[randPos];
 	cards.erase(cards.begin()+randPos);
 
@@ -259,4 +259,11 @@ void PileCard::setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Playe
 {
 	owner = inOwner;
 	opponent = inOpponent;
+}
+
+void PileCard::unpack()
+{
+	updateValue();
+	switchButton->setText(textUnpacked);
+	pileState = PileState::UNPACKED;
 }

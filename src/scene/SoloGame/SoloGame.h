@@ -121,5 +121,5 @@ class SoloGame : public Scene
 
 		void setRandomPlayerCards();
 
-		void switchPlayer();
+		bool switchPlayer(std::string& cantEndTurn);
 };

@@ -6,10 +6,10 @@ SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : res(inRe
 
 void SoloGame::prepare()
 {
-	doorCardDeck = std::make_unique<CardDeck>();
-	treasureCardDeck = std::make_unique<CardDeck>();
 	doorDeckGarbage = std::make_shared<CardDeck>();
 	treasureDeckGarbage = std::make_shared<CardDeck>();
+	doorCardDeck = std::make_unique<CardDeck>(doorDeckGarbage);
+	treasureCardDeck = std::make_unique<CardDeck>(treasureDeckGarbage);
 
 	readCards(constants::cardFile);
 	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
@@ -176,22 +176,18 @@ void SoloGame::readCards(const char * const fileName)
 			cardFile >> loseLevel;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<CurseCard>(cardPath.c_str(), defPos, helpText, loseLevel, res.gameFont);
-				doorCardDeck->addCard(tmpPtr);
-			}
+				doorCardDeck->addCard(std::make_shared<CurseCard>(cardPath.c_str(), defPos, helpText, loseLevel, res.gameFont));
 		}
+
 		else if (cardType == "monsterBoost")
 		{
 			int boostNum;
 			cardFile >> boostNum;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<MonsterBoostCard>(cardPath.c_str(), defPos, helpText, boostNum, res.gameFont);
-				doorCardDeck->addCard(tmpPtr);
-			}
+				doorCardDeck->addCard(std::make_shared<MonsterBoostCard>(cardPath.c_str(), defPos, helpText, boostNum, res.gameFont));
 		}
+
 		else if (cardType == "monster")
 		{
 			int monsterLevel, badStuffVal, treasures, giveLevels;
@@ -204,12 +200,10 @@ void SoloGame::readCards(const char * const fileName)
 			BadStuffType badStuffType = (badStuff == "level") ? BadStuffType::LEVEL : BadStuffType::CARDS;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<MonsterCard>(cardPath.c_str(), defPos, helpText, badStuffType,
-				                                                             badStuffVal, monsterLevel, treasures, giveLevels, res.gameFont);
-				doorCardDeck->addCard(tmpPtr);
-			}
+				doorCardDeck->addCard(std::make_shared<MonsterCard>(cardPath.c_str(), defPos, helpText, badStuffType,
+								                                                   badStuffVal, monsterLevel, treasures, giveLevels, res.gameFont));
 		}
+
 		else if (cardType == "item")
 		{
 			std::string itemType;
@@ -218,32 +212,25 @@ void SoloGame::readCards(const char * const fileName)
 			cardFile >> itemType;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<ItemCard>(cardPath.c_str(), defPos, helpText, combatBonus, res.gameFont);
-				treasureCardDeck->addCard(tmpPtr);
-			}
+				treasureCardDeck->addCard(std::make_shared<ItemCard>(cardPath.c_str(), defPos, helpText, combatBonus, res.gameFont));
 		}
+
 		else if (cardType == "levelup")
 		{
 			int level;
 			cardFile >> level;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<LevelUpCard>(cardPath.c_str(), defPos, helpText, level, res.gameFont);
-				treasureCardDeck->addCard(tmpPtr);
-			}
+				treasureCardDeck->addCard(std::make_shared<LevelUpCard>(cardPath.c_str(), defPos, helpText, level, res.gameFont));
 		}
+
 		else if (cardType == "boost")
 		{
 			int boost;
 			cardFile >> boost;
 			readHelp(cardFile, helpText);
 			for (int i = 0; i < cardCount; i++)
-			{
-				std::shared_ptr<Card> tmpPtr = std::make_shared<BoostCard>(cardPath.c_str(), defPos, helpText, boost, res.gameFont);
-				treasureCardDeck->addCard(tmpPtr);
-			}
+				treasureCardDeck->addCard(std::make_shared<BoostCard>(cardPath.c_str(), defPos, helpText, boost, res.gameFont));
 		}
 	}
 }
@@ -266,7 +253,6 @@ void SoloGame::restart()
 	stopped = false;
 	actPlayerInx = 0;
 	actStateInx = 0;
-	doorDeckGarbage->addCard(actPlayCard);
 	actPlayCard = nullptr;
 }
 
@@ -305,7 +291,8 @@ void SoloGame::handleKicked()
 		// switch to affect fight
 		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
 		actStateInx++;
-		switchPlayer();
+		std::string cantSwitch;
+		switchPlayer(cantSwitch);
 	}
 	else if (actPlayCard->isCurse())
 	{
@@ -319,7 +306,6 @@ void SoloGame::handleKicked()
 	{
 		actPlayCard->changeButtons(true, true);
 		players[actPlayerInx]->gotCard(actPlayCard);
-		doorDeckGarbage->addCard(actPlayCard);
 		actPlayCard = nullptr;
 		actStateInx += 3;
 	}
@@ -339,9 +325,17 @@ void SoloGame::setRandomPlayerCards()
 	}
 }
 
-void SoloGame::switchPlayer()
+bool SoloGame::switchPlayer(std::string& cantEndTurn)
 {
+	if (gameStateArr[actStateInx] == GameState::END_TURN)
+	{
+		if (!players[actPlayerInx]->endTurn(cantEndTurn))
+			return false;
+	}
+	players[actPlayerInx]->endTurn();
 	actPlayerInx = (actPlayerInx >= 1) ? 0 : 1;
+	players[actPlayerInx]->startTurn();
+	return true;
 }
 
 void SoloGame::handleFight()
@@ -424,6 +418,7 @@ void SoloGame::runAway()
 
 void SoloGame::handleActionButtonPress()
 {
+	std::string cantEndTurnText = "Can't end turn: ";
 	switch (actStateInx)
 	{
 		case 0:
@@ -433,7 +428,8 @@ void SoloGame::handleActionButtonPress()
 		case 1:
 			actStateInx++;
 			actionButton->setText(constants::actionButtonTexts[actStateInx]);
-			switchPlayer();
+			players[actPlayerInx]->endTurn();
+			switchPlayer(cantEndTurnText);
 			break;
 
 		case 2:
@@ -445,10 +441,8 @@ void SoloGame::handleActionButtonPress()
 			//end turn
 			//some checks if player can end turn
 			//pack pile if unpacked
-			std::string cantEndTurnText = "Can't end turn: ";
-			if (players[actPlayerInx]->endTurn(cantEndTurnText))
+			if (switchPlayer(cantEndTurnText))
 			{
-				switchPlayer();
 				actStateInx = 0;
 				actionButton->setText(constants::actionButtonTexts[actStateInx]);
 			}
