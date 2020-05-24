@@ -1,6 +1,4 @@
 #include "PileCard.h"
-
-#include <utility>
 #include "Player.h"
 
 PileCard::PileCard(std::string inTextPacked, std::string inTextUnpacked, std::vector<std::shared_ptr<Card>> &inCards,
@@ -51,11 +49,6 @@ void PileCard::update()
 
 void PileCard::render(SDL_Renderer *renderer)
 {
-	if (firstRun)
-	{
-		switchButton->setText(textPacked+" "+std::to_string(value));
-		firstRun = false;
-	}
 	switchButton->render(renderer);
 	if (pileState == PileState::UNPACKED)
 		renderUnpacked(renderer);
@@ -263,7 +256,6 @@ void PileCard::setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Playe
 
 void PileCard::unpack()
 {
-	updateValue();
 	switchButton->setText(textUnpacked);
 	pileState = PileState::UNPACKED;
 }

@@ -31,6 +31,7 @@ void SoloGame::prepare()
 	actionButton = std::make_unique<GameButton>(constants::actionButtonTexts[0], buttonPos, res.menuFont);
 	monsterLevelInd = std::make_unique<Text>("POWER ", SDL_Rect({constants::monsterIndicatorX, constants::monsterIndicatorY}),
 					res.gameFont, SDL_Color({255, 255, 255}), res.mainRenderer);
+	players[actPlayerInx]->startTurn();
 }
 
 void SoloGame::handleEvent()
@@ -254,6 +255,7 @@ void SoloGame::restart()
 	actPlayerInx = 0;
 	actStateInx = 0;
 	actPlayCard = nullptr;
+	players[actPlayerInx]->startTurn();
 }
 
 void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count)

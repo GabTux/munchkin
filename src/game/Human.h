@@ -42,5 +42,5 @@ class Human : public Player
 		 */
 		[[nodiscard]] SDL_Rect getPosition() override { return position; };
 
-		~Human();
+		~Human() override;
 };
