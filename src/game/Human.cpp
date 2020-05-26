@@ -20,16 +20,33 @@ void Human::handleEvent(SDL_Event &event)
 	}
 }
 
-Human::~Human()
-{
-	handCards.reset();
-	inventory.reset();
-}
-
 void Human::update(std::shared_ptr<Card>& inActCard, GameState inActState)
 {
 	handCards->update(inActCard, inActState);
 	inventory->update(inActCard, inActState);
 	levelIndicator->update();
 	powerIndicator->update();
+}
+
+void Human::startTurn()
+{
+	handCards->unpack();
+}
+
+void Human::endTurn()
+{
+	handCards->pack();
+	inventory->pack();
+}
+
+bool Human::endTurn(std::string &inString)
+{
+	if (handCards->getValue() > constants::maxHandCards)
+	{
+		inString += "You have " + std::to_string(handCards->getValue()) +
+		            " cards but max is " + std::to_string(constants::maxHandCards) + " cards.\nThrow some away! (Card->play->throw).";
+		return false;
+	}
+	endTurn();
+	return true;
 }

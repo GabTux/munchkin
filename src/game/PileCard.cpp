@@ -6,7 +6,7 @@ PileCard::PileCard(std::string inTextPacked, std::string inTextUnpacked, std::ve
 textPacked(std::move(inTextPacked)), textUnpacked(std::move(inTextUnpacked)), buttonPos(inButtonPos),
 pilePos(inPilePos), doorDeckGarbage(inDoorDeckGarbage), treasureDeckGarbage(inTreasureDeckGarbage), cards(inCards)
 {
-	switchButton = std::make_unique<GameButton>(textPacked, inButtonPos, menuFont);
+	switchButton = std::make_unique<GameButton>(textPacked+" "+std::to_string(value), inButtonPos, menuFont);
 
 	SDL_Rect leftPos = {pilePos.x - 50, pilePos.y+constants::cardHeight/3, 0, 0};
 	SDL_Rect rightPos = {pilePos.x + 3 * (constants::cardWidth + (int)showCards) + 10, pilePos.y+constants::cardHeight/3, 0, 0};
@@ -43,6 +43,7 @@ void PileCard::update()
 		}
 		switchButton->setDefault();
 	}
+	checkForPlayedCards();
 	if (pileState == PileState::UNPACKED)
 		updateUnpacked();
 }
@@ -102,17 +103,6 @@ void PileCard::updateUnpacked()
 	for (unsigned int i = renderIndex; i-renderIndex < showCards && i < cards.size(); i++)
 	{
 		cards[i]->update();
-		if (cards[i]->getState() == CardState::PLAYED)
-		{
-			handlePlayedCard(i);
-		}
-		else if (cards[i]->getState() == CardState::MOVED)
-		{
-			auto ownerTmp = owner.lock();
-			ownerTmp->toInvCard(cards[i]);
-			cards.erase(cards.begin()+i);
-			if (renderIndex > 0) renderIndex--;
-		}
 	}
 }
 
@@ -258,4 +248,29 @@ void PileCard::unpack()
 {
 	switchButton->setText(textUnpacked);
 	pileState = PileState::UNPACKED;
+}
+
+void PileCard::checkForPlayedCards()
+{
+	for (unsigned int i = 0; i < cards.size(); i++)
+	{
+		if (cards[i]->getState() == CardState::PLAYED)
+		{
+			handlePlayedCard(i);
+		}
+		if (cards[i]->getState() == CardState::MOVED)
+		{
+			auto ownerTmp = owner.lock();
+			ownerTmp->toInvCard(cards[i]);
+			cards.erase(cards.begin() + i);
+			if (renderIndex) renderIndex--;
+		}
+	}
+}
+
+void PileCard::updateIndicator()
+{
+	updateValue();
+	if (pileState == PileState::PACKED)
+		switchButton->setText(textPacked+" "+std::to_string(value));
 }

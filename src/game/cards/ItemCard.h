@@ -33,4 +33,6 @@ class ItemCard : public Card
 		void throwAway() override;
 
 		bool isTreasure() override { return true; }
+
+		bool isItem() override { return true; }
 };

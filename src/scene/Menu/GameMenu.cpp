@@ -8,7 +8,7 @@ GameMenu::GameMenu(SDLResources &res, SceneManager &sceneManager) : Menu(res, sc
 void GameMenu::prepare()
 {
 	mainBackground = std::make_unique<Background>(constants::menuWallpaperPath);
-	SceneName scenes[] = { SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::SOLO_GAME, SceneName::MAIN_MENU };
+	SceneName scenes[] = { SceneName::SOLO_GAME_1vPC, SceneName::SOLO_GAME_1v1, SceneName::SOLO_GAME_1v1, SceneName::MAIN_MENU };
 	SDL_Rect selectorPos = {constants::mainMenuButtonsX - constants::mainMenuSelectorSpace,
 												 constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
 	SDL_Rect buttonPos = { constants::mainMenuButtonsX, constants::gameMenuButtonsY[0], 0, 0 };

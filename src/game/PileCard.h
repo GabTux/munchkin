@@ -32,14 +32,12 @@ class PileCard : public GraphicObject
 		std::unique_ptr<GameButton> arrowLeft;
 		std::unique_ptr<GameButton> arrowRight;
 		unsigned int showCards = 3;
-		bool firstRun = true;
 		std::weak_ptr<Player> owner;
 		std::weak_ptr<Player> opponent;
-		std::shared_ptr<Card> actCard;
+		std::shared_ptr<Card> actCard = nullptr;
 		GameState actState = GameState::KICK_DOORS;
 		std::shared_ptr<CardDeck> doorDeckGarbage;
 		std::shared_ptr<CardDeck> treasureDeckGarbage;
-
 
 		/**
 		 * Render unpacked pile of cards. Show 3 cards.
@@ -61,6 +59,8 @@ class PileCard : public GraphicObject
 		void handleEventUnpacked(SDL_Event& event);
 
 		static int cantPlayDialog(std::string& inMessage);
+
+		void checkForPlayedCards();
 
 		void handlePlayedCard(unsigned int cardInx);
 
@@ -143,7 +143,13 @@ class PileCard : public GraphicObject
 
 		int getValue();
 
+		void updateIndicator();
+
 		void setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent);
 
 		std::shared_ptr<Card> getRandomCard();
+
+		std::vector<std::shared_ptr<Card>>::iterator begin() { return cards.begin(); }
+
+		std::vector<std::shared_ptr<Card>>::iterator end() { return cards.end(); }
 };

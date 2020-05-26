@@ -29,23 +29,13 @@ class SoloGame : public Scene
 		GameState gameStateArr[4] = { GameState::KICK_DOORS, GameState::AFF_FIGHT, GameState::FIGHT, GameState::END_TURN };
 		int actStateInx = 0;
 		std::unique_ptr<Background> gameBackground;
-		SDLResources& res;
-		SceneManager& sceneManager;
 		std::unique_ptr<CardDeck> treasureCardDeck;
 		std::unique_ptr<CardDeck> treasureCardDeckBack;
 		std::unique_ptr<CardDeck> doorCardDeck;
 		std::unique_ptr<CardDeck> doorCardDeckBack;
-		std::vector<std::shared_ptr<Player>> players;
-		int actPlayerInx = 0;
 		std::unique_ptr<GameButton> pauseButton;
-		std::unique_ptr<GameButton> actionButton;
 		std::unique_ptr<Text> monsterLevelInd;
-		std::shared_ptr<CardDeck> doorDeckGarbage;
-		std::shared_ptr<CardDeck> treasureDeckGarbage;
-
 		std::shared_ptr<Card> actPlayCard = nullptr;
-
-		bool stopped = false;
 
 
 		/**
@@ -61,24 +51,47 @@ class SoloGame : public Scene
 		 */
 		static void readHelp(std::ifstream& cardFile, std::string& helpText);
 
-
-		static int dialogWin(const SDL_MessageBoxButtonData buttons[], int size, const char* title, const char* message);
-
 		/**
 		 * Create small popup window, with buttons.
 		 * @return Pressed button ID.
 		 */
 		static int pauseMenu();
 
-		static void getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count);
+		void getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count);
 
 		void handleFight();
 
-		void runAway();
+		void kickDoor();
+
+		void handleKicked();
+
+		bool switchPlayer(std::string& cantEndTurn);
+
+	protected:
+		SceneManager& sceneManager;
+		SDLResources& res;
+		std::vector<std::shared_ptr<Player>> players;
+		std::shared_ptr<CardDeck> doorDeckGarbage;
+		std::shared_ptr<CardDeck> treasureDeckGarbage;
+		bool againstBot = false;
+
+		void setRandomPlayerCards();
+
+		int actPlayerInx = 0;
+		std::unique_ptr<GameButton> actionButton;
+		bool stopped = false;
 
 		void handleActionButtonPress();
 
-		int winMenu();
+		virtual void looseAgainstMonster() = 0;
+
+		void runAway(const char *  ranAway, const char * noRanAway);
+
+		static int dialogWin(const SDL_MessageBoxButtonData buttons[], int size, const char* title, const char* message);
+
+		int winMenu(const char * text) const;
+
+		virtual void checkForWinner() = 0;
 
 	public:
 		/**
@@ -96,7 +109,9 @@ class SoloGame : public Scene
 		/**
 		 * Handle user input.
 		 */
-		void handleEvent() override;
+		void handleEvent() override { }
+
+		void handleEvent(SDL_Event& event);
 
 		/**
 		 * Update players and pause button.
@@ -114,12 +129,4 @@ class SoloGame : public Scene
 		void restart() override;
 
 		void stopScene() override;
-
-		void kickDoor();
-
-		void handleKicked();
-
-		void setRandomPlayerCards();
-
-		bool switchPlayer(std::string& cantEndTurn);
 };

@@ -16,6 +16,7 @@ Player::Player(std::vector<std::shared_ptr<Card>> &inHandCards, SDL_Rect &inPosi
 	std::vector<std::shared_ptr<Card>> emptyInv;
 	inventory = std::make_unique<Inventory>(emptyInv, buttonPos, pilePos, res.menuFont, doorDeckGarbage, treasureDeckGarbage);
 	inventory->updateValue();
+	inventory->update();
 
 	levelIndicator = std::make_unique<Text>(std::string("LEVEL "+std::to_string(level)),
 					SDL_Rect({position.x, constants::levelIndY+position.y, 0, 0}), res.menuFont, SDL_Color({255, 255, 255}), res.mainRenderer);
@@ -48,18 +49,6 @@ void Player::gotCard(const std::shared_ptr<Card>& inCard)
 {
 	handCards->addCard(inCard);
 	handCards->updateValue();
-}
-
-bool Player::endTurn(std::string& inString)
-{
-	if (handCards->getValue() > constants::maxHandCards)
-	{
-		inString += "You have " + std::to_string(handCards->getValue()) +
-		            " cards but max is " + std::to_string(constants::maxHandCards) + " cards.\nThrow some away! (Card->play->throw).";
-		return false;
-	}
-	endTurn();
-	return true;
 }
 
 void Player::loseCards(int loseCardsNum)
@@ -129,15 +118,4 @@ void Player::updateIndicators()
 {
 	powerIndicator->setText(std::string("POWER ")+std::to_string(level+inventory->getValue()+oneTimeBoost));
 	levelIndicator->setText(std::string("LEVEL ")+std::to_string(level));
-}
-
-void Player::startTurn()
-{
-	handCards->unpack();
-}
-
-void Player::endTurn()
-{
-	handCards->pack();
-	inventory->pack();
 }

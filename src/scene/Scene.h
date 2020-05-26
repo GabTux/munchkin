@@ -7,10 +7,11 @@ enum class SceneName
 {
 		MAIN_MENU,
 		GAME_MENU,
-		SOLO_GAME,
-		START,
-		STOP,
+		SOLO_GAME_1vPC,
+		SOLO_GAME_1v1,
 		ABOUT,
+		START,
+		STOP
 };
 
 class Scene

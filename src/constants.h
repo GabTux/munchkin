@@ -55,6 +55,7 @@ namespace constants
 	const int monsterIndicatorX = 800;
 	const int monsterIndicatorY = 270;
 	const int volume = MIX_MAX_VOLUME/100;
+	const bool infoOn = true;
 
 	// GAME RULES
 	const int maxHandCards = 5;

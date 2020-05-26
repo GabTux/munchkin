@@ -15,7 +15,6 @@
 class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 {
 	private:
-		int level = 1;
 		int oneTimeBoost = 0;
 
 	protected:
@@ -25,6 +24,7 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		 * TODO: bot.
 		 */
 		SDL_Rect position;
+		int level = 1;
 		std::unique_ptr<PileCard> handCards;
 		std::unique_ptr<PileCard> inventory;
 		std::unique_ptr<Text> levelIndicator;
@@ -52,11 +52,11 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 
 		void toInvCard(std::shared_ptr<Card>& inCard);
 
-		bool endTurn(std::string& inString);
+		virtual bool endTurn(std::string& inString) { return true; }
 
-		void endTurn();
+		virtual void endTurn() { }
 
-		void startTurn();
+		virtual void startTurn() = 0;
 
 		void loseCards(int loseCardsNum);
 
@@ -79,6 +79,8 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		void updateIndicators();
 
 		int getLevel() { return level; }
+
+		virtual bool played() { return false; }
 
 		virtual ~Player() = default;
 };

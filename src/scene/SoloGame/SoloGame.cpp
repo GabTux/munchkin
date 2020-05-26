@@ -1,6 +1,6 @@
 #include "SoloGame.h"
 
-SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : res(inRes), sceneManager(inSceneManager)
+SoloGame::SoloGame(SDLResources& inRes, SceneManager& inSceneManager) : sceneManager(inSceneManager), res(inRes)
 {
 }
 
@@ -15,15 +15,6 @@ void SoloGame::prepare()
 	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
 	treasureCardDeckBack = std::make_unique<CardDeck>(*treasureCardDeck);
 	gameBackground = std::make_unique<Background>(constants::gameWallpaperPath);
-	SDL_Rect pos = {constants::playersX, constants::upPlayerY, 0, 0};
-
-	std::vector<std::shared_ptr<Card>> randomCards;
-	players.push_back(std::make_shared<Human>(randomCards, pos, res, doorDeckGarbage, treasureDeckGarbage));
-	pos.y = constants::downPlayerY;
-	players.push_back(std::make_shared<Human>(randomCards, pos, res, doorDeckGarbage, treasureDeckGarbage));
-	players[0]->setOpp(players[1]);
-	players[1]->setOpp(players[0]);
-	setRandomPlayerCards();
 
 	SDL_Rect buttonPos = {constants::pauseButtonX, constants::pauseButtonY, 0, 0};
 	pauseButton = std::make_unique<GameButton>("PAUSE", buttonPos, res.menuFont);
@@ -31,54 +22,43 @@ void SoloGame::prepare()
 	actionButton = std::make_unique<GameButton>(constants::actionButtonTexts[0], buttonPos, res.menuFont);
 	monsterLevelInd = std::make_unique<Text>("POWER ", SDL_Rect({constants::monsterIndicatorX, constants::monsterIndicatorY}),
 					res.gameFont, SDL_Color({255, 255, 255}), res.mainRenderer);
-	players[actPlayerInx]->startTurn();
 }
 
-void SoloGame::handleEvent()
+void SoloGame::handleEvent(SDL_Event& event)
 {
-	SDL_Event event;
-	while (SDL_PollEvent(&event) && !stopped)
+	if (stopped)
+		return;
+
+	if (event.type == SDL_QUIT)
 	{
-		if (event.type == SDL_QUIT)
+		sceneManager.switchScene(SceneName::STOP);
+		return;
+	}
+
+	if (event.type == SDL_KEYUP)
+	{
+		if (event.key.keysym.sym == SDLK_ESCAPE)
 		{
-			sceneManager.switchScene(SceneName::STOP);
-			return;
-		}
-		if (event.type == SDL_KEYUP)
-		{
-			if (event.key.keysym.sym == SDLK_ESCAPE)
+			int choice = pauseMenu();       //this will block current thread until messagebox resolved
+			if (choice == 2)
 			{
-				int choice = pauseMenu();       //this will block current thread until messagebox resolved
-				if (choice == 2)
-				{
-					sceneManager.switchScene(SceneName::MAIN_MENU);
-					return;
-				}
-				if (choice == 1)
-				{
-					//TODO: SAVE GAME
-				}
+				sceneManager.switchScene(SceneName::MAIN_MENU);
+				return;
+			}
+			if (choice == 1)
+			{
+				//TODO: SAVE GAME
 			}
 		}
-		players[actPlayerInx]->handleEvent(event);
-		pauseButton->handleEvent(event);
-		actionButton->handleEvent(event);
-		if (actPlayCard) actPlayCard->handleEvent(event);
 	}
+	players[actPlayerInx]->handleEvent(event);
+	pauseButton->handleEvent(event);
+	if (actPlayCard) actPlayCard->handleEvent(event);
 }
 
 void SoloGame::update()
 {
-	// update player, check for win
-	if (players[actPlayerInx]->getLevel() >= constants::winLevel)
-	{
-		int choice = winMenu();
-		if (choice == 0)
-			sceneManager.switchScene(SceneName::SOLO_GAME);
-		else
-			sceneManager.switchScene(SceneName::MAIN_MENU);
-		return;
-	}
+	checkForWinner();
 	players[actPlayerInx]->update(actPlayCard, gameStateArr[actStateInx]);
 
 	//handle pause button press
@@ -264,7 +244,10 @@ void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<st
 	{
 		auto randCard = inCards->getCard();
 		if (randCard->isMonster())
+		{
+			doorDeckGarbage->addCard(randCard);
 			i--;
+		}
 		else
 			outCards.push_back(randCard);
 	}
@@ -344,8 +327,13 @@ void SoloGame::handleFight()
 {
 	if (players[actPlayerInx]->getCombatPower() > actPlayCard->combatPower())
 	{
-		std::string defeatMonsterMess = "You defeated that monster. You will get "+std::to_string(actPlayCard->getTreasures())+" treasures"
-																		" and "+std::to_string(actPlayCard->getLevels())+" levels.";
+		std::string defeatMonsterMess;
+		if (againstBot && actPlayerInx == 0)
+			defeatMonsterMess = "Bot defeated that monster. He will get "+std::to_string(actPlayCard->getTreasures())+" treasures"
+																			" and "+std::to_string(actPlayCard->getLevels())+" levels.";
+		else
+			defeatMonsterMess = "You defeated that monster. You will get "+std::to_string(actPlayCard->getTreasures())+" treasures"
+																			" and "+std::to_string(actPlayCard->getLevels())+" levels.";
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Defeated monster", defeatMonsterMess.c_str(), res.mainWindow);
 		players[actPlayerInx]->resetBoost();
 		players[actPlayerInx]->changeLevel(actPlayCard->getLevels());
@@ -359,16 +347,7 @@ void SoloGame::handleFight()
 	else
 	{
 		//monster is not defeated
-		std::string loseMonsterMess = "You will loose against this monster.\nYou will have to roll a dice: "
-																"youRolled > 5 - means you successfully ran away, otherwise that monster caught you and the bad thing will happen.";
-		const SDL_MessageBoxButtonData buttons[] = {
-						{ /* .flags, .buttonid, .text */        0, 0, "BACK" },
-						{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "RUN AWAY" },
-		};
-		if (dialogWin(buttons, SDL_arraysize(buttons), "Run away", loseMonsterMess.c_str()) == 1)
-		{
-			runAway();
-		}
+		looseAgainstMonster();
 	}
 }
 
@@ -395,17 +374,17 @@ int SoloGame::dialogWin(const SDL_MessageBoxButtonData buttons[], int size, cons
 	return buttonID;
 }
 
-void SoloGame::runAway()
+void SoloGame::runAway(const char * ranAway, const char * noRanAway)
 {
 	// TODO: graphic
 	if (randomInt(1, 6) > 4)
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", "You successfully ran away from that monster.",
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", ranAway,
 		                         res.mainWindow);
 	}
 	else
 	{
-		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", "Monster caught you and bad thing will happen.",
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", noRanAway,
 		                         res.mainWindow);
 		std::string dummy;
 		actPlayCard->play(players[actPlayerInx], actPlayCard, gameStateArr[actStateInx], dummy);
@@ -455,14 +434,12 @@ void SoloGame::handleActionButtonPress()
 	actionButton->setDefault();
 }
 
-int SoloGame::winMenu()
+int SoloGame::winMenu(const char * text) const
 {
-	std::string winMess;
-	winMess = actPlayerInx ? "Bottom" : "Upper";
-	winMess += " player win!";
 	const SDL_MessageBoxButtonData buttons[] = {
 					{ /* .flags, .buttonid, .text */        0, 0, "RESTART" },
 					{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "BACK TO MENU" },
 	};
-	return dialogWin(buttons, SDL_arraysize(buttons), "End of the game.", winMess.c_str());
+	return dialogWin(buttons, SDL_arraysize(buttons), "End of the game.", text);
 }
+

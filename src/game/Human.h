@@ -32,15 +32,19 @@ class Human : public Player
 		/**
 		 * Update Inventory and cards in hands.
 		 */
-		void update() override { };
+		void update() override { }
 
 		void update(std::shared_ptr<Card>& inActCard, GameState inActState) override;
+
+		void startTurn() override;
+
+		void endTurn() override;
+
+		bool endTurn(std::string& inString) override;
 
 		/**
 		 * Get position of player.
 		 * @return Position.
 		 */
 		[[nodiscard]] SDL_Rect getPosition() override { return position; };
-
-		~Human() override;
 };

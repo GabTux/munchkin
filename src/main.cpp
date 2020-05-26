@@ -8,9 +8,10 @@
 #include "scene/Start.h"
 #include "scene/Stop.h"
 #include "scene/Menu/MainMenu.h"
-#include "scene/SoloGame/SoloGame.h"
 #include "scene/Menu/GameMenu.h"
 #include "scene/About.h"
+#include "scene/SoloGame/SoloGame1v1.h"
+#include "scene/SoloGame/SoloGame1vPC.h"
 
 int main()
 {
@@ -24,7 +25,8 @@ int main()
 		sceneManager.newScene(SceneName::ABOUT, std::make_shared<About>(resources, sceneManager));
 		sceneManager.newScene(SceneName::MAIN_MENU, std::make_shared<MainMenu>(resources, sceneManager));
 		sceneManager.newScene(SceneName::GAME_MENU, std::make_shared<GameMenu>(resources, sceneManager));
-		sceneManager.newScene(SceneName::SOLO_GAME, std::make_shared<SoloGame>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SOLO_GAME_1v1, std::make_shared<SoloGame1v1>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SOLO_GAME_1vPC, std::make_shared<SoloGame1vPC>(resources, sceneManager));
 
 		sceneManager.switchScene(SceneName::START);
 		sceneManager.run();

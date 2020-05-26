@@ -78,9 +78,15 @@ class Card : public GameObject
 
 		void showHelp();
 
+		std::string& getHelp() { return helpText; }
+
 		virtual bool isMonster() { return false; }
 
 		virtual bool isCurse() { return false; }
+
+		virtual bool isItem() { return false; }
+
+		virtual bool isBoost() { return false; }
 
 		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) = 0;
 
@@ -95,6 +101,8 @@ class Card : public GameObject
 		virtual void boostLevel(int boostNum) { }
 
 		CardState getState() { return cardState; }
+
+		void markPlayed() { cardState = CardState::PLAYED; }
 
 		void setDefault() override;
 
