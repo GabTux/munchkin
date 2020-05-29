@@ -242,6 +242,9 @@ void Bot::loseMinValueCard()
 
 bool Bot::checkForLevelUp()
 {
+	if (getLevel() == constants::winLevel-1)
+		return true;
+
 	for (auto& it: *handCards)
 	{
 		if (it->isLevelUp())
