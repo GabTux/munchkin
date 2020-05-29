@@ -81,7 +81,7 @@ void SoloGame::update()
 	{
 		actPlayCard->update();
 		if (actPlayCard->isMonster())
-			monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
+			monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->getCombatPower()));
 		if (gameStateArr[actStateInx] == GameState::KICK_DOORS)
 			handleKicked();
 	}
@@ -265,7 +265,7 @@ void SoloGame::kickDoor()
 	actPlayCard->setPosition(actCardPos);
 	actPlayCard->changeButtons(false, true);
 	if (actPlayCard->isMonster())
-		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
+		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->getCombatPower()));
 }
 
 void SoloGame::handleKicked()
@@ -274,7 +274,7 @@ void SoloGame::handleKicked()
 	if (actPlayCard->isMonster())
 	{
 		// switch to affect fight
-		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->combatPower()));
+		monsterLevelInd->setText("POWER "+std::to_string(actPlayCard->getCombatPower()));
 		actStateInx++;
 		std::string cantSwitch;
 		switchPlayer(cantSwitch);
@@ -325,7 +325,7 @@ bool SoloGame::switchPlayer(std::string& cantEndTurn)
 
 void SoloGame::handleFight()
 {
-	if (players[actPlayerInx]->getCombatPower() > actPlayCard->combatPower())
+	if (players[actPlayerInx]->getCombatPower() > actPlayCard->getCombatPower())
 	{
 		std::string defeatMonsterMess;
 		if (againstBot && actPlayerInx == 0)

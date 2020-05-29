@@ -32,10 +32,10 @@ class SDLError : public std::exception
  */
 class TTFError : public std::exception
 {
-private:
+	private:
 		std::string message;
 
-public:
+	public:
 		/**
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.

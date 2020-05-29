@@ -27,8 +27,6 @@ class PileCard : public GraphicObject
 		unsigned int renderIndex;
 		SDL_Rect buttonPos;
 		SDL_Rect pilePos;
-		PileState pileState = PileState::PACKED;
-		std::unique_ptr<GameButton> switchButton;
 		std::unique_ptr<GameButton> arrowLeft;
 		std::unique_ptr<GameButton> arrowRight;
 		unsigned int showCards = 3;
@@ -77,6 +75,8 @@ class PileCard : public GraphicObject
 		 */
 		int value = 0;
 
+		PileState pileState = PileState::PACKED;
+		std::unique_ptr<GameButton> switchButton;
 	public:
 		/**
 		 * Construct new pile of cards.
@@ -152,4 +152,6 @@ class PileCard : public GraphicObject
 		std::vector<std::shared_ptr<Card>>::iterator begin() { return cards.begin(); }
 
 		std::vector<std::shared_ptr<Card>>::iterator end() { return cards.end(); }
+
+		std::vector<std::shared_ptr<Card>>::iterator erase(std::vector<std::shared_ptr<Card>>::iterator inIter) { return cards.erase(inIter); }
 };

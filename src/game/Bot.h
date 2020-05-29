@@ -8,22 +8,39 @@ class Bot : public Player
 		bool turnDone = false;
 		std::shared_ptr<Card> actCard = nullptr;
 		GameState actState = GameState::KICK_DOORS;
+		std::shared_ptr<Player> opponent;
 
 		void makeTurn();
 
 		static bool delayMillis(int millis);
 
-		bool checkForInv();
+		void loseMinValueCard();
 
 		void playCard(std::shared_ptr<Card>& inCard);
 
+		bool checkForInv();
+
+		bool checkForLevelUp();
+
+		bool boostMonster(bool madBoost);
+
 		bool tryToDefeat();
+
+		bool affectFight();
+
+		bool calcEndTurn();
 
 		void endTurn() override;
 
 		bool endTurn(std::string& inString) override;
 
-		void playCurses(int max);
+		bool playCurse();
+
+		bool willHarmOpp();
+
+		int possibleCurseLevel();
+
+		int possibleBoostMonster();
 
 	public:
 		Bot(std::vector<std::shared_ptr<Card>>& inHandCards, SDL_Rect& inPosition, SDLResources& inRes,
@@ -40,4 +57,6 @@ class Bot : public Player
 		bool played() override;
 
 		void startTurn() override;
+
+		void setOpp(std::shared_ptr<Player>& inOpp) override;
 };

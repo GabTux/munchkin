@@ -43,7 +43,7 @@ class MonsterCard : public Card
 
 		void setDefault() override;
 
-		int combatPower() override;
+		int getCombatPower() override;
 
 		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
 

@@ -227,6 +227,7 @@ void PileCard::handlePlayedCard(unsigned int cardInx)
 			else
 				doorDeckGarbage->addCard(cards[cardInx]);
 			cards.erase(cards.begin() + cardInx);
+			updateValue();
 			if (renderIndex > 0) renderIndex--;
 		}
 	}
@@ -263,6 +264,7 @@ void PileCard::checkForPlayedCards()
 			auto ownerTmp = owner.lock();
 			ownerTmp->toInvCard(cards[i]);
 			cards.erase(cards.begin() + i);
+			updateValue();
 			if (renderIndex) renderIndex--;
 		}
 	}

@@ -68,7 +68,7 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 
 		void boostPower(int num);
 
-		void setOpp(std::shared_ptr<Player>& inOpp);
+		virtual void setOpp(std::shared_ptr<Player>& inOpp);
 
 		void changeLevel(int num);
 
@@ -83,4 +83,6 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		virtual bool played() { return false; }
 
 		virtual ~Player() = default;
+
+		int getCardsCount();
 };

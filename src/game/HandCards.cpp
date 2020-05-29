@@ -5,3 +5,9 @@ HandCards::HandCards(std::vector<std::shared_ptr<Card>> &inCards, SDL_Rect &butt
 PileCard("HAND", "BACK", inCards, buttonPos, pilePos, inFont, doorDeckGarbage, treasureDeckGarbage)
 {
 }
+
+void HandCards::updateValue()
+{
+	value = cards.size();
+	if (pileState == PileState::PACKED) switchButton->setText("HAND "+std::to_string(value));
+}

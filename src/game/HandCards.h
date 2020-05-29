@@ -17,5 +17,5 @@ class HandCards : public PileCard
 		/**
 		 * Get count of cards.
 		 */
-		void updateValue() override {  value = cards.size(); };
+		void updateValue() override;
 };

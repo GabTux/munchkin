@@ -44,9 +44,7 @@ int main()
 	}
 	catch (...)
 	{
-		std::cout << "Unknown exception, possibly memory corruption, exiting: ";
-		std::exception_ptr pExcpt = std::current_exception();
-		std::cout << pExcpt.__cxa_exception_type()->name() << std::endl;
+		std::cout << "Unknown exception, possibly memory corruption, exiting." << std::endl;
 		sceneManager.switchScene(SceneName::STOP);
 	}
 }

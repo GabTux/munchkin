@@ -38,7 +38,7 @@ void MonsterCard::setDefault()
 	Card::setDefault();
 }
 
-int MonsterCard::combatPower()
+int MonsterCard::getCombatPower()
 {
 	return level + oneTimeBoost;
 }

@@ -119,3 +119,8 @@ void Player::updateIndicators()
 	powerIndicator->setText(std::string("POWER ")+std::to_string(level+inventory->getValue()+oneTimeBoost));
 	levelIndicator->setText(std::string("LEVEL ")+std::to_string(level));
 }
+
+int Player::getCardsCount()
+{
+	return handCards->getValue();
+}

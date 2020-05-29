@@ -82,11 +82,15 @@ class Card : public GameObject
 
 		virtual bool isMonster() { return false; }
 
+		virtual bool isMonsterBoost() { return false; }
+
 		virtual bool isCurse() { return false; }
 
 		virtual bool isItem() { return false; }
 
 		virtual bool isBoost() { return false; }
+
+		virtual bool isLevelUp() { return false; }
 
 		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) = 0;
 
@@ -106,7 +110,9 @@ class Card : public GameObject
 
 		void setDefault() override;
 
-		virtual int combatPower() { return 0; }
+		virtual int getCombatPower() { return 0; }
 
 		virtual bool isTreasure() = 0;
+
+		virtual BadStuffType getBadStuffType() { return BadStuffType::LEVEL; }
 };
