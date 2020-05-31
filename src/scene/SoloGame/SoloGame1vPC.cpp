@@ -16,7 +16,7 @@ void SoloGame1vPC::prepare()
 	players.push_back(std::make_shared<Human>(randomCards, pos, res, doorDeckGarbage, treasureDeckGarbage));
 	players[0]->setOpp(players[1]);
 	players[1]->setOpp(players[0]);
-	setRandomPlayerCards();
+	setStartingState();
 	players[actPlayerInx]->startTurn();
 }
 

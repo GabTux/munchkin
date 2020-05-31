@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
+#include <iostream>
 
 #include "Card.h"
 #include "../../functions.h"
@@ -12,6 +14,7 @@ class CardDeck
 {
 	private:
 		std::vector<std::shared_ptr<Card>> cards;
+		std::unordered_map<int, std::shared_ptr<Card>> allCardMap;
 		std::shared_ptr<CardDeck> recoveryDeck = nullptr;
 
 	public:
@@ -31,7 +34,15 @@ class CardDeck
 		 */
 		std::shared_ptr<Card> getCard();
 
+		bool getCard(int id, std::shared_ptr<Card>& outCard);
+
 		int countCards() { return cards.size(); }
 
 		void setDefault();
+
+		bool empty() { return cards.empty(); }
+
+		friend std::ostream& operator<<(std::ostream& os, const CardDeck& inDeck);
 };
+
+std::ostream &operator<<(std::ostream& os, const CardDeck &inDeck);

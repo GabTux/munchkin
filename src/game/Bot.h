@@ -9,10 +9,12 @@ class Bot : public Player
 		std::shared_ptr<Card> actCard = nullptr;
 		GameState actState = GameState::KICK_DOORS;
 		std::shared_ptr<Player> opponent;
+		bool getTime = true;
+		Uint32 endTime;
 
 		void makeTurn();
 
-		static bool delayMillis(int millis);
+		bool delayMillis(int millis);
 
 		void loseMinValueCard();
 
@@ -59,4 +61,6 @@ class Bot : public Player
 		void startTurn() override;
 
 		void setOpp(std::shared_ptr<Player>& inOpp) override;
+
+		void setDefault() override;
 };

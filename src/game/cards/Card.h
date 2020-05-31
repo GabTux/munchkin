@@ -33,6 +33,8 @@ class Card : public GameObject
 		std::unique_ptr<GameButton> helpButton;
 		bool playEnabled = true;
 		bool helpEnabled = true;
+		int id;
+		static int cardCounter;
 
 	protected:
 		CardState cardState = CardState::NOTHING;
@@ -115,4 +117,8 @@ class Card : public GameObject
 		virtual bool isTreasure() = 0;
 
 		virtual BadStuffType getBadStuffType() { return BadStuffType::LEVEL; }
+
+		int getID() { return id; }
+
+		static void resetCounter() { cardCounter = 0; }
 };

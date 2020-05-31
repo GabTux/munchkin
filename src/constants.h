@@ -36,6 +36,11 @@ namespace constants
 	const int gameMenuButtonsY[] = { 280, 380, 480, 580 };
 	const char *const gameMenuButtonsText[] = {"NEW GAME VS PC", "NEW GAME 1v1", "SAVED GAMES", "BACK"};
 
+	/* -------------------- SAVE MENU ---------------- */
+	const int saveMenuButtonsY[] = { 280, 380, 480 };
+	const char *const saveMenuButtonsText[] = {"VS PC", "1v1", "BACK"};
+	const char *const saveNames[] = { "/bot.txt", "/multi.txt" };
+
 	/* -------------------- GAME --------------------- */
 	const int cardWidth = 200;
 	const int cardHeight = 200;
@@ -56,6 +61,7 @@ namespace constants
 	const int monsterIndicatorY = 270;
 	const int volume = MIX_MAX_VOLUME/100;
 	const bool infoOn = true;
+	const char *const saveFolder = ".Saves";
 
 	// GAME RULES
 	const int maxHandCards = 5;

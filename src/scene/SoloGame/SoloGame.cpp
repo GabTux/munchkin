@@ -39,16 +39,7 @@ void SoloGame::handleEvent(SDL_Event& event)
 	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 		{
-			int choice = pauseMenu();       //this will block current thread until messagebox resolved
-			if (choice == 2)
-			{
-				sceneManager.switchScene(SceneName::MAIN_MENU);
-				return;
-			}
-			if (choice == 1)
-			{
-				//TODO: SAVE GAME
-			}
+			handlePauseMenu();
 		}
 	}
 	players[actPlayerInx]->handleEvent(event);
@@ -64,16 +55,7 @@ void SoloGame::update()
 	//handle pause button press
 	if (pauseButton->getState() == ButtonState::RELEASED)
 	{
-		int choice = pauseMenu();
-		if (choice == 2)
-		{
-			sceneManager.switchScene(SceneName::MAIN_MENU);
-			return;
-		}
-		if (choice == 1)
-		{
-			//TODO: SAVE GAME
-		}
+		handlePauseMenu();
 	}
 
 	// handle actual kicked card
@@ -136,6 +118,7 @@ int SoloGame::pauseMenu()
 
 void SoloGame::readCards(const char * const fileName)
 {
+	Card::resetCounter();
 	std::ifstream cardFile;
 	cardFile.open(fileName);
 	if (!cardFile)
@@ -225,17 +208,12 @@ void SoloGame::restart()
 	doorCardDeck = std::make_unique<CardDeck>(*doorCardDeckBack);
 	treasureCardDeck = std::make_unique<CardDeck>(*treasureCardDeckBack);
 	std::vector<std::shared_ptr<Card>> randomCards;
-
-	setRandomPlayerCards();
-
 	pauseButton->setDefault();
 	actionButton->setText(constants::actionButtonTexts[0]);
 	actionButton->setDefault();
 	stopped = false;
-	actPlayerInx = 0;
-	actStateInx = 0;
-	actPlayCard = nullptr;
-	players[actPlayerInx]->startTurn();
+
+	setStartingState();
 }
 
 void SoloGame::getRandomCards(std::unique_ptr<CardDeck>& inCards, std::vector<std::shared_ptr<Card>>& outCards, int count)
@@ -297,7 +275,7 @@ void SoloGame::handleKicked()
 	actionButton->setText(constants::actionButtonTexts[actStateInx]);
 }
 
-void SoloGame::setRandomPlayerCards()
+void SoloGame::setStartingState()
 {
 	std::vector<std::shared_ptr<Card>> randomCards;
 
@@ -308,6 +286,11 @@ void SoloGame::setRandomPlayerCards()
 		getRandomCards(treasureCardDeck, randomCards, constants::startCardTreasure);
 		it->setHandCards(randomCards);
 	}
+
+	actPlayerInx = 0;
+	actStateInx = 0;
+	actPlayCard = nullptr;
+	players[actPlayerInx]->startTurn();
 }
 
 bool SoloGame::switchPlayer(std::string& cantEndTurn)
@@ -441,5 +424,222 @@ int SoloGame::winMenu(const char * text) const
 					{ SDL_MESSAGEBOX_BUTTON_ESCAPEKEY_DEFAULT, 1, "BACK TO MENU" },
 	};
 	return dialogWin(buttons, SDL_arraysize(buttons), "End of the game.", text);
+}
+
+bool SoloGame::saveToFile()
+{
+	std::string saveFilePath = std::filesystem::current_path().string();
+	saveFilePath += "/"+std::string(constants::saveFolder);
+	if (!std::filesystem::is_directory(saveFilePath) && !std::filesystem::create_directory(saveFilePath))
+		return false;
+
+	saveFilePath += againstBot ? constants::saveNames[0] : constants::saveNames[1];
+	std::ofstream saveFile(saveFilePath);
+	if (!saveFile.is_open())
+		return false;
+
+	for (auto & it: players)
+		saveFile << *it;
+	if (!saveFile.good())
+		return false;
+
+	saveFile << *doorDeckGarbage;
+	if (!saveFile.good())
+		return false;
+
+	saveFile << *treasureDeckGarbage;
+	if (!saveFile.good())
+		return false;
+
+	saveFile << actPlayerInx << " " << actStateInx << " ";
+	if (!saveFile.good())
+		return false;
+
+	if (actPlayCard)
+	{
+		saveFile << (actPlayCard->isTreasure() ? 't' : 'd');
+		if (!saveFile.good())
+			return false;
+
+		saveFile << " " << actPlayCard->getID() << " " << -1 << std::endl;
+	}
+	else
+		saveFile << 'd' << -2 << std::endl;
+
+	saveFile.close();
+	return saveFile.good();
+	//TODO: check if normal decks are same
+}
+
+void SoloGame::handlePauseMenu()
+{
+	int choice = pauseMenu();       //this will block current thread until messagebox resolved
+	if (choice == 2)
+	{
+		//BACK TO MENU
+		sceneManager.switchScene(SceneName::MAIN_MENU);
+		return;
+	}
+
+	if (choice == 1)
+	{
+		// SAVE GAME
+		if (!saveToFile())
+		{
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Cannot save file",
+			                         "Cannot save file.\nProbably insufficient permissions.", res.mainWindow);
+		}
+		else
+			SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Saved.", "Game saved.", res.mainWindow);
+	}
+}
+
+bool SoloGame::loadFromFile(std::ifstream& inFile, std::string& errMess)
+{
+	// load players
+	if (!loadPlayers(inFile, errMess))
+		return false;
+
+	// load garbage decks
+	if (!loadGarbageDecks(inFile, errMess))
+		return false;
+
+	// set game states
+	inFile >> actPlayerInx;
+	if (!inFile.good() || actPlayerInx > 1 || actPlayerInx < 0)
+	{
+		errMess += "file corrupted";
+		return false;
+	}
+
+	inFile >> actStateInx;
+	if (!inFile.good() || actStateInx > 4 || actStateInx < 0)
+	{
+		errMess += "file corrupted";
+		return false;
+	}
+
+	char deckID;
+	int idCard;
+	inFile >> deckID;
+	inFile >> idCard;
+	if (!inFile.good())
+		return false;
+	if (idCard != -2 && !moveCard(deckID, idCard, actPlayCard, errMess))
+	{
+		errMess += "Missing card";
+		return false;
+	}
+
+	for (auto &it: players)
+		it->updateIndicators();
+	actionButton->setText(constants::actionButtonTexts[actStateInx]);
+	if (actPlayCard)
+	{
+		SDL_Rect actPos = {constants::actCardX, constants::actCardY, 0, 0};
+		actPlayCard->setPosition(actPos);
+		actPlayCard->changeButtons(false, true);
+	}
+
+	return true;
+}
+
+bool SoloGame::loadPlayers(std::ifstream& inFile, std::string& errMess)
+{
+	// set player hands+inv
+	std::vector<std::shared_ptr<Card>> loadedCards;
+	std::shared_ptr<Card> outCard;
+	int tmpLevel;
+
+	for (auto& it: players)
+	{
+		inFile >> tmpLevel;
+		if (!inFile.good())
+		{
+			errMess += "File corrupted";
+			return false;
+		}
+		it->changeLevel(tmpLevel-1);
+
+		for (int i = 0; i < 2; i++)
+		{
+			loadedCards.clear();
+			int idCard;
+			char deckID;
+			while (true)
+			{
+				inFile >> deckID;
+				inFile >> idCard;
+				if (!inFile.good())
+					return false;
+				if (idCard == -1)
+					break;
+				if (!moveCard(deckID, idCard, outCard, errMess))
+					return false;
+				else
+					loadedCards.push_back(outCard);
+			}
+			if (i == 0)
+				it->setHandCards(loadedCards);
+			else
+				it->setInvCards(loadedCards);
+		}
+	}
+	return true;
+}
+
+bool SoloGame::moveCard(char deckID, int idCard, std::shared_ptr<Card>& outCard, std::string& errMess)
+{
+	std::shared_ptr<Card> tmpCard;
+
+	if (deckID == 'd')
+	{
+		if (!doorCardDeck->getCard(idCard, tmpCard))
+		{
+			errMess += "Missing Card";
+			return false;
+		}
+	}
+	else if (deckID == 't')
+	{
+		if (!treasureCardDeck->getCard(idCard, tmpCard))
+		{
+			errMess = "Missing card.";
+			return false;
+		}
+	}
+	else
+	{
+		errMess = "File is corrupted.";
+		return false;
+	}
+	outCard = tmpCard;
+	return true;
+}
+
+bool SoloGame::loadGarbageDecks(std::ifstream& inFile, std::string& errMess)
+{
+	char deckID = 'd';
+	int idCard;
+	std::shared_ptr<Card> outCard;
+
+	for (int i = 0; i < 2; i++, deckID = 't')
+	{
+		while (true)
+		{
+			inFile >> idCard;
+			if (!inFile.good())
+				return false;
+			if (idCard == -1)
+				break;
+			if (!moveCard(deckID, idCard, outCard, errMess))
+				return false;
+			if (deckID == 'd')
+				doorDeckGarbage->addCard(outCard);
+			else
+				treasureDeckGarbage->addCard(outCard);
+		}
+	}
+	return true;
 }
 

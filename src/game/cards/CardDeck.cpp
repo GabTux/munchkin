@@ -8,7 +8,7 @@ std::shared_ptr<Card> CardDeck::getCard()
 {
 	if (cards.empty())
 	{
-		if (!recoveryDeck)
+		if (!recoveryDeck || recoveryDeck->empty())
 		{
 			std::string message = "No cards in deck.";
 			throw GameError(message);
@@ -36,5 +36,25 @@ void CardDeck::setDefault()
 
 void CardDeck::addCard(std::shared_ptr<Card> inCard)
 {
+	allCardMap[inCard->getID()] = inCard;
 	cards.push_back(std::move(inCard));
+}
+
+bool CardDeck::getCard(int id, std::shared_ptr<Card>& outCard)
+{
+	if (allCardMap.find(id) == allCardMap.end())
+		return false;
+
+	cards.erase(std::remove(cards.begin(), cards.end(), allCardMap[id]));
+	outCard = allCardMap[id];
+	return true;
+}
+
+std::ostream &operator<<(std::ostream& os, const CardDeck& inDeck)
+{
+	for (auto& it: inDeck.cards)
+		os << std::to_string(it->getID())+" ";
+
+	os << -1 << std::endl;
+	return os;
 }

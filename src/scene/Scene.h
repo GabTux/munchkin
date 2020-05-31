@@ -9,6 +9,9 @@ enum class SceneName
 		GAME_MENU,
 		SOLO_GAME_1vPC,
 		SOLO_GAME_1v1,
+		SOLO_GAME_LOAD_PC,
+		SOLO_GAME_LOAD_1v1,
+		SAVE_MENU,
 		ABOUT,
 		START,
 		STOP

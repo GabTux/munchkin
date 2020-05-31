@@ -124,3 +124,24 @@ int Player::getCardsCount()
 {
 	return handCards->getValue();
 }
+
+std::ostream& operator<<(std::ostream& os, const Player& inPlayer)
+{
+	os << inPlayer.level << " ";
+
+	for (auto& it: *inPlayer.handCards)
+	{
+		os << (it->isTreasure() ? 't' : 'd');
+		os << " " << std::to_string(it->getID()) + " ";
+	}
+	os << 'd' << -1 << std::endl;
+
+	for (auto& it: *inPlayer.inventory)
+	{
+		os << (it->isTreasure() ? 't' : 'd');
+		os << " " << std::to_string(it->getID()) + " ";
+	}
+	os << 'd' << -1 << std::endl;
+
+	return os;
+}

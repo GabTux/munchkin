@@ -151,6 +151,8 @@ std::shared_ptr<Card> PileCard::getRandomCard()
 	updateValue();
 	if (pileState == PileState::PACKED)
 		switchButton->setText(textPacked+" "+std::to_string(value));
+	if (pileState == PileState::UNPACKED && renderIndex)
+		renderIndex--;
 
 	return res;
 }

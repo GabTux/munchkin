@@ -1,8 +1,11 @@
 #include "Card.h"
 
+int Card::cardCounter = 0;
+
 Card::Card(const char * const fileName, SDL_Rect & inPos, std::string& inHelpText, TTF_Font* inFont) :
 GameObject(fileName, inPos), helpText(inHelpText)
 {
+	id = cardCounter++;
 	playButton = std::make_unique<GameButton>("Play", position, inFont);
 	helpButton = std::make_unique<GameButton>("Help", position, inFont);
 }

@@ -12,6 +12,9 @@
 #include "scene/About.h"
 #include "scene/SoloGame/SoloGame1v1.h"
 #include "scene/SoloGame/SoloGame1vPC.h"
+#include "scene/Menu/SaveMenu.h"
+#include "scene/SoloGame/SoloGameLoadPC.h"
+#include "scene/SoloGame/SoloGameLoad1v1.h"
 
 int main()
 {
@@ -27,6 +30,9 @@ int main()
 		sceneManager.newScene(SceneName::GAME_MENU, std::make_shared<GameMenu>(resources, sceneManager));
 		sceneManager.newScene(SceneName::SOLO_GAME_1v1, std::make_shared<SoloGame1v1>(resources, sceneManager));
 		sceneManager.newScene(SceneName::SOLO_GAME_1vPC, std::make_shared<SoloGame1vPC>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SAVE_MENU, std::make_shared<SaveMenu>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SOLO_GAME_LOAD_PC, std::make_shared<SoloGameLoadPC>(resources, sceneManager));
+		sceneManager.newScene(SceneName::SOLO_GAME_LOAD_1v1, std::make_shared<SoloGameLoad1v1>(resources, sceneManager));
 
 		sceneManager.switchScene(SceneName::START);
 		sceneManager.run();

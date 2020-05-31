@@ -1,6 +1,7 @@
 #pragma once
 
 #include <utility>
+#include <iostream>
 
 #include "GraphicObject.h"
 #include "PileCard.h"
@@ -85,4 +86,8 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		virtual ~Player() = default;
 
 		int getCardsCount();
+
+		friend std::ostream& operator<<(std::ostream& os, const Player& inPlayer);
 };
+
+std::ostream& operator<<(std::ostream& os, const Player& inPlayer);

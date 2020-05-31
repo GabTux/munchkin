@@ -29,16 +29,13 @@ void Bot::update(std::shared_ptr<Card> &inActCard, GameState inActState)
 
 bool Bot::delayMillis(int millis)
 {
-	static bool getTime = true;
-	static Uint32 endTime;
 	if (getTime)
 	{
 		endTime = SDL_GetTicks() + millis;
 		getTime = false;
 	}
 
-	Uint32 actualTime = SDL_GetTicks();
-	if (actualTime >= endTime)
+	if (SDL_GetTicks() >= endTime)
 	{
 		getTime = true;
 		return true;
@@ -169,9 +166,6 @@ bool Bot::affectFight()
 	// player is going to win --> use everything to stop him
 	if (opponent->getLevel() + actCard->getLevels() >= constants::winLevel)
 	{
-		if (!playCurse())
-			return false;
-
 		if (!boostMonster(true))
 			return false;
 	}
@@ -185,11 +179,8 @@ bool Bot::affectFight()
 	// player is going to defeat monster, but it is maybe possible to change it
 	// see if loosing against that monster will harm opponent
 	// aggressive mode
-	if (opponent->getCombatPower() - possibleCurseLevel() <= actCard->getCombatPower() + possibleBoostMonster() && willHarmOpp())
+	if ((opponent->getCombatPower() - possibleCurseLevel() <= actCard->getCombatPower() + possibleBoostMonster()) && willHarmOpp())
 	{
-		if (!playCurse())
-			return false;
-
 		if (!boostMonster(false))
 			return false;
 	}
@@ -258,7 +249,7 @@ bool Bot::checkForLevelUp()
 
 bool Bot::boostMonster(bool madBoost)
 {
-	if (actCard->getCombatPower() >= opponent->getCombatPower() && !madBoost)
+	if ((actCard->getCombatPower() >= opponent->getCombatPower()) && !madBoost)
 		return true;
 
 	for (auto& it: *handCards)
@@ -303,4 +294,10 @@ bool Bot::willHarmOpp()
 		return false;
 
 	return true;
+}
+
+void Bot::setDefault()
+{
+	Player::setDefault();
+	getTime = true;
 }

@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <iostream>
+#include <filesystem>
 
 #include "../Scene.h"
 #include "../Background.h"
@@ -27,7 +28,6 @@ class SoloGame : public Scene
 {
 	private:
 		GameState gameStateArr[4] = { GameState::KICK_DOORS, GameState::AFF_FIGHT, GameState::FIGHT, GameState::END_TURN };
-		int actStateInx = 0;
 		std::unique_ptr<Background> gameBackground;
 		std::unique_ptr<CardDeck> treasureCardDeck;
 		std::unique_ptr<CardDeck> treasureCardDeckBack;
@@ -35,6 +35,7 @@ class SoloGame : public Scene
 		std::unique_ptr<CardDeck> doorCardDeckBack;
 		std::unique_ptr<GameButton> pauseButton;
 		std::unique_ptr<Text> monsterLevelInd;
+		int actStateInx = 0;
 		std::shared_ptr<Card> actPlayCard = nullptr;
 
 
@@ -67,6 +68,10 @@ class SoloGame : public Scene
 
 		bool switchPlayer(std::string& cantEndTurn);
 
+		bool saveToFile();
+
+		void handlePauseMenu();
+
 	protected:
 		SceneManager& sceneManager;
 		SDLResources& res;
@@ -75,7 +80,7 @@ class SoloGame : public Scene
 		std::shared_ptr<CardDeck> treasureDeckGarbage;
 		bool againstBot = false;
 
-		void setRandomPlayerCards();
+		virtual void setStartingState();
 
 		int actPlayerInx = 0;
 		std::unique_ptr<GameButton> actionButton;
@@ -92,6 +97,14 @@ class SoloGame : public Scene
 		int winMenu(const char * text) const;
 
 		virtual void checkForWinner() = 0;
+
+		bool loadFromFile(std::ifstream& inFile, std::string& errMess);
+
+		bool loadPlayers(std::ifstream& inFile, std::string& errMess);
+
+		bool moveCard(char deckID, int idCard, std::shared_ptr<Card>& outCard, std::string& errMess);
+
+		bool loadGarbageDecks(std::ifstream& inFile, std::string& errMess);
 
 	public:
 		/**
