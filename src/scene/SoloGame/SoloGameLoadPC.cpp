@@ -20,5 +20,11 @@ void SoloGameLoadPC::setStartingState()
 	}
 
 	saveFile.close();
+	if (!saveFile.eof() && saveFile.bad())
+	{
+		errMess += "Cannot properly close the file. Check permissions.";
+		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_WARNING, "Warning loading.", errMess.c_str(), res.mainWindow);
+	}
+
 	players[actPlayerInx]->startTurn();
 }
