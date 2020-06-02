@@ -32,7 +32,7 @@ doc:
 	doxygen
 
 clean:
-	rm -rf munchkin doc $(OBJDIR) &>/dev/null
+	rm -rf munchkin doc $(OBJDIR)
 
 run: munchkin
 	./munchkin
