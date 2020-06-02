@@ -154,4 +154,8 @@ class PileCard : public GraphicObject
 		std::vector<std::shared_ptr<Card>>::iterator end() { return cards.end(); }
 
 		std::vector<std::shared_ptr<Card>>::iterator erase(std::vector<std::shared_ptr<Card>>::iterator inIter) { return cards.erase(inIter); }
+
+		friend std::ostream& operator<<(std::ostream& os, const PileCard& inPileCard);
 };
+
+std::ostream& operator<<(std::ostream& os, const PileCard& inPileCard);

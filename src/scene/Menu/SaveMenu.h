@@ -17,4 +17,6 @@ class SaveMenu : public Menu
 		void prepare() override;
 
 		void render() override;
+
+		void restart() override;
 };

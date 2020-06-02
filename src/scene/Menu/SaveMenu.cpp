@@ -7,7 +7,7 @@ SaveMenu::SaveMenu(SDLResources &inRes, SceneManager &inSceneManager) : Menu(inR
 void SaveMenu::prepare()
 {
 	mainBackground = std::make_unique<Background>(constants::menuWallpaperPath);
-	SceneName scenes[] = { SceneName::SOLO_GAME_LOAD_PC, SceneName::SOLO_GAME_LOAD_1v1, SceneName::MAIN_MENU };
+	SceneName scenes[] = { SceneName::SOLO_GAME_LOAD_PC, SceneName::SOLO_GAME_LOAD_1v1, SceneName::GAME_MENU };
 	SDL_Rect selectorPos = {constants::mainMenuButtonsX - constants::mainMenuSelectorSpace,
 	                        constants::mainMenuButtonsY[0], constants::mainMenuSelectorWidth, constants::mainMenuSelectorHeight };
 	SDL_Rect buttonPos = { constants::mainMenuButtonsX, constants::gameMenuButtonsY[0], 0, 0 };
@@ -37,5 +37,12 @@ void SaveMenu::render()
 {
 	mainBackground->render(res.mainRenderer);
 	Menu::render();
+}
+
+void SaveMenu::restart()
+{
+	menuItems.clear();
+	prepare();
+	Menu::restart();
 }
 

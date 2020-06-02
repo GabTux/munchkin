@@ -15,10 +15,7 @@ void MonsterCard::boostLevel(int num)
 bool MonsterCard::play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc)
 {
 	if (actState != GameState::FIGHT)
-	{
-		std::string message = "Monster bad stuff played not in fight state.";
-		throw GameError(message);
-	}
+		throw GameError("Monster bad stuff played not in fight state.");
 
 	if (badStuffType == BadStuffType::CARDS)
 		affPlayer->loseCards(badStuffVal);

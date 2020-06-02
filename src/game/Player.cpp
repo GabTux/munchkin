@@ -127,21 +127,13 @@ int Player::getCardsCount()
 
 std::ostream& operator<<(std::ostream& os, const Player& inPlayer)
 {
-	os << inPlayer.level << " ";
+	std::string res;
+	std::size_t checkHash;
+	res = std::to_string(inPlayer.level);
+	checkSum(res, checkHash);
+	encryptDecrypt(res);
 
-	for (auto& it: *inPlayer.handCards)
-	{
-		os << (it->isTreasure() ? 't' : 'd');
-		os << " " << std::to_string(it->getID()) + " ";
-	}
-	os << 'd' << -1 << std::endl;
-
-	for (auto& it: *inPlayer.inventory)
-	{
-		os << (it->isTreasure() ? 't' : 'd');
-		os << " " << std::to_string(it->getID()) + " ";
-	}
-	os << 'd' << -1 << std::endl;
+	os << res << std::endl << checkHash << std::endl << *inPlayer.handCards << std::endl << *inPlayer.inventory << std::endl;
 
 	return os;
 }

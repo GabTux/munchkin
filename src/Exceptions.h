@@ -109,7 +109,7 @@ class GameError : public std::exception
 		 * Constructs new MixError message.
 		 * @param inMessage Message that describes exception.
 		 */
-		GameError(std::string& inMessage) : message(std::move(inMessage)) { }
+		GameError(std::string inMessage) : message(std::move(inMessage)) { }
 
 		/**
 		 * Get exception description.

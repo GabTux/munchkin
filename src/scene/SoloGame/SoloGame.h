@@ -43,14 +43,14 @@ class SoloGame : public Scene
 		 * Read all cards from file.
 		 * @param fileName path to txt file with list of cards.
 		 */
-		void readCards(const char * const fileName);
+		bool readCards(const char * const fileName);
 
 		/**
 		 * Read help text from file.
 		 * @param cardFile Reference to file stream.
 		 * @param helpText Reference to result vector.
 		 */
-		static void readHelp(std::ifstream& cardFile, std::string& helpText);
+		static bool readHelp(std::ifstream& cardFile, std::string& helpText);
 
 		/**
 		 * Create small popup window, with buttons.
@@ -71,6 +71,8 @@ class SoloGame : public Scene
 		bool saveToFile();
 
 		void handlePauseMenu();
+
+		static bool checkLine(std::ifstream& inFile, std::stringstream& inStream);
 
 	protected:
 		SceneManager& sceneManager;

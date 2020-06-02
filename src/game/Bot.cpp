@@ -135,10 +135,7 @@ bool Bot::tryToDefeat()
 bool Bot::endTurn(std::string &inString)
 {
 	if (handCards->getValue() > constants::maxHandCards)
-	{
-		std::string errMess("Bot have too many cards in hands, after end of turn.");
-		throw GameError(errMess);
-	}
+		throw GameError("Bot have too many cards in hands, after end of turn.");
 
 	return true;
 }

@@ -9,10 +9,8 @@ std::shared_ptr<Card> CardDeck::getCard()
 	if (cards.empty())
 	{
 		if (!recoveryDeck || recoveryDeck->empty())
-		{
-			std::string message = "No cards in deck.";
-			throw GameError(message);
-		}
+			throw GameError("No cards in deck.");
+
 		else
 		{
 			while (recoveryDeck->countCards())
@@ -52,9 +50,17 @@ bool CardDeck::getCard(int id, std::shared_ptr<Card>& outCard)
 
 std::ostream &operator<<(std::ostream& os, const CardDeck& inDeck)
 {
-	for (auto& it: inDeck.cards)
-		os << std::to_string(it->getID())+" ";
+	std::string res;
+	std::size_t checkHash;
 
-	os << -1 << std::endl;
+
+	for (auto& it: inDeck.cards)
+		res += std::to_string(it->getID())+" ";
+	res += "-1";
+
+	checkSum(res, checkHash);
+	encryptDecrypt(res);
+
+	os << res << std::endl << checkHash;
 	return os;
 }

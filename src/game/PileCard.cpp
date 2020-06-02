@@ -278,3 +278,21 @@ void PileCard::updateIndicator()
 	if (pileState == PileState::PACKED)
 		switchButton->setText(textPacked+" "+std::to_string(value));
 }
+
+std::ostream& operator<<(std::ostream &os, const PileCard& inPileCard)
+{
+	std::string res;
+	std::size_t checkHash;
+	for (auto& it: inPileCard.cards)
+	{
+		res += it->isTreasure() ? 't' : 'd';
+		res += " " + std::to_string(it->getID()) + " ";
+	}
+	res += "d -1";
+
+	checkSum(res, checkHash);
+	encryptDecrypt(res);
+
+	os << res << std::endl << checkHash;
+	return os;
+}

@@ -11,7 +11,12 @@ void SoloGame::prepare()
 	doorCardDeck = std::make_unique<CardDeck>(doorDeckGarbage);
 	treasureCardDeck = std::make_unique<CardDeck>(treasureDeckGarbage);
 
-	readCards(constants::cardFile);
+	if (!readCards(constants::cardFile))
+	{
+		std::string message = "Unable to load cards, missing file or bad permissions.";
+		throw FileError(message);
+	}
+
 	doorCardDeckBack = std::make_unique<CardDeck>(*doorCardDeck);
 	treasureCardDeckBack = std::make_unique<CardDeck>(*treasureCardDeck);
 	gameBackground = std::make_unique<Background>(constants::gameWallpaperPath);
@@ -90,20 +95,30 @@ void SoloGame::render()
 	}
 }
 
-void SoloGame::readHelp(std::ifstream& cardFile, std::string& helpText)
+bool SoloGame::readHelp(std::ifstream& cardFile, std::string& helpText)
 {
+	if (!cardFile.good())
+		return false;
+
 	char c = 0;
 	helpText = "";
 	cardFile.ignore();
-	cardFile.ignore();
+	cardFile.get(c);
+	if (c != '"')
+		return false;
 
+	c = 0;
 	while (c!='"')
 	{
 		cardFile.get(c);
 		helpText += c;
+		if (!cardFile.good())
+			return false;
 	}
 	helpText.pop_back();
 	cardFile.ignore();
+
+	return !(!cardFile.eof() && cardFile.bad());
 }
 
 int SoloGame::pauseMenu()
@@ -116,29 +131,31 @@ int SoloGame::pauseMenu()
 	return dialogWin(buttons, SDL_arraysize(buttons), "Pause game.", "Game paused.");
 }
 
-void SoloGame::readCards(const char * const fileName)
+bool SoloGame::readCards(const char * const fileName)
 {
 	Card::resetCounter();
 	std::ifstream cardFile;
 	cardFile.open(fileName);
-	if (!cardFile)
-	{
-		std::string message = "Unable to load cards, missing file " + std::string(fileName);
-		throw FileError(message);
-	}
-
 	std::string cardPath;
 	std::string cardType;
 	std::string helpText;
 	int cardCount;
 	SDL_Rect defPos = {0, 0, constants::cardWidth, constants::cardHeight};
+
+	bool read = false;
 	while (cardFile >> cardPath >> cardCount >> cardType)
 	{
+		read = true;
+		if (!cardFile.good())
+			return false;
+
 		if (cardType == "curse")
 		{
 			int loseLevel;
 			cardFile >> loseLevel;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				doorCardDeck->addCard(std::make_shared<CurseCard>(cardPath.c_str(), defPos, helpText, loseLevel, res.gameFont));
 		}
@@ -147,7 +164,9 @@ void SoloGame::readCards(const char * const fileName)
 		{
 			int boostNum;
 			cardFile >> boostNum;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				doorCardDeck->addCard(std::make_shared<MonsterBoostCard>(cardPath.c_str(), defPos, helpText, boostNum, res.gameFont));
 		}
@@ -162,7 +181,9 @@ void SoloGame::readCards(const char * const fileName)
 			cardFile >> treasures;
 			cardFile >> giveLevels;
 			BadStuffType badStuffType = (badStuff == "level") ? BadStuffType::LEVEL : BadStuffType::CARDS;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				doorCardDeck->addCard(std::make_shared<MonsterCard>(cardPath.c_str(), defPos, helpText, badStuffType,
 								                                                   badStuffVal, monsterLevel, treasures, giveLevels, res.gameFont));
@@ -174,7 +195,9 @@ void SoloGame::readCards(const char * const fileName)
 			int combatBonus;
 			cardFile >> combatBonus;
 			cardFile >> itemType;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				treasureCardDeck->addCard(std::make_shared<ItemCard>(cardPath.c_str(), defPos, helpText, combatBonus, res.gameFont));
 		}
@@ -183,7 +206,9 @@ void SoloGame::readCards(const char * const fileName)
 		{
 			int level;
 			cardFile >> level;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				treasureCardDeck->addCard(std::make_shared<LevelUpCard>(cardPath.c_str(), defPos, helpText, level, res.gameFont));
 		}
@@ -192,11 +217,19 @@ void SoloGame::readCards(const char * const fileName)
 		{
 			int boost;
 			cardFile >> boost;
-			readHelp(cardFile, helpText);
+			if (!readHelp(cardFile, helpText))
+				return false;
+
 			for (int i = 0; i < cardCount; i++)
 				treasureCardDeck->addCard(std::make_shared<BoostCard>(cardPath.c_str(), defPos, helpText, boost, res.gameFont));
 		}
 	}
+
+	if (!cardFile.eof() || cardFile.bad() || !read)
+		return false;
+
+	cardFile.close();
+	return !(!cardFile.eof() && cardFile.bad());
 }
 
 void SoloGame::restart()
@@ -443,28 +476,30 @@ bool SoloGame::saveToFile()
 	if (!saveFile.good())
 		return false;
 
-	saveFile << *doorDeckGarbage;
+	saveFile << *doorDeckGarbage << std::endl;
 	if (!saveFile.good())
 		return false;
 
-	saveFile << *treasureDeckGarbage;
+	saveFile << *treasureDeckGarbage << std::endl;
 	if (!saveFile.good())
 		return false;
 
-	saveFile << actPlayerInx << " " << actStateInx << " ";
-	if (!saveFile.good())
-		return false;
-
+	std::string resStr;
+	std::size_t checkHash;
+	resStr = std::to_string(actPlayerInx) + " " + std::to_string(actStateInx) + " ";
 	if (actPlayCard)
 	{
-		saveFile << (actPlayCard->isTreasure() ? 't' : 'd');
-		if (!saveFile.good())
-			return false;
-
-		saveFile << " " << actPlayCard->getID() << " " << -1 << std::endl;
+		resStr += (actPlayCard->isTreasure() ? 't' : 'd');
+		resStr += " " + std::to_string(actPlayCard->getID()) + " -1";
 	}
 	else
-		saveFile << 'd' << -2 << std::endl;
+		resStr +="d -2";
+
+	checkSum(resStr, checkHash);
+	encryptDecrypt(resStr);
+	saveFile << resStr << std::endl << checkHash << std::endl;
+	if (!saveFile.good())
+		return false;
 
 	saveFile.close();
 	return saveFile.good();
@@ -496,6 +531,8 @@ void SoloGame::handlePauseMenu()
 
 bool SoloGame::loadFromFile(std::ifstream& inFile, std::string& errMess)
 {
+	std::stringstream lineStream;
+
 	// load players
 	if (!loadPlayers(inFile, errMess))
 		return false;
@@ -505,15 +542,15 @@ bool SoloGame::loadFromFile(std::ifstream& inFile, std::string& errMess)
 		return false;
 
 	// set game states
-	inFile >> actPlayerInx;
-	if (!inFile.good() || actPlayerInx > 1 || actPlayerInx < 0)
+	if (!checkLine(inFile, lineStream))
 	{
-		errMess += "file corrupted";
+		errMess += "File corrupted, cheater detected!";
 		return false;
-	}
+	};
 
-	inFile >> actStateInx;
-	if (!inFile.good() || actStateInx > 4 || actStateInx < 0)
+	lineStream >> actPlayerInx;
+	lineStream >> actStateInx;
+	if (actStateInx > 4 || actStateInx < 0)
 	{
 		errMess += "file corrupted";
 		return false;
@@ -521,10 +558,8 @@ bool SoloGame::loadFromFile(std::ifstream& inFile, std::string& errMess)
 
 	char deckID;
 	int idCard;
-	inFile >> deckID;
-	inFile >> idCard;
-	if (!inFile.good())
-		return false;
+	lineStream >> deckID;
+	lineStream >> idCard;
 	if (idCard != -2 && !moveCard(deckID, idCard, actPlayCard, errMess))
 	{
 		errMess += "Missing card";
@@ -550,11 +585,17 @@ bool SoloGame::loadPlayers(std::ifstream& inFile, std::string& errMess)
 	std::vector<std::shared_ptr<Card>> loadedCards;
 	std::shared_ptr<Card> outCard;
 	int tmpLevel;
+	std::stringstream lineStream;
 
 	for (auto& it: players)
 	{
-		inFile >> tmpLevel;
-		if (!inFile.good())
+		if (!checkLine(inFile, lineStream))
+		{
+			errMess += "File corrupted, cheater detected!";
+			return false;
+		}
+		lineStream >> tmpLevel;
+		if (tmpLevel > constants::winLevel-1 || tmpLevel < 1)
 		{
 			errMess += "File corrupted";
 			return false;
@@ -563,15 +604,19 @@ bool SoloGame::loadPlayers(std::ifstream& inFile, std::string& errMess)
 
 		for (int i = 0; i < 2; i++)
 		{
+			if (!checkLine(inFile, lineStream))
+			{
+				errMess += "File corrupted, cheater detected!";
+				return false;
+			}
+
 			loadedCards.clear();
 			int idCard;
 			char deckID;
 			while (true)
 			{
-				inFile >> deckID;
-				inFile >> idCard;
-				if (!inFile.good())
-					return false;
+				lineStream >> deckID;
+				lineStream >> idCard;
 				if (idCard == -1)
 					break;
 				if (!moveCard(deckID, idCard, outCard, errMess))
@@ -622,14 +667,18 @@ bool SoloGame::loadGarbageDecks(std::ifstream& inFile, std::string& errMess)
 	char deckID = 'd';
 	int idCard;
 	std::shared_ptr<Card> outCard;
+	std::stringstream lineStream;
 
 	for (int i = 0; i < 2; i++, deckID = 't')
 	{
+		if (!checkLine(inFile, lineStream))
+		{
+			errMess += "File corrupted, cheater detected!";
+			return false;
+		}
 		while (true)
 		{
-			inFile >> idCard;
-			if (!inFile.good())
-				return false;
+			lineStream >> idCard;
 			if (idCard == -1)
 				break;
 			if (!moveCard(deckID, idCard, outCard, errMess))
@@ -640,6 +689,32 @@ bool SoloGame::loadGarbageDecks(std::ifstream& inFile, std::string& errMess)
 				treasureDeckGarbage->addCard(outCard);
 		}
 	}
+	return true;
+}
+
+bool SoloGame::checkLine(std::ifstream& inFile, std::stringstream& inStream)
+{
+	std::string readStr;
+	std::string readHashStr;
+	std::size_t readHash;
+	std::size_t checkHash;
+	getline(inFile, readStr);
+	if (readStr.empty() || !inFile.good())
+		return false;
+	encryptDecrypt(readStr);
+	checkSum(readStr, checkHash);
+
+	getline(inFile, readHashStr);
+	if (readHashStr.empty())
+		return false;
+	std::stringstream hashStream(readHashStr);
+	if ( !(hashStream >> readHash) || readHash != checkHash )
+		return false;
+
+	if (!inFile.eof() && inFile.bad())
+		return false;
+
+	inStream = std::stringstream(readStr);
 	return true;
 }
 
