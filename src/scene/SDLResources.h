@@ -4,7 +4,7 @@
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
 /**
- * Structure for used SDL resources.
+ * Structure that holds widely used SDL resources.
  */
 struct SDLResources
 {

@@ -33,19 +33,54 @@ class MonsterCard : public Card
 		 */
 		[[nodiscard]] int getValue() const override { return level; };
 
+		/**
+		 * Determine if card is monster.
+		 * @return true
+		 */
 		bool isMonster() override { return true; }
 
+		/**
+		 * Determine if card is treasure.
+		 * @return false.
+		 */
+		bool isTreasure() override { return false; }
+
+		/**
+		 * Boost monster level.
+		 * @param boostNum How much boost.
+		 */
 		void boostLevel(int boostNum) override;
 
+		/**
+		 * Determine how much treasures this monster gives, if you defeat it.
+		 * @return count of treasures
+		 */
 		int getTreasures() override { return treasures; }
 
+		/**
+		 * Determine how much levels this monster have.
+		 * @return count of levels.
+		 */
 		int getLevels() override;
 
+		/**
+		 * Set it to default state.
+		 */
 		void setDefault() override;
 
+		/**
+		 * Calculate actual combat power.
+		 * @return Value of combat power
+		 */
 		int getCombatPower() override;
 
+		/**
+		 * Do bad thing.
+		 * @param affPlayer Pointer to affected player.
+		 * @param actCard Actual card.
+		 * @param actState Actual game state.
+		 * @param ruleDesc Reference to string, where will be filled rules, if needed.
+		 * @return
+		 */
 		bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) override;
-
-		bool isTreasure() override { return false; }
 };

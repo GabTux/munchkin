@@ -3,6 +3,9 @@
 #include "PileCard.h"
 #include "cards/ItemCard.h"
 
+/**
+ * Class for players inventory.
+ */
 class Inventory : public PileCard
 {
 	public:

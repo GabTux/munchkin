@@ -31,5 +31,8 @@ class GraphicObject
 		 */
 		[[nodiscard]] virtual SDL_Rect getPosition() { return {0, 0, 0, 0}; };
 
+		/**
+		 * Set graphic object to default state.
+		 */
 		virtual void setDefault() { }
 };

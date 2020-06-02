@@ -9,6 +9,9 @@
 #include "../Background.h"
 #include "../SoloGame/SoloGame.h"
 
+/**
+ * Class for main menu.
+ */
 class MainMenu : public Menu
 {
 	private:

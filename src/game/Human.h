@@ -9,6 +9,9 @@
 #include "Inventory.h"
 #include "Player.h"
 
+/**
+ * Player is human.
+ */
 class Human : public Player
 {
 	private:
@@ -30,10 +33,15 @@ class Human : public Player
 		void handleEvent(SDL_Event& event) override;
 
 		/**
-		 * Update Inventory and cards in hands.
+		 * Do nothing - other overloaded update function with parameters will be used.
 		 */
 		void update() override { }
 
+		/**
+		 * Update indicators and both piles.
+		 * @param inActCard actual card or nullptr.
+		 * @param inActState actual game state.
+		 */
 		void update(std::shared_ptr<Card>& inActCard, GameState inActState) override;
 
 		void startTurn() override;

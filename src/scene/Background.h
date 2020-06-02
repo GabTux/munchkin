@@ -36,6 +36,4 @@ class Background : public GraphicObject
 		 * Render background.
 		 */
 		void render(SDL_Renderer*) override;
-
-		SDL_Rect getPosition() override { return {0, 0, 1200,900}; }
 };

@@ -9,12 +9,18 @@
 class Player;
 class MonsterCard;
 
+/**
+ * All bad stuff types.
+ */
 enum class BadStuffType
 {
 		LEVEL,
 		CARDS,
 };
 
+/**
+ * all card states.
+ */
 enum class CardState
 {
 		NOTHING,
@@ -78,9 +84,17 @@ class Card : public GameObject
 		 */
 		[[nodiscard]] virtual int getValue() const = 0;
 
+		/**
+		 * Show dialog with help.
+		 */
 		void showHelp();
 
 		std::string& getHelp() { return helpText; }
+
+		/*
+		 * Getters used to determine card type.
+		 * Needed for implementing rules and when cards are moved.
+		 */
 
 		virtual bool isMonster() { return false; }
 
@@ -94,6 +108,14 @@ class Card : public GameObject
 
 		virtual bool isLevelUp() { return false; }
 
+		/**
+		 * Play card.
+		 * @param affPlayer affected player.
+		 * @param actCard actual card.
+		 * @param actState actual game state.
+		 * @param ruleDesc Reference to string, where will be filled rule, if needed.
+		 * @return true - played successfully, else false
+		 */
 		virtual bool play(std::shared_ptr<Player>& affPlayer, std::shared_ptr<Card>& actCard, GameState actState, std::string& ruleDesc) = 0;
 
 		virtual void throwAway() { }

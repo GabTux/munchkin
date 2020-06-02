@@ -11,6 +11,9 @@
 #include "../constants.h"
 #include "../functions.h"
 
+/**
+ * Class for About scene.
+ */
 class About : public Scene
 {
 	private:
@@ -94,5 +97,8 @@ class About : public Scene
 		 */
 		void stopScene() override;
 
+		/**
+		 * Clean up local resources.
+		 */
 		~About();
 };

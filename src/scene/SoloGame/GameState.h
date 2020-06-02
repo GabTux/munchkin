@@ -1,5 +1,8 @@
 #pragma once
 
+/**
+ * All game states.
+ */
 enum class GameState
 {
 		KICK_DOORS,

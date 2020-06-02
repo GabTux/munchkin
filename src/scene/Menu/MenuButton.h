@@ -9,6 +9,9 @@
 #include "../../Exceptions.h"
 #include "../../game/GraphicObject.h"
 
+/**
+ * All buttons states.
+ */
 enum class ButtonState
 {
 	NOTHING,
@@ -17,6 +20,9 @@ enum class ButtonState
 	RELEASED,
 };
 
+/**
+ * Class for menu button.
+ */
 class MenuButton : virtual public GraphicObject
 {
 	private:
@@ -61,9 +67,13 @@ class MenuButton : virtual public GraphicObject
 		 */
 		void handleEvent(SDL_Event& event) override;
 
+		/**
+		 * Button is not necessary update.
+		 */
 		void update() override { }
 
-		[[nodiscard]] SDL_Rect getPosition() override { return buttonPosition; }
-
+		/**
+		 * Set state to default.
+		 */
 		void setDefault() override;
 };

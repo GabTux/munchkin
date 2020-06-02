@@ -17,6 +17,9 @@ enum class SceneName
 		STOP
 };
 
+/**
+ * Base class for all scenes.
+ */
 class Scene
 {
 	private:

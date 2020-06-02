@@ -31,9 +31,10 @@ class MenuButtonWithSelector : public MenuButton, public MenuSelector
 		/**
 		 * If button is active, show selector.
 		 */
-		void update();
+		void update() override;
 
-		SDL_Rect getPosition() { return MenuButton::getPosition(); }
-
+		/**
+		 * Set object to default state.
+		 */
 		void setDefault() override;
 };

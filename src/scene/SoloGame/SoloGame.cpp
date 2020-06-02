@@ -392,7 +392,7 @@ int SoloGame::dialogWin(const SDL_MessageBoxButtonData buttons[], int size, cons
 
 void SoloGame::runAway(const char * ranAway, const char * noRanAway)
 {
-	// TODO: graphic
+	// TODO: graphic -- next time :)
 	if (randomInt(1, 6) > 4)
 	{
 		SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION, "Run Away", ranAway,
@@ -503,7 +503,6 @@ bool SoloGame::saveToFile()
 
 	saveFile.close();
 	return saveFile.good();
-	//TODO: check if normal decks are same
 }
 
 void SoloGame::handlePauseMenu()

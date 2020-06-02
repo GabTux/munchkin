@@ -9,6 +9,9 @@
 #include "../scene/SoloGame/GameState.h"
 #include "cards/CardDeck.h"
 
+/**
+ * All piles states.
+ */
 enum class PileState
 {
 		PACKED,
@@ -56,10 +59,22 @@ class PileCard : public GraphicObject
 		 */
 		void handleEventUnpacked(SDL_Event& event);
 
+		/**
+		 * Show information, that this card can't be played right now.
+		 * @param inMessage Description.
+		 * @return Id of pressed button.
+		 */
 		static int cantPlayDialog(std::string& inMessage);
 
+		/**
+		 * Check if any cards were played.
+		 */
 		void checkForPlayedCards();
 
+		/**
+		 * Handle if card is being played.
+		 * @param cardInx Actual index of card, that is being played.
+		 */
 		void handlePlayedCard(unsigned int cardInx);
 
 	protected:
@@ -77,6 +92,7 @@ class PileCard : public GraphicObject
 
 		PileState pileState = PileState::PACKED;
 		std::unique_ptr<GameButton> switchButton;
+
 	public:
 		/**
 		 * Construct new pile of cards.
@@ -133,28 +149,78 @@ class PileCard : public GraphicObject
 		 */
 		void setCards(std::vector<std::shared_ptr<Card>>& inHandCards);
 
+		/**
+		 * Set to default state.
+		 */
 		void setDefault() override;
 
+		/**
+		 * Add card to pile.
+		 * @param inCard New card.
+		 */
 		void addCard(const std::shared_ptr<Card>& inCard);
 
+		/**
+		 * Pack actual pile if it is unpacked.
+		 */
 		void pack();
 
+		/**
+		 * Unpack pile, if it is packed.
+		 */
 		void unpack();
 
+		/**
+		 * Get value of pile.
+		 * For hand cards it is how many cards in hands.
+		 * For inventory it is power bonus in combat power.
+		 * @return Value of pile
+		 */
 		int getValue();
 
+		/**
+		 * Update all indicator, that shows value.
+		 */
 		void updateIndicator();
 
+		/**
+		 * Set players, owner and opponent.
+		 * @param inOwner Owner of pile.
+		 * @param inOpponent Opponent of owner.
+		 */
 		void setPlayers(std::shared_ptr<Player> inOwner, std::shared_ptr<Player> inOpponent);
 
+		/**
+		 * Get random card from pile.
+		 * @return shared_ptr to that card.
+		 */
 		std::shared_ptr<Card> getRandomCard();
 
+		/**
+		 * Get iterator to begin of cards.
+		 * @return Iterator to begin
+		 */
 		std::vector<std::shared_ptr<Card>>::iterator begin() { return cards.begin(); }
 
+		/**
+		 * Get iterator to end of cards.
+		 * @return Iterator to end
+		 */
 		std::vector<std::shared_ptr<Card>>::iterator end() { return cards.end(); }
 
+		/**
+		 * Erase card on position.
+		 * @param inIter Which card erase.
+		 * @return iterator to next card.
+		 */
 		std::vector<std::shared_ptr<Card>>::iterator erase(std::vector<std::shared_ptr<Card>>::iterator inIter) { return cards.erase(inIter); }
 
+		/**
+		 * Encrypt data and write them to stream.
+		 * @param os Target stream.
+		 * @param inPileCard actual object.
+		 * @return Target stream
+		 */
 		friend std::ostream& operator<<(std::ostream& os, const PileCard& inPileCard);
 };
 

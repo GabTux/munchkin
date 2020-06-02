@@ -33,13 +33,13 @@ class MenuSelector : virtual public GraphicObject
 		 */
 		void render(SDL_Renderer* renderer) override;
 
-		void show(bool inShow) { showSelector=inShow; }
-
-		[[nodiscard]] SDL_Rect getPosition() override { return selectorPosition; }
 		/**
 		 * Clear object.
 		 */
 		~MenuSelector();
 
+		/**
+		 * Reset object to default state.
+		 */
 		void setDefault() override;
 };

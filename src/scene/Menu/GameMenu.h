@@ -3,6 +3,9 @@
 #include "Menu.h"
 #include "../Background.h"
 
+/**
+ * Class for game menu.
+ */
 class GameMenu : public Menu
 {
 	private:

@@ -80,10 +80,6 @@ bool Bot::played()
 	return false;
 }
 
-void Bot::startTurn()
-{
-}
-
 bool Bot::checkForInv()
 {
 	for (auto& it: *handCards)
@@ -138,10 +134,6 @@ bool Bot::endTurn(std::string &inString)
 		throw GameError("Bot have too many cards in hands, after end of turn.");
 
 	return true;
-}
-
-void Bot::endTurn()
-{
 }
 
 bool Bot::playCurse()

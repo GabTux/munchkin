@@ -3,11 +3,15 @@
 #include "SDLResources.h"
 #include "SceneManager.h"
 
+/**
+ * @brief Clean up resources and stop the mainloop.
+ */
 class Stop : public Scene
 {
 	private:
 		SDLResources& res;
 		SceneManager& sceneManager;
+
 	public:
 		/**
 		 * Construct start scene.

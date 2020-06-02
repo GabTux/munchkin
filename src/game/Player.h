@@ -22,7 +22,6 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 		/**
 		 * Player position.
 		 * Used in inherited classes - humans and bot.
-		 * TODO: bot.
 		 */
 		SDL_Rect position;
 		int level = 1;
@@ -57,7 +56,7 @@ class Player : public GraphicObject, public std::enable_shared_from_this<Player>
 
 		virtual void endTurn() { }
 
-		virtual void startTurn() = 0;
+		virtual void startTurn() { }
 
 		void loseCards(int loseCardsNum);
 
