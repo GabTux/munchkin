@@ -9,9 +9,9 @@ SRCDIR    = src
 
 OBJ       = $(patsubst %,$(OBJDIR)/%,$(_OBJ))
 
-all: munchkin doc
+all: compile doc
 
-compile: munchkin
+compile: $(OBJDIR) munchkin
 
 debug: CXXFLAGS += $(DEBFLAGS)
 debug: compile
@@ -25,7 +25,7 @@ $(OBJDIR):
 	mkdir -p $(OBJDIR)/scene/SoloGame
 	mkdir $(OBJDIR)/scene/Menu
 
-$(OBJDIR)/%.o: $(SRCDIR)/%.cpp $(OBJDIR)
+$(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
 
 doc:
