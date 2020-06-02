@@ -87,7 +87,7 @@ void Start::prepare()
 
 bool Start::setIcon()
 {
-	SDL_Surface *iconSurface = SDL_LoadBMP(constants::iconPath);
+	SDL_Surface *iconSurface = IMG_Load(constants::iconPath);
 	if (!iconSurface)
 		return false;
 

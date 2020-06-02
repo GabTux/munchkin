@@ -14,13 +14,13 @@ namespace constants
 
 	/* ------------------------------------- PATHS ---------------------------- */
 	const char *const menuSelectorPath = "images/small_figure.bmp";
-	const char *const menuWallpaperPath = "images/munchkin_wallpaper_1200_900.bmp";
-	const char *const gameWallpaperPath = "images/wallpaper_game_1200_900.bmp";
-	const char *const aboutWallpapers[] = { "images/figure_treasure.bmp", "images/figure_treasure_2.bmp" };
+	const char *const menuWallpaperPath = "images/munchkin_wallpaper_1200_900.jpg";
+	const char *const gameWallpaperPath = "images/wallpaper_game_1200_900.jpg";
+	const char *const aboutWallpapers[] = { "images/figure_treasure.jpg", "images/figure_treasure_2.jpg" };
 	const char *const genericFontPath = "files/UbuntuMono-B.ttf";
 	const char *const menuMusic = "sound/DEAF KEV - Invincible _NCS Release_.mp3";
 	const char *const evilLaughs[] = { "sound/Evil_Laugh_1.wav", "sound/Evil_Laugh_2.wav", "sound/Evil_Laugh_3.wav" };
-	const char *const iconPath = "images/icon.bmp";
+	const char *const iconPath = "images/icon.jpg";
 	const char *const cardFile = "files/allCards.txt";
 
 	/* -------------------- MAIN MENU ---------------- */

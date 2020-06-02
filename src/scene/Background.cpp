@@ -1,6 +1,6 @@
 #include "Background.h"
 
-Background::Background(const char * const wallpaperPath) : surfaceBackground(SDL_LoadBMP(wallpaperPath))
+Background::Background(const char * const wallpaperPath) : surfaceBackground(IMG_Load(wallpaperPath))
 {
 	if (!surfaceBackground)
 	{

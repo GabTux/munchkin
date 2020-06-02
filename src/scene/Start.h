@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <SDL2/SDL_image.h>
 
 #include "Scene.h"
 #include "SDLResources.h"

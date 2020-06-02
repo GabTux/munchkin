@@ -11,3 +11,15 @@ umožňuje ukládat a načítat rozehrané hry"
 
 Tato práce implementuje mojí oblíbenou karetní hru Munchkin: https://cs.wikipedia.org/wiki/Munchkin_(karetn%C3%AD_hra)
 Na uvedeném odkazu jsou uvedeny i stručně pravidla, má implementace je pouze pro 2 hráče, protože při vyšším počtu hra trvá přílíš dlouho (osobní zkušenost).
+
+Dále byla pravidla patřičně upravena:
+Hráč má po celou dobu k dispozici inventář. Do inventáře si může vykládat předměty, které mu poskytují bonus  v boji.
+Aktuální úroveň hráče může být minimálně jedna.
+V každém tahu musí hráč vykopnout dveře. Předtím může libovolně vykládat předměty do inventáře, případně hrát jiné karty, pokud to lze.
+Za dveřmi se může schovávat nestvůra a hráč s ní musí bojovat,
+nebo je zde kletba a okamžitě působí na hráče a nebo je zde jiná karta a tu si bere hráč do ruky.
+Pokud má hráč větší bojovou sílu než nestvůra, tak vyhrává boj, získává level a poklady. V opačném případě je nucen utíkat.
+Jestli hráč uteče je generováno náhodně, pokud ano, tak se nic nestane. V opačném případě mu dané nestvůra udělá ošklivou věc.
+Protihráč má na začátku možnost boj patřičně ovlivnit. Dále však v průběhu boje ne. Je tedy vhodné dobře předvídat.
+Bojová síla je kalkulována jako součet: level + bonusy v inventáři + jednorázové "boosty".
+Po boji je možné opět vykládat do inventáře a hrát jiné karty. Kdo jako první dosáhne maximálního level definovaného v konstantách, taky vyhrál.

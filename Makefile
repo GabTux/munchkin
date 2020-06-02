@@ -13,8 +13,8 @@ all: munchkin doc
 
 compile: munchkin
 
-#TODO
-#debug:
+debug: CXXFLAGS += $(DEBFLAGS)
+debug: compile
 
 munchkin: $(OBJ)
 	$(LD) -o $@ $^ $(LIBFLAGS) $(CXXFLAGS)
