@@ -1,5 +1,6 @@
 #include "functions.h"
 #include "Exceptions.h"
+#include <zlib.h>
 
 int randomInt(int a, int b)
 {
@@ -10,12 +11,15 @@ int randomInt(int a, int b)
 	return randomIntGen(gen);
 }
 
-void checkSum(std::string &inStr, std::size_t& checkHash)
+void checkSum(std::string &inStr, unsigned long& checkHash)
 {
 	if (inStr.empty())
 		throw GameError("No size of check string.");
 
-	checkHash = std::hash<std::string>{}(inStr);
+	unsigned long crc = crc32(0L, Z_NULL, 0);
+	crc = crc32(crc, (const unsigned char*)inStr.c_str(), inStr.size());
+
+	checkHash = crc;
 }
 
 void encryptDecrypt(std::string& inOutStr)

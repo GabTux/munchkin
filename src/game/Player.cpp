@@ -128,7 +128,7 @@ int Player::getCardsCount()
 std::ostream& operator<<(std::ostream& os, const Player& inPlayer)
 {
 	std::string res;
-	std::size_t checkHash;
+	unsigned long checkHash;
 	res = std::to_string(inPlayer.level);
 	checkSum(res, checkHash);
 	encryptDecrypt(res);

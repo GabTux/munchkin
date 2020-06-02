@@ -485,7 +485,7 @@ bool SoloGame::saveToFile()
 		return false;
 
 	std::string resStr;
-	std::size_t checkHash;
+	unsigned long checkHash;
 	resStr = std::to_string(actPlayerInx) + " " + std::to_string(actStateInx) + " ";
 	if (actPlayCard)
 	{
@@ -695,8 +695,8 @@ bool SoloGame::checkLine(std::ifstream& inFile, std::stringstream& inStream)
 {
 	std::string readStr;
 	std::string readHashStr;
-	std::size_t readHash;
-	std::size_t checkHash;
+	unsigned long readHash;
+	unsigned long checkHash;
 	getline(inFile, readStr);
 	if (readStr.empty() || !inFile.good())
 		return false;

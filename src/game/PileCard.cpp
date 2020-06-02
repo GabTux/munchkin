@@ -282,7 +282,7 @@ void PileCard::updateIndicator()
 std::ostream& operator<<(std::ostream &os, const PileCard& inPileCard)
 {
 	std::string res;
-	std::size_t checkHash;
+	unsigned long checkHash;
 	for (auto& it: inPileCard.cards)
 	{
 		res += it->isTreasure() ? 't' : 'd';

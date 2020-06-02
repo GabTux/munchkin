@@ -51,7 +51,7 @@ bool CardDeck::getCard(int id, std::shared_ptr<Card>& outCard)
 std::ostream &operator<<(std::ostream& os, const CardDeck& inDeck)
 {
 	std::string res;
-	std::size_t checkHash;
+	unsigned long checkHash;
 
 
 	for (auto& it: inDeck.cards)
