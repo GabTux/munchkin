@@ -222,12 +222,12 @@ void Bot::loseMinValueCard()
 
 bool Bot::checkForLevelUp()
 {
-	if (getLevel() == constants::winLevel-1)
+	if (getLevel() >= constants::winLevel-1)
 		return true;
 
 	for (auto& it: *handCards)
 	{
-		if (it->isLevelUp())
+		if (it->isLevelUp() && it->getValue()+getLevel() < constants::winLevel)
 		{
 			playCard(it);
 			return false;

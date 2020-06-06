@@ -1,4 +1,6 @@
-Progtest:
+Progtest
+----------------------------------------------
+
 ,,Naprogramujte engine pro hraní karetního RPG
 
 Váš engine:
@@ -9,12 +11,15 @@ implementuje variantu pro jednoho hráče proti počítači (náhodné tahy nest
 implementuje variantu pro dva hráče (výměna přes potvrzovací okno, aby soupeř neviděl karty, nebo naopak soupeři si celou dobu do karet vidí)
 umožňuje ukládat a načítat rozehrané hry"
 
-Tato práce implementuje mojí oblíbenou karetní hru Munchkin: https://cs.wikipedia.org/wiki/Munchkin_(karetn%C3%AD_hra)
-Na uvedeném odkazu jsou uvedeny i stručně pravidla, má implementace je pouze pro 2 hráče, protože při vyšším počtu hra trvá přílíš dlouho (osobní zkušenost).
 
-Dále byla pravidla patřičně upravena:
-Hráč má po celou dobu k dispozici inventář. Do inventáře si může vykládat předměty, které mu poskytují bonus  v boji.
-Aktuální úroveň hráče může být minimálně jedna.
+Můj dodatek
+----------------------------
+
+Tato práce implementuje mojí oblíbenou karetní hru Munchkin: https://cs.wikipedia.org/wiki/Munchkin_(karetn%C3%AD_hra)
+Na uvedeném odkazu jsou uvedeny i stručně pravidla, má implementace je pouze pro 2 hráče a jsou vhodně upraveny pravidla.
+
+Hráč má po celou dobu k dispozici inventář. Do inventáře si může vykládat předměty, které mu poskytují bonus  v boji, neomezeně.
+Aktuální úroveň hráče může být minimálně jedna - nelze, aby klesla pod jedna.
 V každém tahu musí hráč vykopnout dveře. Předtím může libovolně vykládat předměty do inventáře, případně hrát jiné karty, pokud to lze.
 Za dveřmi se může schovávat nestvůra a hráč s ní musí bojovat,
 nebo je zde kletba a okamžitě působí na hráče a nebo je zde jiná karta a tu si bere hráč do ruky.
@@ -22,4 +27,6 @@ Pokud má hráč větší bojovou sílu než nestvůra, tak vyhrává boj, získ
 Jestli hráč uteče je generováno náhodně, pokud ano, tak se nic nestane. V opačném případě mu dané nestvůra udělá ošklivou věc.
 Protihráč má na začátku možnost boj patřičně ovlivnit. Dále však v průběhu boje ne. Je tedy vhodné dobře předvídat.
 Bojová síla je kalkulována jako součet: level + bonusy v inventáři + jednorázové "boosty".
-Po boji je možné opět vykládat do inventáře a hrát jiné karty. Kdo jako první dosáhne maximálního level definovaného v konstantách, taky vyhrál.
+Po boji je možné opět vykládat do inventáře a hrát jiné karty. Ten, kdo jako první dosáhne maximálního levelu definovaného v konstantách, vyhrává.
+
+Pro informování hráče o aktuálním děním jsou využívány dialogové okna.

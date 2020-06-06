@@ -31,7 +31,7 @@ void SoloGame1v1::handleEvent()
 void SoloGame1v1::looseAgainstMonster()
 {
 	std::string loseMonsterMess = "You will loose against this monster.\nYou will have to roll a dice: "
-	                              "youRolled > 5 - means you successfully ran away, otherwise that monster caught you and the bad thing will happen.";
+	                              "youRolled > 4 - means you successfully ran away, otherwise that monster caught you and the bad thing will happen.";
 	const SDL_MessageBoxButtonData buttons[] = {
 					{ /* .flags, .buttonid, .text */        0, 0, "BACK" },
 					{ SDL_MESSAGEBOX_BUTTON_RETURNKEY_DEFAULT, 1, "RUN AWAY" },

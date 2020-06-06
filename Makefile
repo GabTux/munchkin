@@ -34,5 +34,5 @@ doc:
 clean:
 	rm -rf munchkin doc $(OBJDIR)
 
-run: munchkin
+run: $(OBJDIR) munchkin
 	./munchkin

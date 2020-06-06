@@ -194,7 +194,6 @@ bool SoloGame::readCards(const char * const fileName)
 			std::string itemType;
 			int combatBonus;
 			cardFile >> combatBonus;
-			cardFile >> itemType;
 			if (!readHelp(cardFile, helpText))
 				return false;
 

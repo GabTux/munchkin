@@ -4,7 +4,7 @@ If you play it from hand, target is opponent. Otherwise it is you."
 images/cards/008.bmp 5 monsterBoost 5
 "Play anytime during any fight. Monster will get +5 to combat power.
 "
-images/cards/009.bmp 10 monster 3 cards 2 2 1
+images/cards/009.bmp 4 monster 3 cards 2 2 1
 "Powerful Bacillus
 -------------------
 Level 3
@@ -13,28 +13,99 @@ Bad Stuff
 ----------
 Because of sneezing, you will lose 2 cards.
 "
-images/cards/010.bmp 3 item 3 big
+images/cards/010.bmp 3 item 3
 "Chainsaw of Bloody Dismemberment
 ----------------------------------
+It is brutal tool.
 +3 in combat.
-Uses both hands.
-Its big.
 "
-images/cards/011.bmp 5 levelup 1
+images/cards/011.bmp 3 levelup 1
 "Draw you creature
 --------------------
 Play this card and get ++level.
 You can not get the last level with this card.
 "
-images/cards/012.bmp 3 item 4 small
+images/cards/012.bmp 2 item 4
 "Cloak
 -----------------------
+This will protect you and confuse monster.
 +4 in combat.
-Its on you, so there's no need to hold it in hands.
-Its small.
 "
 images/cards/013.bmp 3 boost 2
 "Play this card during fight.
 If it is your fight, you will get bonus +2.
 Otherwise the monster will get bonus +2.
+"
+images/cards/014.bmp 2 boost 5
+"Play this card during fight.
+If it is your fight, you will get bonus +5.
+Otherwise the monster will get bonus +5.
+"
+images/cards/015.bmp 5 monster 7 level 2 3 1
+"Giant roach
+-------------------
+Level 7
+3 treasures
+1 level
+
+Bad Stuff
+----------
+He will bite you. You will loose 1 level.
+"
+images/cards/016.bmp 2 item 3
+"Steps
+-----------------------
+This will increase your height.
++3 in combat.
+"
+images/cards/017.bmp 3 monster 14 cards 20 4 1
+"Insurancer
+-------------------
+Level 14
+3 treasures
+1 level
+
+Bad Stuff
+----------
+He will conclude contract with you. You will loose all cards.
+"
+images/cards/018.bmp 2 monster 20 level 20 5 2
+"Kali
+-------------------
+Level 20
+5 treasures
+2 level
+
+Bad Stuff
+----------
+You will sacrifise yourself. You will loose all levels.
+"
+images/cards/019.bmp 2 levelup 2
+"Bribe the lord of the cave with food
+--------------------
+Play this card and get level += 2.
+You can not get the last level with this card.
+"
+images/cards/020.bmp 5 monster 1 cards 1 1 1
+"Lame Goblin
+-------------------
+Level 1
+1 treasures
+1 level
+
+Bad Stuff
+----------
+He will hits you with his crutch. You will loose 1 card.
+"
+images/cards/021.bmp 5 levelup 1
+"Whinning in front of lord of the cave
+---------------------------------
+Play this card and get level++.
+You can not get the last level with this card.
+"
+images/cards/022.bmp 4 item 2
+"Flaming armor
+---------------------------------
+This will increase your fire power.
++2 in combat.
 "
